@@ -4,64 +4,102 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.absolutecinema.data.AuthViewModel
+import com.example.absolutecinema.ui.AppViewModelProvider
+import com.example.absolutecinema.ui.navigation.NavigationDestination
 
+
+object LoginPage : NavigationDestination {
+    override val route = "login"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    navigateToHome: () -> Unit,
+    authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    var username by rememberSaveable { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    val loginState by authViewModel.loginState.collectAsState()
+    var error = false
+
+    //Launched Effect, loginState'deki değişimde aktifleşir ve recompositionda tekrarlamaz.
+    LaunchedEffect(loginState) {
+        if (loginState == true) {
+            navigateToHome()
+        } else if (loginState == false) {
+            error = true
+        }
+    }
     Card(
-        modifier = Modifier,
+        modifier = Modifier
+            .padding(start = 40.dp, end = 40.dp, top = 300.dp, bottom = 100.dp)
+            .verticalScroll(rememberScrollState())
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
+            modifier = Modifier.padding(top = 80.dp)
         ) {
+
             OutlinedTextField(
-                state = null,
-                value = "",
+                value = username,
+                onValueChange = { username = it },
                 singleLine = true,
                 shape = shapes.large,
+                isError = error,
                 modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorScheme.surface,
-                    unfocusedContainerColor = colorScheme.surface,
-                    disabledContainerColor = colorScheme.surface,
-                ),
-                onValueChange = {},
-                label = "Username",
+                label = { Text("Username") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next
                 )
             )
             OutlinedTextField(
-                state = null
+                value = password,
+                singleLine = true,
+                shape = shapes.large,
+                isError = error,
+                modifier = Modifier.width(350.dp),
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                )
             )
             OutlinedButton(
-                onClick = {}
+                onClick = {
+                    authViewModel.login(username, password)
+                }
             ) {
-
+                Text("Login")
             }
         }
     }
 }
-

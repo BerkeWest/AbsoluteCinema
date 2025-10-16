@@ -1,20 +1,29 @@
 package com.example.absolutecinema.data
 
-import com.example.absolutecinema.network.AuthApiService
-import org.json.JSONObject
+import com.example.absolutecinema.data.network.AuthApiService
+import com.example.absolutecinema.data.remote.model.request.LoginBody
 
-class AppRepository(private val api: AuthApiService) {
-        var refreshToken: String? = null
-            private set
+interface AppRepository {
+    suspend fun login(username: String, password: String): Boolean
+    suspend fun fetchRequestToken(): String?
+}
 
-        suspend fun fetchToken(): String {
-            val response = api.getRequestToken()
-            var requestToken: String = ""
-            if (response.isSuccessful) {
-                val json = response.body()?.string()
-                val jsonObject = JSONObject(json)
-                requestToken = jsonObject.getString("request_token")
-            }
-            return requestToken
+class NetworkAppRepository(private val api: AuthApiService) : AppRepository {
+    private var requestToken: String? = null
+
+    override suspend fun fetchRequestToken(): String? {
+        val response = api.getRequestToken()
+        if (response.success) {
+            requestToken = response.request_token
         }
+        return requestToken
+    }
+
+    override suspend fun login(username: String, password: String): Boolean {
+        val token = requestToken ?: fetchRequestToken() ?: return false
+        val response = api.login(loginBody = LoginBody(username, password, token))
+        return response.success
+    }
+
+
 }

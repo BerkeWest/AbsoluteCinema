@@ -1,6 +1,7 @@
 package com.example.absolutecinema.data.network
 
 import com.example.absolutecinema.data.remote.model.request.LoginBody
+import com.example.absolutecinema.data.remote.model.request.TokenBody
 import com.example.absolutecinema.data.remote.model.response.RequestTokenResponse
 import com.example.absolutecinema.data.remote.model.response.SessionResponse
 import retrofit2.http.Body
@@ -23,6 +24,6 @@ interface AuthApiService {
     ): RequestTokenResponse
 
     @POST("authentication/session/new")
-    suspend fun createSession(@Body requestToken: String): SessionResponse
+    suspend fun createSession(@Body tokenBody: TokenBody): SessionResponse
 
 }

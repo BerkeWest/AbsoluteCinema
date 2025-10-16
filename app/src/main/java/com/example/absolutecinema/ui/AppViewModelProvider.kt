@@ -5,7 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.absolutecinema.CinemaApplication
-import com.example.absolutecinema.data.AuthViewModel
+import com.example.absolutecinema.data.viewmodel.AuthViewModel
 
 
 object AppViewModelProvider {

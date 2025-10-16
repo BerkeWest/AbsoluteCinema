@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.absolutecinema.data.AuthViewModel
+import com.example.absolutecinema.data.viewmodel.AuthViewModel
 import com.example.absolutecinema.ui.AppViewModelProvider
 import com.example.absolutecinema.ui.navigation.NavigationDestination
 

@@ -8,3 +8,8 @@ data class LoginBody(
     val password: String,
     val request_token: String,
 )
+
+@Serializable
+data class TokenBody(
+    val request_token: String
+)

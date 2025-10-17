@@ -1,4 +1,4 @@
-package com.example.absolutecinema.ui.screens
+package com.example.absolutecinema.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

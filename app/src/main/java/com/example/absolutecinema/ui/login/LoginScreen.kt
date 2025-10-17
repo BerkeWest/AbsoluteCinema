@@ -1,4 +1,4 @@
-package com.example.absolutecinema.ui.screens
+package com.example.absolutecinema.ui.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.absolutecinema.data.viewmodel.AuthViewModel
 import com.example.absolutecinema.ui.AppViewModelProvider
 import com.example.absolutecinema.ui.navigation.NavigationDestination
 
@@ -44,7 +43,7 @@ fun LoginScreen(
     authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var username by rememberSaveable { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     val loginState by authViewModel.loginState.collectAsState()
     var error = false
 

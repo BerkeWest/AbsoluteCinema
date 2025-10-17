@@ -2,12 +2,12 @@ package com.example.absolutecinema
 
 import android.app.Application
 import com.example.absolutecinema.data.AppContainer
-import com.example.absolutecinema.data.DefaultAppContainer
 
-class CinemaApplication: Application() {
+class AbsoluteCinemaApplication: Application() {
     lateinit var container: AppContainer
+        private set
     override fun onCreate() {
         super.onCreate()
-        container = DefaultAppContainer()
+        container = AppContainer()
     }
 }

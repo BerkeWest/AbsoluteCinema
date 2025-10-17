@@ -5,10 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.absolutecinema.ui.screens.HomePage
-import com.example.absolutecinema.ui.screens.HomeScreen
-import com.example.absolutecinema.ui.screens.LoginPage
-import com.example.absolutecinema.ui.screens.LoginScreen
+import com.example.absolutecinema.ui.home.HomePage
+import com.example.absolutecinema.ui.home.HomeScreen
+import com.example.absolutecinema.ui.login.LoginPage
+import com.example.absolutecinema.ui.login.LoginScreen
 
 
 @Composable

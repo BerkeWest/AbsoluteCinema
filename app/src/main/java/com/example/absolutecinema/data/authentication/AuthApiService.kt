@@ -1,4 +1,4 @@
-package com.example.absolutecinema.data.network
+package com.example.absolutecinema.data.authentication
 
 import com.example.absolutecinema.data.remote.model.request.LoginBody
 import com.example.absolutecinema.data.remote.model.request.TokenBody

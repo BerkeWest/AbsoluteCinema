@@ -1,7 +1,10 @@
 package com.example.absolutecinema.data
 
 import com.example.absolutecinema.BuildConfig
-import com.example.absolutecinema.data.network.AuthApiService
+import com.example.absolutecinema.data.authentication.AuthApiService
+import com.example.absolutecinema.data.authentication.AuthRepository
+import com.example.absolutecinema.data.movie.MovieApiService
+import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.network.HeaderInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,12 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
-
-interface AppContainer {
-    val authRepository: AppRepository
-}
-
-class DefaultAppContainer : AppContainer {
+class AppContainer {
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HeaderInterceptor())
@@ -28,11 +26,22 @@ class DefaultAppContainer : AppContainer {
         .client(okHttpClient)
         .build()
 
-    private val apiService: AuthApiService by lazy {
+    val sessionManager = SessionManager()
+
+    //Authentication
+    private val authApiService: AuthApiService by lazy {
         retrofit.create(AuthApiService::class.java)
     }
+    val authRepository: AuthRepository by lazy {
+        AuthRepository(authApiService, sessionManager)
+    }
 
-    override val authRepository: AppRepository by lazy {
-        NetworkAppRepository(apiService)
+    //Movie(HomePage etc.)
+    private val movieApiService: MovieApiService by lazy {
+        retrofit.create(MovieApiService::class.java)
+    }
+
+    val movieRepository: MovieRepository by lazy {
+        MovieRepository(movieApiService, sessionManager)
     }
 }

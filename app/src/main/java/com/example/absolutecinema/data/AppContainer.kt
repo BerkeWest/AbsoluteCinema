@@ -26,6 +26,11 @@ class AppContainer {
         .client(okHttpClient)
         .build()
 
+    private val retrofitImage: Retrofit = Retrofit.Builder()
+        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .baseUrl(BuildConfig.IMAGE_URL)
+        .build()
+
     val sessionManager = SessionManager()
 
     //Authentication

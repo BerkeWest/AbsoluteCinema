@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.absolutecinema.ui.home.HomePage
 import com.example.absolutecinema.ui.home.HomeScreen
+import com.example.absolutecinema.ui.search.SearchPage
+import com.example.absolutecinema.ui.search.SearchScreen
 import com.example.absolutecinema.ui.login.LoginPage
 import com.example.absolutecinema.ui.login.LoginScreen
 
@@ -23,7 +25,10 @@ fun CinemaNavHost(
             LoginScreen(navigateToHome = { navController.navigate(HomePage.route) })
         }
         composable(route = HomePage.route) {
-            HomeScreen()
+            HomeScreen(navigateTo = { navController.navigate(it)})
+        }
+        composable(route = SearchPage.route) {
+            SearchScreen()
         }
     }
 }

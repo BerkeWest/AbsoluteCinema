@@ -28,7 +28,7 @@ android {
 
         buildConfigField("String", "API_KEY", "\"${secretProperties["API_KEY"]}\"")
         buildConfigField("String", "BASE_URL", "\"${secretProperties["BASE_URL"]}\"")
-
+        buildConfigField("String", "IMAGE_URL", "\"${secretProperties["IMAGE_URL"]}\"")
 
     }
 

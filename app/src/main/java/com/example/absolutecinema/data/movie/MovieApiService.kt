@@ -2,6 +2,7 @@ package com.example.absolutecinema.data.movie
 
 import com.example.absolutecinema.data.remote.model.response.HomeResponse
 import com.example.absolutecinema.data.remote.model.response.HomeResponseDate
+import com.example.absolutecinema.data.remote.model.response.MovieDetails
 import com.example.absolutecinema.data.remote.model.response.SearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -23,6 +24,10 @@ interface MovieApiService {
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(): HomeResponseDate
+
+    @GET("movie/{movie_id}")
+    suspend fun getMovieDetails(): MovieDetails
+
 
 
 }

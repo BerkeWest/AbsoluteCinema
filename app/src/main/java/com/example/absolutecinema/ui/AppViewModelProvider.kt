@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.absolutecinema.AbsoluteCinemaApplication
 import com.example.absolutecinema.ui.login.AuthViewModel
 import com.example.absolutecinema.ui.home.HomeScreenViewModel
+import com.example.absolutecinema.ui.search.SearchViewModel
 
 
 object AppViewModelProvider {
@@ -16,6 +17,9 @@ object AppViewModelProvider {
         }
         initializer {
             HomeScreenViewModel(absolteCinemaApplication().container.movieRepository)
+        }
+        initializer {
+            SearchViewModel(absolteCinemaApplication().container.movieRepository)
         }
     }
 }

@@ -20,15 +20,16 @@ class AppContainer {
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
 
+    val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+
     private val retrofit: Retrofit = Retrofit.Builder()
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(json
+            .asConverterFactory("application/json".toMediaType()))
         .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
-        .build()
-
-    private val retrofitImage: Retrofit = Retrofit.Builder()
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-        .baseUrl(BuildConfig.IMAGE_URL)
         .build()
 
     val sessionManager = SessionManager()

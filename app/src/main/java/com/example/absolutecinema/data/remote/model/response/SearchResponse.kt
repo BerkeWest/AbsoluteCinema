@@ -14,7 +14,6 @@ data class SearchResponse(
 @Serializable
 data class MovieDetails(
     val genres: List<Genre>,
-    val homepage: String,
     val id: Int=0,
     val original_title: String,
     val overview: String,

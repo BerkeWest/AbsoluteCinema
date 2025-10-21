@@ -5,12 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.absolutecinema.ui.home.HomePage
-import com.example.absolutecinema.ui.home.HomeScreen
-import com.example.absolutecinema.ui.search.SearchPage
-import com.example.absolutecinema.ui.search.SearchScreen
+import com.example.absolutecinema.ui.home.NavigationBarRoute
 import com.example.absolutecinema.ui.login.LoginPage
 import com.example.absolutecinema.ui.login.LoginScreen
+import com.example.absolutecinema.ui.navigationbar.NavigationBarScreen
 
 
 @Composable
@@ -22,13 +20,10 @@ fun CinemaNavHost(
         navController = navController, startDestination = LoginPage.route, modifier = modifier
     ) {
         composable(route = LoginPage.route) {
-            LoginScreen(navigateToHome = { navController.navigate(HomePage.route) })
+            LoginScreen(navigateToHome = { navController.navigate(NavigationBarRoute.route) })
         }
-        composable(route = HomePage.route) {
-            HomeScreen(navigateTo = { navController.navigate(it)})
-        }
-        composable(route = SearchPage.route) {
-            SearchScreen()
+        composable(route = NavigationBarRoute.route) {
+            NavigationBarScreen()
         }
     }
 }

@@ -23,6 +23,7 @@ class AuthRepository(
         val loginResponse = api.login(loginBody = LoginBody(username, password, token))
         if (loginResponse.success) {
             sessionManager.sessionId = createSession(token)
+            getAccountId()
             if (sessionManager.sessionId != null) return loginResponse.success
             else return false
         }
@@ -33,5 +34,10 @@ class AuthRepository(
         val sessionResponse = api.createSession(TokenBody(requestToken))
         if (sessionResponse.success) return sessionResponse.session_id
         else return null
+    }
+
+    suspend fun getAccountId(){
+        val response = api.getAccountId()
+        sessionManager.accountId = response.id
     }
 }

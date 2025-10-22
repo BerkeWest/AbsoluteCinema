@@ -6,6 +6,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,11 +20,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.absolutecinema.R
 import com.example.absolutecinema.ui.home.HomeScreen
+import com.example.absolutecinema.ui.navigation.NavigationDestination
 import com.example.absolutecinema.ui.search.SearchScreen
+import com.example.absolutecinema.ui.topbar.TopAppBar
+import com.example.absolutecinema.ui.watchlist.WatchListScreen
 
+object NavigationBarRoute : NavigationDestination {
+    override val route = "navBar"
+}
 
 @Composable
 fun NavigationBarScreen(
+    onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     val navController = rememberNavController()
     val startDestination = Destination.HOME
@@ -35,27 +43,39 @@ fun NavigationBarScreen(
                 windowInsets = NavigationBarDefaults.windowInsets
             ) {
                 Destination.entries.forEachIndexed { index, destination ->
-                    NavigationBarItem(selected = selectedDestination == index, onClick = {
-                        navController.navigate(route = destination.route)
-                        selectedDestination = index
-                    }, icon = {
-                        Icon(
-                            painter = painterResource(id = destination.icon),
-                            contentDescription = destination.contentDescription
-                        )
-                    })
+                    NavigationBarItem(
+                        selected = selectedDestination == index, onClick = {
+                            navController.navigate(route = destination.route)
+                            selectedDestination = index
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = destination.icon),
+                                contentDescription = destination.label
+                            )
+                        },
+                        label = { Text(destination.label) },
+                        alwaysShowLabel = true
+                    )
                 }
             }
+
         }) { contentPadding ->
-        AppNavHost(navController, startDestination, modifier = Modifier.padding(contentPadding))
+        AppNavHost(
+            modifier = Modifier.padding(contentPadding),
+            navController = navController,
+            startDestination = startDestination,
+            onNavigateToDetails = onNavigateToDetails
+        )
     }
 }
 
 @Composable
 fun AppNavHost(
+    modifier: Modifier,
     navController: NavHostController,
     startDestination: Destination,
-    modifier: Modifier,
+    onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     NavHost(
         navController,
@@ -65,9 +85,9 @@ fun AppNavHost(
         Destination.entries.forEach { destination ->
             composable(destination.route) {
                 when (destination) {
-                    Destination.HOME -> HomeScreen()
-                    Destination.SEARCH -> SearchScreen()
-                    Destination.WATCH_LIST -> Unit
+                    Destination.HOME -> HomeScreen(onNavigateToDetails = onNavigateToDetails)
+                    Destination.SEARCH -> SearchScreen(onNavigateToDetails = onNavigateToDetails)
+                    Destination.WATCH_LIST -> WatchListScreen(onNavigateToDetails = onNavigateToDetails)
                 }
             }
         }
@@ -75,9 +95,9 @@ fun AppNavHost(
 }
 
 enum class Destination(
-    val route: String, val label: String, val icon: Int, val contentDescription: String?
+    val route: String, val label: String, val icon: Int
 ) {
-    HOME("home", "Home", R.drawable.home, "Home"),
-    SEARCH("search", "Search", R.drawable.search, "Search"),
-    WATCH_LIST("watchList", "Watch List", R.drawable.watch_list, "Watch List")
+    HOME("home", "Home", R.drawable.home),
+    SEARCH("search", "Search", R.drawable.search),
+    WATCH_LIST("watchList", "Watch List", R.drawable.watch_list)
 }

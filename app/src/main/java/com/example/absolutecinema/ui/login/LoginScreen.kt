@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.absolutecinema.ui.AppViewModelProvider
@@ -44,14 +45,16 @@ fun LoginScreen(
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val loginState by authViewModel.loginState.collectAsState()
-    var error = false
+    var isError by rememberSaveable { mutableStateOf(false) }
 
     //Launched Effect, loginState'deki değişimde aktifleşir ve recompositionda tekrarlamaz.
     LaunchedEffect(loginState) {
         if (loginState == true) {
             navigateToHome()
         } else if (loginState == false) {
-            error = true
+            isError = true
+            username = ""
+            password = ""
         }
     }
     Card(
@@ -69,10 +72,13 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = {
+                    username = it
+                    if (isError) isError = false
+                },
                 singleLine = true,
                 shape = shapes.large,
-                isError = error,
+                isError = isError,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Username") },
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -83,10 +89,14 @@ fun LoginScreen(
                 value = password,
                 singleLine = true,
                 shape = shapes.large,
-                isError = error,
+                isError = isError,
                 modifier = Modifier.width(350.dp),
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    if (isError) isError = false
+                },
                 label = { Text("Password") },
+                //visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 )

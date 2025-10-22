@@ -3,7 +3,7 @@ package com.example.absolutecinema.data.remote.model.request
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SearchItem(
+data class MovieSearchResult(
     val genre_ids: List<Int>,
     val id: Int = 0,
     val original_title: String,

@@ -1,5 +1,6 @@
 package com.example.absolutecinema.data.authentication
 
+import com.example.absolutecinema.data.remote.model.request.Account
 import com.example.absolutecinema.data.remote.model.request.LoginBody
 import com.example.absolutecinema.data.remote.model.request.TokenBody
 import com.example.absolutecinema.data.remote.model.response.RequestTokenResponse
@@ -8,11 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-//Minify enabald @Serilaname
-//
-// minify enabled kullanılmayan class, method vs kaldırır,
-// kullanılanları a,b,c gibi yeniden adlandırarak reverse engineeri zorlaştırır ama bu esnada @Serializable kullanan klassları da değiştireceğinden json okumalarını bozar.
-// bunun için proguardda keep ataması yazılmalı veya o classlar @Keep ile tutulmalı
+
 interface AuthApiService {
 
     @GET("authentication/token/new")
@@ -25,5 +22,10 @@ interface AuthApiService {
 
     @POST("authentication/session/new")
     suspend fun createSession(@Body tokenBody: TokenBody): SessionResponse
+
+    @GET("account")
+    suspend fun getAccountId(): Account
+
+
 
 }

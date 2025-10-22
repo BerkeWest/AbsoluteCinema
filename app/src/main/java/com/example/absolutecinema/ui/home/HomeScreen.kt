@@ -19,10 +19,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.absolutecinema.ui.AppViewModelProvider
 import com.example.absolutecinema.ui.navigation.NavigationDestination
 
-object NavigationBarRoute : NavigationDestination {
-    override val route = "navBar"
-}
-
 data class BotomNavigationItem(
     val title: String,
     val selectedIcon: Int,
@@ -36,6 +32,7 @@ data class BotomNavigationItem(
 @Composable
 fun HomeScreen(
     homeViewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     HomeBody()
 }

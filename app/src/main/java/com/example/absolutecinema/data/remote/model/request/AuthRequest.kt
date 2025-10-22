@@ -13,3 +13,8 @@ data class LoginBody(
 data class TokenBody(
     val request_token: String
 )
+
+@Serializable
+data class Account(
+    val id: Int,
+)

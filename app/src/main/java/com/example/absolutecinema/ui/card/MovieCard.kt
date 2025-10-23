@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -16,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -31,12 +34,12 @@ import java.util.Locale
 
 
 @Composable
-fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> Unit) {
+fun MovieCard(movie: MovieSearchResult, genre: String, onNavigateToDetails: (movieId: Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth(0.9f)
             .padding(vertical = 4.dp, horizontal = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0x00242A32)),
         onClick = {
             onNavigateToDetails(movie.id)
         }
@@ -52,15 +55,18 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
                 contentDescription = movie.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(150.dp)
+                    .width(80.dp)
+                    .height(120.dp)
+                .clip(RoundedCornerShape(12.dp)),
             )
             Spacer(Modifier.width(5.dp))
             Column(modifier = Modifier.padding(start = 16.dp)) {
                 Text(movie.title, style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .width(200.dp)
-                        .height(24.dp), maxLines = 1)
+                        .height(24.dp),
+                    maxLines = 1,
+                    color = Color.White)
                 Spacer(Modifier.height(14.dp))
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 4.dp)) {
                     Icon(
@@ -71,23 +77,31 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
                     Text(String.format(Locale.US, "%.1f", movie.vote_average),
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.Rating),
-
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 4.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.ticket),
                         contentDescription = "Genre",
-                        modifier = Modifier.size(18.dp).padding(horizontal = 3.dp))
-                    //Text(getGenreString(movie.genre_ids))
+                        modifier = Modifier.size(18.dp).padding(horizontal = 3.dp),
+                        tint = Color.White
+                    )
+                    Text(genre,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 4.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.calendar),
                         contentDescription = "Release Date",
-                        modifier = Modifier.size(18.dp).padding(horizontal = 3.dp)
+                        modifier = Modifier.size(18.dp).padding(horizontal = 3.dp),
+                        tint = Color.White
                         )
-                    Text(movie.release_date.take(4), style = MaterialTheme.typography.bodySmall)
+                    Text(movie.release_date.take(4),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
                 }
             }
         }
@@ -109,7 +123,7 @@ fun MovieCardPreview() {
         vote_average = 7.8
     )
 
-    MovieCard(movie, onNavigateToDetails = {
+    MovieCard(movie,"Action", onNavigateToDetails = {
 
     })
 }

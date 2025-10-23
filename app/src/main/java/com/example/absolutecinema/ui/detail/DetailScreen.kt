@@ -24,7 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -60,7 +61,7 @@ fun DetailScreen(
     detailViewModel: DetailViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ) {
 
-    val uiState = detailViewModel.uiState.collectAsState()
+    val uiState by detailViewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -69,8 +70,8 @@ fun DetailScreen(
                 canNavigateBack = true,
                 navigateUp = navigateBack,
                 canBookmark = true,
-                isBookmarked = uiState.value.movieState?.watchlist ?: false,
-                bookmark = { detailViewModel.bookmark() }
+                isBookmarked = uiState.movieState?.watchlist ?: false,
+                bookmark = { detailViewModel.bookmark() },
             )
         }
     )
@@ -79,7 +80,7 @@ fun DetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color(0xFF242A32)), // dark background
+                .background(Color(0xFF242A32)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -88,7 +89,7 @@ fun DetailScreen(
                 Box {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + uiState.value.movieDetails?.poster_path)
+                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.poster_path)
                             .crossfade(true)
                             .build(),
                         contentDescription = "Banner",
@@ -101,7 +102,7 @@ fun DetailScreen(
                     //Küçük Poster
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + uiState.value.movieDetails?.poster_path)
+                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.poster_path)
                             .crossfade(true)
                             .build(),
                         contentDescription = "Poster",
@@ -110,7 +111,7 @@ fun DetailScreen(
                             .align(Alignment.BottomStart)
                             .offset(x = 16.dp, y = 60.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
+                            .border(width = 1.dp, Color.Gray, RoundedCornerShape(12.dp))
                     )
                 }
             }
@@ -121,10 +122,10 @@ fun DetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
-                        .padding(top = 70.dp) // offset for poster overlay
+                        .padding(top = 70.dp)
                 ) {
                     Text(
-                        text = uiState.value.movieDetails?.title ?: "",
+                        text = uiState.movieDetails?.title ?: "",
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
@@ -141,7 +142,7 @@ fun DetailScreen(
                         Text(
                             text = String.format(
                                 Locale.US, "%.1f",
-                                uiState.value.movieDetails?.vote_average
+                                uiState.movieDetails?.vote_average
                             ),
                             color = Color(0xFFFFA500),
                             fontWeight = FontWeight.SemiBold
@@ -155,11 +156,18 @@ fun DetailScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        IconText(painterResource(R.drawable.calendar),
-                            uiState.value.movieDetails?.release_date?.take(4) ?: "1000"
+                        IconText(
+                            painterResource(R.drawable.calendar),
+                            uiState.movieDetails?.release_date?.take(4) ?: "1000"
                         )
-                        IconText(painterResource(R.drawable.time), "${uiState.value.movieDetails?.runtime} Minutes")
-                        IconText(painterResource(R.drawable.ticket), getGenreString(uiState.value.movieDetails?.genres?.map{ it.name } ?: listOf()))
+                        IconText(
+                            painterResource(R.drawable.time),
+                            "${uiState.movieDetails?.runtime} Minutes"
+                        )
+                        IconText(
+                            painterResource(R.drawable.ticket),
+                            getGenreString(uiState.movieDetails?.genres?.map { it.name }
+                                ?: listOf()))
                     }
 
                     Spacer(Modifier.height(24.dp))
@@ -168,7 +176,7 @@ fun DetailScreen(
 
             //Tablar
             item {
-                var selectedTab by remember { mutableStateOf(0) }
+                var selectedTab by remember { mutableIntStateOf(0) }
                 val tabs = listOf("About Movie", "Reviews", "Cast")
 
                 TabRow(
@@ -194,7 +202,7 @@ fun DetailScreen(
 
                 when (selectedTab) {
                     0 -> Text(
-                        text = uiState.value.movieDetails?.overview ?: "",
+                        text = uiState.movieDetails?.overview ?: "",
                         color = Color.White,
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
@@ -232,7 +240,3 @@ fun IconText(icon: Painter, text: String) {
         Text(text, color = Color.Gray, fontSize = 13.sp)
     }
 }
-
-
-
-

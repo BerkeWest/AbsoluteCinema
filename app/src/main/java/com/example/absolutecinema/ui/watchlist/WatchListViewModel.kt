@@ -23,7 +23,13 @@ class WatchListViewModel(private val repository: MovieRepository) : ViewModel() 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                val watchList = repository.getWatchList()
+                val genreMap = repository.getGenreMap()
+                val watchList = repository.getWatchList().map { movieResult ->
+                    val genreNames = movieResult.genre_ids
+                        .mapNotNull { genreMap[it] }
+                        .joinToString(", ")
+                    movieResult.copy(genre = genreNames)
+                }
                 _uiState.update { it.copy(isLoading = false, watchlist = watchList) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false) }

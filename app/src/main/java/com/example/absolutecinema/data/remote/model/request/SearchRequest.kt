@@ -13,4 +13,5 @@ data class MovieSearchResult(
     val release_date: String,
     val title: String,
     val vote_average: Double = 0.0,
+    val genre: String = ""
 )

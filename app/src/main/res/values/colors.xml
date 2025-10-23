@@ -10,4 +10,5 @@
     <color name="Rating">#FF8700</color>
     <color name="SearchBar">#67686D</color>
     <color name="IconSelected">#0296E5</color>
+    <color name="Background">#242A32</color>
 </resources>

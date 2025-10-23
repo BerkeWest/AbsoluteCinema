@@ -19,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,10 +63,12 @@ fun WatchListContent(watchlist: List<MovieSearchResult>, onNavigateToDetails: (I
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 10.dp)
+            .padding(vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         items(watchlist) { movie ->
-            MovieCard(movie = movie, onNavigateToDetails)
+            MovieCard(movie = movie, genre= movie.genre, onNavigateToDetails)
         }
     }
 }
@@ -89,18 +92,20 @@ fun EmptyWatchList() {
         Text(
             "There Is No Movie Yet!",
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+            color = Color.White
         )
         Text(
             "Find your movie by Type title, categories, years, etc ",
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier.width(200.dp),
+            color = Color.Gray
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun EmptyWatchListPreview() {
     EmptyWatchList()

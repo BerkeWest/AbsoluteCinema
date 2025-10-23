@@ -4,12 +4,4 @@ class SessionManager {
     var requestToken: String? = null
     var sessionId: String? = null
     var accountId: Int? = null
-
-    fun clearSession() {
-        requestToken = null
-        sessionId = null
-        accountId = null
-    }
-
-
 }

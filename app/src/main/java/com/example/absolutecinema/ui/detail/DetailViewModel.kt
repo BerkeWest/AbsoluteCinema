@@ -47,15 +47,17 @@ class DetailViewModel(
 
     fun bookmark() {
         viewModelScope.launch {
+            //avoids double click while loading
+            if (_uiState.value.isLoading) return@launch
+
             _uiState.update { it.copy(isLoading = true) }
             try {
-                if (_uiState.value.movieState?.watchlist == true) {
-                    repository.addToWatchlist(movieId, false)
-                } else if (_uiState.value.movieState?.watchlist == false) {
-                    repository.addToWatchlist(movieId, true)
-                }
+                val currentState = _uiState.value.movieState
+                val currentlyBookmarked = currentState?.watchlist == true
+                repository.addToWatchlist(_uiState.value.movieDetails?.id ?: 0, !currentlyBookmarked)
+
                 _uiState.update {
-                    it.copy(movieState = it.movieState?.copy(watchlist = !(_uiState.value.movieState?.watchlist!!)), isLoading = false)
+                    it.copy(movieState = it.movieState?.copy(watchlist = !currentlyBookmarked), isLoading = false)
                 }
             } catch (e: Exception) {
                 _uiState.update {

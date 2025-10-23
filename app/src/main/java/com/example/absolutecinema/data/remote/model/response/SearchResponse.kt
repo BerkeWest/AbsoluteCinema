@@ -4,7 +4,7 @@ import com.example.absolutecinema.data.remote.model.request.MovieSearchResult
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SearchResponse(
+data class ResultPages(
     val page: Int,
     val results: List<MovieSearchResult>,
     val total_pages: Int,
@@ -25,6 +25,11 @@ data class MovieDetails(
     val title: String,
     val video: Boolean,
     val vote_average: Double,
+)
+
+@Serializable
+data class GenreList(
+    val genres: List<Genre>
 )
 
 @Serializable

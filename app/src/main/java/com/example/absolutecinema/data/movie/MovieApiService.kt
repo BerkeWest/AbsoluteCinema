@@ -1,12 +1,10 @@
 package com.example.absolutecinema.data.movie
 
-import com.example.absolutecinema.data.remote.model.request.Account
 import com.example.absolutecinema.data.remote.model.request.WatchListBody
-import com.example.absolutecinema.data.remote.model.response.HomeResponse
-import com.example.absolutecinema.data.remote.model.response.HomeResponseDate
+import com.example.absolutecinema.data.remote.model.response.GenreList
 import com.example.absolutecinema.data.remote.model.response.MovieDetails
 import com.example.absolutecinema.data.remote.model.response.MovieState
-import com.example.absolutecinema.data.remote.model.response.SearchResponse
+import com.example.absolutecinema.data.remote.model.response.ResultPages
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -15,25 +13,30 @@ import retrofit2.http.Query
 
 interface MovieApiService {
 
+    //GENRE LIST
+    @GET("genre/movie/list")
+    suspend fun getGenreList(): GenreList
+
+
     // SEARCH
     @GET("search/movie")
     suspend fun searchMovies(
         @Query("query") searchWord: String,
         @Query("include_adult") includeAdult: Boolean = false,
-    ): SearchResponse
+    ): ResultPages
 
     // HOME
     @GET("movie/now_playing")
-    suspend fun getNowPlayingMovies(): HomeResponseDate
+    suspend fun getNowPlayingMovies(): ResultPages
 
     @GET("movie/popular")
-    suspend fun getPopularMovies(): HomeResponse
+    suspend fun getPopularMovies(): ResultPages
 
     @GET("movie/top_rated")
-    suspend fun getTopRatedMovies(): HomeResponse
+    suspend fun getTopRatedMovies(): ResultPages
 
     @GET("movie/upcoming")
-    suspend fun getUpcomingMovies(): HomeResponseDate
+    suspend fun getUpcomingMovies(): ResultPages
 
 
     // DETAILS
@@ -52,15 +55,13 @@ interface MovieApiService {
     @GET("account/{account_id}/watchlist/movies")
     suspend fun getWatchlist(
         @Path("account_id") accountId: Int?,
-    ): SearchResponse
+    ): ResultPages
 
     @POST("account/{account_id}/watchlist")
     suspend fun addToWatchlist(
         @Path("account_id") accountId: Int?,
         @Body watchListBody: WatchListBody
-        )
-
-
+    )
 
 
 }

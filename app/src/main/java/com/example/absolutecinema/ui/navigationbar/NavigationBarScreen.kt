@@ -1,10 +1,13 @@
 package com.example.absolutecinema.ui.navigationbar
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,10 +16,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.absolutecinema.R
 import com.example.absolutecinema.ui.home.HomeScreen
@@ -31,16 +37,35 @@ object NavigationBarRoute : NavigationDestination {
 
 @Composable
 fun NavigationBarScreen(
-    onNavigateToDetails: (movieId: Int) -> Unit
+    onNavigateToDetails: (movieId: Int) -> Unit,
+    modifier: Modifier = Modifier.background(Color(0xFF242A32))
 ) {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val currentDestination = Destination.entries.find { it.route == currentRoute }
+
     val startDestination = Destination.HOME
     var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
+
     Scaffold(
-        modifier = Modifier,
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = currentDestination?.label ?: Destination.HOME.label,
+                canNavigateBack = false,
+                navigateUp = { },
+                canBookmark = false,
+                isBookmarked = false,
+                bookmark = { },
+            )
+
+        },
         bottomBar = {
             NavigationBar(
-                windowInsets = NavigationBarDefaults.windowInsets
+                modifier = Modifier.height(120.dp),
+                containerColor = Color(0xFF242A32),
+                windowInsets = NavigationBarDefaults.windowInsets,
             ) {
                 Destination.entries.forEachIndexed { index, destination ->
                     NavigationBarItem(
@@ -55,14 +80,23 @@ fun NavigationBarScreen(
                             )
                         },
                         label = { Text(destination.label) },
-                        alwaysShowLabel = true
+                        alwaysShowLabel = true,
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color(0xFF0296E5),
+                            unselectedIconColor = Color.Gray,
+                            selectedTextColor = Color(0xFF0296E5),
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = Color.Transparent
+                        )
                     )
                 }
             }
 
         }) { contentPadding ->
         AppNavHost(
-            modifier = Modifier.padding(contentPadding),
+            modifier = Modifier
+                .padding(contentPadding)
+                .background(Color(0xFF242A32)),
             navController = navController,
             startDestination = startDestination,
             onNavigateToDetails = onNavigateToDetails
@@ -81,6 +115,7 @@ fun AppNavHost(
         navController,
         startDestination = startDestination.route,
         modifier = modifier
+            .background(Color(0xFF242A32))
     ) {
         Destination.entries.forEach { destination ->
             composable(destination.route) {

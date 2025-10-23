@@ -1,11 +1,12 @@
 package com.example.absolutecinema.ui.search
 
-import android.util.Log
-import androidx.compose.animation.core.copy
+import androidx.compose.foundation.lazy.items
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.data.movie.MovieRepository
+import com.example.absolutecinema.data.movie.getGenreString
 import com.example.absolutecinema.data.remote.model.request.MovieSearchResult
+import com.example.absolutecinema.ui.card.MovieCard
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +49,11 @@ class SearchViewModel(private val repository: MovieRepository) : ViewModel() {
         _uiState.update { it.copy(isSearching = true) }
         try {
             val result = repository.search(word)
-            val filteredResult = result.filter { !it.poster_path.isNullOrBlank() }
+            val filteredResult = result.filter { !it.poster_path.isNullOrBlank() }.map { movieResult ->
+                val genreNames = repository.getGenreNamesByIds(movieResult.genre_ids)
+                movieResult.copy(genre = genreNames)
+            }
+
             _uiState.update {
                 it.copy(searchResults = filteredResult, isSearching = false, searchAttempted = true)
             }

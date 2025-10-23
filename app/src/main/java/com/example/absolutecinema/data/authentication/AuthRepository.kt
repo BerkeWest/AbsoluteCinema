@@ -24,7 +24,7 @@ class AuthRepository(
         if (loginResponse.success) {
             sessionManager.sessionId = createSession(token)
             getAccountId()
-            if (sessionManager.sessionId != null) return loginResponse.success
+            if (sessionManager.sessionId != null) return true
             else return false
         }
         else return false

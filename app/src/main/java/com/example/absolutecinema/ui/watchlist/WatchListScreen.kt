@@ -79,7 +79,7 @@ fun WatchListContent(watchlist: List<MovieSearchResult>, onNavigateToDetails: (I
         verticalArrangement = Arrangement.Center
     ) {
         items(watchlist) { movie ->
-            MovieCard(movie = movie, genre= movie.genre, onNavigateToDetails)
+            MovieCard(movie = movie, onNavigateToDetails)
         }
     }
 }

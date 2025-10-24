@@ -88,7 +88,7 @@ fun LoginScreen(
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp)
             ) {
                 Text(
-                    "Welcome to \n Absolute Cinema",
+                    "Welcome to",
                     style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Center
                 )

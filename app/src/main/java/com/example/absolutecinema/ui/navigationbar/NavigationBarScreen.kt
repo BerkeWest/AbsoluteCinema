@@ -1,6 +1,9 @@
 package com.example.absolutecinema.ui.navigationbar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -62,33 +65,42 @@ fun NavigationBarScreen(
 
         },
         bottomBar = {
-            NavigationBar(
-                modifier = Modifier.height(120.dp),
-                containerColor = Color(0xFF242A32),
-                windowInsets = NavigationBarDefaults.windowInsets,
-            ) {
-                Destination.entries.forEachIndexed { index, destination ->
-                    NavigationBarItem(
-                        selected = selectedDestination == index, onClick = {
-                            navController.navigate(route = destination.route)
-                            selectedDestination = index
-                        },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = destination.icon),
-                                contentDescription = destination.label
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color(0xFF2A80FF))
+                )
+                NavigationBar(
+                    modifier = Modifier.height(120.dp),
+                    containerColor = Color(0xFF242A32),
+                    windowInsets = NavigationBarDefaults.windowInsets,
+                ) {
+                    Destination.entries.forEachIndexed { index, destination ->
+                        NavigationBarItem(
+                            selected = selectedDestination == index,
+                            onClick = {
+                                navController.navigate(route = destination.route)
+                                selectedDestination = index
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = destination.icon),
+                                    contentDescription = destination.label
+                                )
+                            },
+                            label = { Text(destination.label) },
+                            alwaysShowLabel = true,
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = Color(0xFF0296E5),
+                                unselectedIconColor = Color.Gray,
+                                selectedTextColor = Color(0xFF0296E5),
+                                unselectedTextColor = Color.Gray,
+                                indicatorColor = Color.Transparent
                             )
-                        },
-                        label = { Text(destination.label) },
-                        alwaysShowLabel = true,
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFF0296E5),
-                            unselectedIconColor = Color.Gray,
-                            selectedTextColor = Color(0xFF0296E5),
-                            unselectedTextColor = Color.Gray,
-                            indicatorColor = Color.Transparent
                         )
-                    )
+                    }
                 }
             }
 

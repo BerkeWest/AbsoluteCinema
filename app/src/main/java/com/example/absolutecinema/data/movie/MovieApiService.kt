@@ -25,6 +25,7 @@ interface MovieApiService {
         @Query("include_adult") includeAdult: Boolean = false,
     ): ResultPages
 
+
     // HOME
     @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(): ResultPages
@@ -62,6 +63,5 @@ interface MovieApiService {
         @Path("account_id") accountId: Int?,
         @Body watchListBody: WatchListBody
     )
-
 
 }

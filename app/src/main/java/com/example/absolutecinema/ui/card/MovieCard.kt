@@ -34,21 +34,23 @@ import java.util.Locale
 
 
 @Composable
-fun MovieCard(movie: MovieSearchResult, genre: String, onNavigateToDetails: (movieId: Int) -> Unit) {
+fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth(0.9f)
             .padding(vertical = 4.dp, horizontal = 8.dp),
+        //transparan background
         colors = CardDefaults.cardColors(containerColor = Color(0x00242A32)),
+        //kartın kendisine clickte filmin detayına gidilir.
         onClick = {
             onNavigateToDetails(movie.id)
         }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
-                model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(BuildConfig.IMAGE_URL + movie.poster_path)
-                    .crossfade(true)
+                model = ImageRequest.Builder(context = LocalContext.current) //Coil kütüphanesiyle resim yükleme isteği atılır.
+                    .data(BuildConfig.IMAGE_URL + movie.poster_path)// full url oluşturulur
+                    .crossfade(true) // yüklenirken animasyon ekler
                     .build(),
                 error = painterResource(R.drawable.ic_broken_image),
                 placeholder = painterResource(R.drawable.loading_img),
@@ -57,48 +59,74 @@ fun MovieCard(movie: MovieSearchResult, genre: String, onNavigateToDetails: (mov
                 modifier = Modifier
                     .width(80.dp)
                     .height(120.dp)
-                .clip(RoundedCornerShape(12.dp)),
+                    .clip(RoundedCornerShape(12.dp)),
             )
             Spacer(Modifier.width(5.dp))
             Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(movie.title, style = MaterialTheme.typography.titleMedium,
+
+                Text(
+                    movie.title, style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .width(200.dp)
                         .height(24.dp),
                     maxLines = 1,
-                    color = Color.White)
+                    color = Color.White
+                )
+
                 Spacer(Modifier.height(14.dp))
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 4.dp)) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.rating),
                         contentDescription = "Rating",
-                        modifier = Modifier.size(20.dp).padding(horizontal = 3.dp),
-                        tint = colorResource(id = R.color.Rating))
-                    Text(String.format(Locale.US, "%.1f", movie.vote_average),
+                        modifier = Modifier
+                            .size(20.dp)
+                            .padding(horizontal = 3.dp),
+                        tint = colorResource(id = R.color.Rating)
+                    )
+                    Text(
+                        String.format(Locale.US, "%.1f", movie.vote_average),
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.Rating),
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 4.dp)) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ticket),
                         contentDescription = "Genre",
-                        modifier = Modifier.size(18.dp).padding(horizontal = 3.dp),
+                        modifier = Modifier
+                            .size(18.dp)
+                            .padding(horizontal = 3.dp),
                         tint = Color.White
                     )
-                    Text(genre,
+                    Text(
+                        movie.genre,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 4.dp)) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.calendar),
                         contentDescription = "Release Date",
-                        modifier = Modifier.size(18.dp).padding(horizontal = 3.dp),
+                        modifier = Modifier
+                            .size(18.dp)
+                            .padding(horizontal = 3.dp),
                         tint = Color.White
-                        )
-                    Text(movie.release_date.take(4),
+                    )
+                    Text(
+                        movie.release_date.take(4),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White
                     )
@@ -123,7 +151,7 @@ fun MovieCardPreview() {
         vote_average = 7.8
     )
 
-    MovieCard(movie,"Action", onNavigateToDetails = {
+    MovieCard(movie, onNavigateToDetails = {
 
     })
 }

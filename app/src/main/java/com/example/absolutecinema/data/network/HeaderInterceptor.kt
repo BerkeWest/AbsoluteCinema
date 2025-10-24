@@ -5,6 +5,9 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
+/*
+    Retrofitin gönderdiği requestlerde araya girer, Header ekleyerek requesti günceller, ve güncellenmiş requesti gönderir.
+*/
 class HeaderInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()

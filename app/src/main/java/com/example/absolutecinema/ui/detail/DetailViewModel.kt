@@ -17,9 +17,11 @@ class DetailViewModel(
     private val repository: MovieRepository
 ) : ViewModel() {
 
+    //Değiştirilebilir UI state
     private val _uiState = MutableStateFlow(DetailUIState())
+    //UI için read. only UI state verisi
     val uiState: StateFlow<DetailUIState> = _uiState.asStateFlow()
-
+    //navigation graphden gelen idyi çekerek kaydeder.
     private val movieId: Int = checkNotNull(savedStateHandle["movieId"])
 
     init {

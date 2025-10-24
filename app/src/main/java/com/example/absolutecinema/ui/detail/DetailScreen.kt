@@ -18,8 +18,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -78,7 +78,7 @@ fun DetailScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding) //top bar ın tuttuğu alana göre padding alır.
                 .background(Color(0xFF242A32)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -107,8 +107,11 @@ fun DetailScreen(
                         contentDescription = "Poster",
                         modifier = Modifier
                             .size(120.dp)
-                            .align(Alignment.BottomStart)
-                            .offset(x = 16.dp, y = 60.dp)
+                            .align(Alignment.BottomStart) //Posteri sol köşeden başlatır
+                            .offset(
+                                x = 16.dp,
+                                y = 60.dp
+                            ) //Aşağı iterek üst üste durma efektini verir.
                             .clip(RoundedCornerShape(12.dp))
                             .border(width = 1.dp, Color.Gray, RoundedCornerShape(12.dp))
                             .clip(RoundedCornerShape(12.dp)),
@@ -124,7 +127,7 @@ fun DetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
-                        .padding(top = 70.dp)
+                        .padding(top = 70.dp)//küçük poster için alan oluştur
                 ) {
                     Text(
                         text = uiState.movieDetails?.title ?: "",
@@ -160,7 +163,7 @@ fun DetailScreen(
                     ) {
                         IconText(
                             painterResource(R.drawable.calendar),
-                            uiState.movieDetails?.release_date?.take(4) ?: "1000"
+                            uiState.movieDetails?.release_date?.take(4) ?: ""
                         )
                         IconText(
                             painterResource(R.drawable.time),
@@ -181,10 +184,10 @@ fun DetailScreen(
                 var selectedTab by remember { mutableIntStateOf(0) }
                 val tabs = listOf("About Movie", "Reviews", "Cast")
 
-                TabRow(
+                SecondaryTabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = Color.Transparent,
-                    contentColor = Color.White
+                    contentColor = Color.White,
                 ) {
                     tabs.forEachIndexed { index, text ->
                         Tab(
@@ -192,8 +195,10 @@ fun DetailScreen(
                             onClick = { selectedTab = index },
                             text = {
                                 Text(
-                                    text,
-                                    color = if (selectedTab == index) Color.White else Color.Gray
+                                    text = text,
+                                    color = if (selectedTab == index) Color.White else Color.Gray,
+                                    fontWeight = if (selectedTab == index)
+                                        FontWeight.Bold else FontWeight.Normal
                                 )
                             }
                         )

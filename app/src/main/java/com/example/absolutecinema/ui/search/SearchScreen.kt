@@ -42,11 +42,11 @@ fun SearchScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(30.dp)
+            .padding(horizontal = 30.dp)
     ) {
         TextField(
             value = uiState.searchText,
-            onValueChange = searchViewModel::onSearchTextChange,
+            onValueChange = searchViewModel::onSearchTextChange, //pass the value to the function on change
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("Search") },
             singleLine = true,
@@ -82,7 +82,6 @@ fun SearchScreen(
                 items(uiState.searchResults) { movie ->
                     MovieCard(
                         movie = movie,
-                        genre = movie.genre,
                         onNavigateToDetails = onNavigateToDetails
                     )
                 }

@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,7 +72,7 @@ fun HomeScreen(
 
         // Top movies carousel
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(40.dp)
         ) {
             items(uiState.topMovies) { movie ->
                 Box(
@@ -94,24 +95,16 @@ fun HomeScreen(
                             .fillMaxSize()
                             .clip(RoundedCornerShape(12.dp)),
                     )
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .background(Color(0x80000000))
-                            .padding(6.dp)
-                    ) {
-
-                    }
 
                     // Rank Number
                     Text(
                         text = (uiState.topMovies.indexOf(movie) + 1).toString(),
-                        fontSize = 60.sp,
+                        fontSize = 72.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2A80FF),
                         modifier = Modifier
                             .align(Alignment.BottomStart)
-                            .offset(x = (-8).dp, y = 8.dp)
+                            .offset(y = 8.dp)
                     )
                 }
             }
@@ -119,10 +112,9 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //Tab row
-        ScrollableTabRow(
+        //Tab Row
+        SecondaryTabRow(
             selectedTabIndex = selectedTab,
-            edgePadding = 0.dp,
             containerColor = Color.Transparent,
             contentColor = Color.White,
             divider = {}
@@ -137,16 +129,13 @@ fun HomeScreen(
                     text = {
                         Text(
                             text = title,
-                            color = if (selectedTab == index)
-                                Color.White else Color.Gray,
-                            fontWeight = if (selectedTab == index)
-                                FontWeight.Bold else FontWeight.Normal
+                            color = if (selectedTab == index) Color.White else Color.Gray,
+                            fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal,
                         )
                     }
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(8.dp))
 
         //Movie posters grid

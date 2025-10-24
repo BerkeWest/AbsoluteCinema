@@ -13,7 +13,7 @@ import com.example.absolutecinema.ui.home.HomeScreenViewModel
 import com.example.absolutecinema.ui.search.SearchViewModel
 import com.example.absolutecinema.ui.watchlist.WatchListViewModel
 
-
+//singleton object, app de sadece 1 tane oluşur
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {

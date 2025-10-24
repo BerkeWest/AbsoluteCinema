@@ -22,7 +22,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -84,7 +83,7 @@ fun DetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            //Banner
+            //region Banner
             item {
                 Box {
                     AsyncImage(
@@ -112,9 +111,12 @@ fun DetailScreen(
                             .offset(x = 16.dp, y = 60.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .border(width = 1.dp, Color.Gray, RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
+            //endregion
 
             //Title ve Rating
             item {

@@ -100,13 +100,7 @@ fun HomeScreen(
                             .background(Color(0x80000000))
                             .padding(6.dp)
                     ) {
-                        Text(
-                            text = movie.title,
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+
                     }
 
                     // Rank Number

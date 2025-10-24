@@ -15,12 +15,20 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
     fun login(username: String, password: String) {
         viewModelScope.launch {
             try {
-                val result = repository.login(username, password)
-                _loginState.value = result
+                if (username.isNotBlank() && password.isNotBlank()) {
+                    val result = repository.login(username, password)
+                    _loginState.value = result
+                } else {
+                    _loginState.value = false
+                }
             }
             catch (e: Exception) {
                 _loginState.value = false
             }
         }
+    }
+
+    fun onLoginStateConsumed() {
+        _loginState.value = null
     }
 }

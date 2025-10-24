@@ -19,20 +19,18 @@ class WatchListViewModel(private val repository: MovieRepository) : ViewModel() 
         loadWatchList()
     }
 
-    private fun loadWatchList(){
+    fun loadWatchList(){
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                val genreMap = repository.getGenreMap()
-                val watchList = repository.getWatchList().map { movieResult ->
-                    val genreNames = movieResult.genre_ids
-                        .mapNotNull { genreMap[it] }
-                        .joinToString(", ")
+                val watchList = repository.getWatchList()
+                val filteredResult = watchList.filter { !it.poster_path.isNullOrBlank() }.map { movieResult ->
+                    val genreNames = repository.getGenreNamesByIds(movieResult.genre_ids)
                     movieResult.copy(genre = genreNames)
                 }
-                _uiState.update { it.copy(isLoading = false, watchlist = watchList) }
+                _uiState.update { it.copy(isLoading = false, watchlist = filteredResult) }
             } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isLoading = false, watchlist = emptyList()) }
             }
         }
     }

@@ -19,7 +19,7 @@ class WatchListViewModel(private val repository: MovieRepository) : ViewModel() 
         loadWatchList()
     }
 
-    fun loadWatchList(){
+    fun loadWatchList() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {

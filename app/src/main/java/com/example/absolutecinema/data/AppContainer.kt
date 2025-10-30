@@ -1,5 +1,6 @@
 package com.example.absolutecinema.data
 
+import android.content.Context
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.data.authentication.AuthApiService
 import com.example.absolutecinema.data.authentication.AuthRepository
@@ -13,7 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
-class AppContainer {
+class AppContainer(context: Context){
 /*
 Interceptorları içeren client.
  */
@@ -47,7 +48,7 @@ Interceptorları içeren client.
     /*
     Session manager oluşturur.
      */
-    val sessionManager = SessionManager()
+    val sessionManager = SessionManager(context)
 
 
     //Authentication

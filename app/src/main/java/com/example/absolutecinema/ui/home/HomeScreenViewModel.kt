@@ -36,7 +36,7 @@ class HomeScreenViewModel(private val repository: MovieRepository) : ViewModel()
                 3 -> repository.getPopular()
                 else -> ResultPages(0,emptyList(),0,0)
             }
-            _uiState.update { it.copy(tabResult = movies.results) }
+            _uiState.value = _uiState.value.copy(tabResult = movies.results)
         }
     }
 }

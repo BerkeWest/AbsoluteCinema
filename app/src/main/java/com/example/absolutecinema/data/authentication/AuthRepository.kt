@@ -8,7 +8,7 @@ import com.example.absolutecinema.data.remote.model.request.TokenBody
 class AuthRepository(
     private val api: AuthApiService,
     private val sessionManager: SessionManager
-){
+) {
 
     /*
     Request Token için api isteği atar. Eğer başarılı ise sessionManager'daki requestToken'ı günceller.
@@ -20,6 +20,14 @@ class AuthRepository(
         }
         return sessionManager.requestToken
     }
+
+    suspend fun hasAccess(): Boolean? {
+        if (sessionManager.sessionId != null) {
+            getAccountId()
+            return true
+        } else return null
+    }
+
 
     /*
     fethRequestToken methodunu çalıştırır ve dönen tokeni tutar.
@@ -35,8 +43,7 @@ class AuthRepository(
             getAccountId()
             if (sessionManager.sessionId != null) return true
             else return false
-        }
-        else return false
+        } else return false
     }
 
     /*
@@ -51,7 +58,7 @@ class AuthRepository(
     /*
     Account id'yi çekmek için api isteği atar.
     */
-    suspend fun getAccountId(){
+    suspend fun getAccountId() {
         val response = api.getAccountId()
         sessionManager.accountId = response.id
     }

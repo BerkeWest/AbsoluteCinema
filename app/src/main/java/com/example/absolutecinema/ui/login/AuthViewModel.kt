@@ -12,6 +12,13 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
     private val _loginState = MutableStateFlow<Boolean?>(null)
     val loginState = _loginState.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            val hasAccess = repository.hasAccess()
+            _loginState.value = hasAccess
+        }
+    }
+
     fun login(username: String, password: String) {
         viewModelScope.launch {
             try {
@@ -21,8 +28,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                 } else {
                     _loginState.value = false
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 _loginState.value = false
             }
         }

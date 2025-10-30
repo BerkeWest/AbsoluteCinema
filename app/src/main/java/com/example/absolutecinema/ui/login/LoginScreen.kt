@@ -2,6 +2,7 @@ package com.example.absolutecinema.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,14 +63,20 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
 
     //Launched Effect, loginState'deki değişimde aktifleşir ve recompositionda tekrarlamaz.
-    LaunchedEffect(loginState) {
-        if (loginState == true) {
+    when (loginState) {
+        true -> {
+            // Giriş başarılı veya zaten oturum açıktı, ana sayfaya yönlendir.
             navigateToHome()
             authViewModel.onLoginStateConsumed()
-        } else if (loginState == false) {
+        }
+        false -> {
+            // Giriş başarısız oldu, hata göster.
             isError = true
             password = ""
             authViewModel.onLoginStateConsumed()
+        }
+        null -> {
+            // Bu başlangıç durumudur veya state tüketildikten sonraki halidir, hiçbir şey yapma.
         }
     }
     Box(
@@ -75,7 +84,7 @@ fun LoginScreen(
             .fillMaxSize()
             .background(Color(0xFF242A32))
             .padding(horizontal = 24.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Card(
             modifier = Modifier
@@ -85,7 +94,9 @@ fun LoginScreen(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp)
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp).verticalScroll(
+                    rememberScrollState()
+                )
             ) {
                 Text(
                     "Welcome to",

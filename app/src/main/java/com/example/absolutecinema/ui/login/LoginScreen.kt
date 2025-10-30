@@ -2,14 +2,12 @@ package com.example.absolutecinema.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +23,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,12 +66,14 @@ fun LoginScreen(
             navigateToHome()
             authViewModel.onLoginStateConsumed()
         }
+
         false -> {
             // Giriş başarısız oldu, hata göster.
             isError = true
             password = ""
             authViewModel.onLoginStateConsumed()
         }
+
         null -> {
             // Bu başlangıç durumudur veya state tüketildikten sonraki halidir, hiçbir şey yapma.
         }
@@ -94,9 +93,11 @@ fun LoginScreen(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 32.dp).verticalScroll(
-                    rememberScrollState()
-                )
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 32.dp)
+                    .verticalScroll(
+                        rememberScrollState()
+                    )
             ) {
                 Text(
                     "Welcome to",

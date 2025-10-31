@@ -2,6 +2,7 @@ package com.example.absolutecinema.ui.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,7 +56,6 @@ object DetailPage : NavigationDestination {
 
 @Composable
 fun DetailScreen(
-    id: Int?,
     navigateBack: () -> Unit,
     detailViewModel: DetailViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ) {
@@ -63,6 +63,7 @@ fun DetailScreen(
     val uiState by detailViewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
+        containerColor = Color(0xFF242A32),
         topBar = {
             TopAppBar(
                 title = "Detail",
@@ -74,11 +75,11 @@ fun DetailScreen(
             )
         }
     )
-    { innerPadding ->
+    { contentPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding) //top bar ın tuttuğu alana göre padding alır.
+                .padding(contentPadding) //top bar ın tuttuğu alana göre padding alır.
                 .background(Color(0xFF242A32)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -88,7 +89,7 @@ fun DetailScreen(
                 Box {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.poster_path)
+                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.backdrop_path)
                             .crossfade(true)
                             .build(),
                         contentDescription = "Banner",
@@ -97,48 +98,17 @@ fun DetailScreen(
                             .height(200.dp),
                         contentScale = ContentScale.Crop
                     )
-
-                    //Küçük Poster
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.poster_path)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Poster",
+                    // Rating
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(120.dp)
-                            .align(Alignment.BottomStart) //Posteri sol köşeden başlatır
-                            .offset(
-                                x = 16.dp,
-                                y = 60.dp
-                            ) //Aşağı iterek üst üste durma efektini verir.
+                            .align(Alignment.BottomEnd)
+                            .offset(x = (-16).dp, y = (-16).dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .border(width = 1.dp, Color.Gray, RoundedCornerShape(12.dp))
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-            //endregion
-
-            //Title ve Rating
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 70.dp)//küçük poster için alan oluştur
-                ) {
-                    Text(
-                        text = uiState.movieDetails?.title ?: "",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                            .background(Color.Black.copy(alpha = 0.3f))
+                            .clickable { }
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.rating),
                             contentDescription = null,
@@ -154,7 +124,45 @@ fun DetailScreen(
                         )
                     }
 
-                    Spacer(Modifier.height(12.dp))
+                    //Küçük Poster
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = LocalContext.current)
+                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.poster_path)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Poster",
+                        modifier = Modifier
+                            .width(114.dp)
+                            .height(171.dp)
+                            .align(Alignment.BottomStart) //Posteri sol köşeden başlatır
+                            .offset(
+                                x = 16.dp,
+                                y = 60.dp
+                            ) //Aşağı iterek üst üste durma efektini verir.
+                            .clip(RoundedCornerShape(12.dp))
+                            .border(width = 1.dp, Color.Gray, RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+            //endregion
+
+            //Title
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 70.dp)//küçük poster için alan oluştur
+                ) {
+                    Text(
+                        text = uiState.movieDetails?.title ?: "",
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(Modifier.height(20.dp))
 
                     //İconlu sıra
                     Row(
@@ -172,7 +180,8 @@ fun DetailScreen(
                         IconText(
                             painterResource(R.drawable.ticket),
                             getGenreString(uiState.movieDetails?.genres?.map { it.name }
-                                ?: listOf()))
+                                ?: listOf())
+                        )
                     }
 
                     Spacer(Modifier.height(24.dp))
@@ -188,6 +197,7 @@ fun DetailScreen(
                     selectedTabIndex = selectedTab,
                     containerColor = Color.Transparent,
                     contentColor = Color.White,
+                    divider = {}
                 ) {
                     tabs.forEachIndexed { index, text ->
                         Tab(

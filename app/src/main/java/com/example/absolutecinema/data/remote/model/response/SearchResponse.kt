@@ -13,6 +13,7 @@ data class ResultPages(
 
 @Serializable
 data class MovieDetails(
+    val backdrop_path: String?,
     val genres: List<Genre>,
     val id: Int=0,
     val original_title: String,

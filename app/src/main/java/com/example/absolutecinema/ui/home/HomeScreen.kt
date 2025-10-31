@@ -20,8 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -38,7 +36,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -101,7 +98,7 @@ fun HomeScreen(
                         text = (uiState.topMovies.indexOf(movie) + 1).toString(),
                         fontSize = 72.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2A80FF),
+                        color = Color(0xFF0296E5),
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .offset(y = 8.dp)
@@ -131,6 +128,7 @@ fun HomeScreen(
                             text = title,
                             color = if (selectedTab == index) Color.White else Color.Gray,
                             fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal,
+                            fontSize = (11.8).sp
                         )
                     }
                 )

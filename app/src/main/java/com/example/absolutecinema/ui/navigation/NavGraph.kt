@@ -40,7 +40,6 @@ fun CinemaNavHost(
                 type = NavType.IntType
             })) { navBackStack ->
             DetailScreen(
-                id = navBackStack.arguments?.getInt("movieId"),
                 navigateBack = { navController.navigateUp() }
             )
         }

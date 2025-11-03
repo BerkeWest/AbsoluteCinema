@@ -62,7 +62,6 @@ fun NavigationBarScreen(
                 isBookmarked = false,
                 bookmark = { },
             )
-
         },
         bottomBar = {
             Column {
@@ -103,8 +102,9 @@ fun NavigationBarScreen(
                     }
                 }
             }
-
-        }) { contentPadding ->
+        },
+        containerColor = Color(0xFF242A32)
+    ) { contentPadding ->
         AppNavHost(
             modifier = Modifier
                 .padding(contentPadding)

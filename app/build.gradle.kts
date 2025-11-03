@@ -82,11 +82,13 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.security.crypto)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.datastore.preferences)
+    implementation(libs.gson)
+    implementation(libs.security.crypto)
+
 
 
     testImplementation(libs.junit)

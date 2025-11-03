@@ -1,44 +1,61 @@
 package com.example.absolutecinema.data
 
-import android.content.Context
-import androidx.security.crypto.EncryptedFile
-import androidx.security.crypto.MasterKey
-import java.io.File
-import java.nio.charset.StandardCharsets
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.absolutecinema.data.datastore.CryptoData
+import com.example.absolutecinema.data.datastore.decodeString
+import com.example.absolutecinema.data.datastore.encodeArray
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SessionManager(context: Context) {
-    var requestToken: String? = null
-
-    var sessionId: String?
-        get() {
-            return if (file.exists()) {
-                encryptedFile.openFileInput().use { input ->
-                    input.readBytes().toString(StandardCharsets.UTF_8)
-                }
-            } else {
-                null
-            }
-        }
-        set(value) {
-            if (value != null) {
-                if (file.exists()) file.delete()
-                encryptedFile.openFileOutput().use { output ->
-                    output.write(value.toByteArray(StandardCharsets.UTF_8))
-                }
-            }
-        }
+@Singleton
+class SessionManager @Inject constructor(
+    private val crypto: CryptoData,
+    private val dataStore: DataStore<Preferences>
+) {
     var accountId: Int? = null
+    var requestToken: String? = null
+    private var _sessionId: String? = null
 
-    private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
+    private object PreferencesKeys {
+        val ENCRYPTED_SESSION_ID = stringPreferencesKey("encrypted_session_id")
+    }
 
-    private val file = File(context.filesDir, "session_id_secure.txt")
+    suspend fun getSessionId(): String? {
+        if (_sessionId != null) return _sessionId
 
-    private val encryptedFile = EncryptedFile.Builder(
-        context,
-        file,
-        masterKey,
-        EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
-    ).build()
+        val encryptedSessionId = dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.ENCRYPTED_SESSION_ID]
+        }.firstOrNull() ?: return null
+
+        return try {
+            val decryptedBytes = crypto.decrypt(decodeString(encryptedSessionId))
+            val sessionId = decryptedBytes?.toString(Charsets.UTF_8)
+            _sessionId = sessionId
+            sessionId
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun saveSessionId(sessionId: String) {
+        val encryptedBytes = crypto.encrypt(sessionId.toByteArray(Charsets.UTF_8))
+        val encryptedString = encodeArray(encryptedBytes)
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.ENCRYPTED_SESSION_ID] = encryptedString
+        }
+        _sessionId = sessionId
+    }
+
+    suspend fun clearSession() {
+        dataStore.edit { preferences ->
+            preferences.remove(PreferencesKeys.ENCRYPTED_SESSION_ID)
+        }
+        _sessionId = null
+        accountId = null
+    }
 }

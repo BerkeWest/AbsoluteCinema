@@ -3,9 +3,11 @@ package com.example.absolutecinema.data.authentication
 import com.example.absolutecinema.data.SessionManager
 import com.example.absolutecinema.data.remote.model.request.LoginBody
 import com.example.absolutecinema.data.remote.model.request.TokenBody
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
-
-class AuthRepository(
+@Singleton
+class AuthRepository @Inject constructor(
     private val api: AuthApiService,
     private val sessionManager: SessionManager
 ) {
@@ -22,7 +24,8 @@ class AuthRepository(
     }
 
     suspend fun hasAccess(): Boolean? {
-        if (sessionManager.sessionId != null) {
+        val sessionId = sessionManager.getSessionId()
+        if (sessionId != null) {
             getAccountId()
             return true
         } else return null
@@ -39,11 +42,14 @@ class AuthRepository(
         val token = sessionManager.requestToken ?: fetchRequestToken() ?: return false
         val loginResponse = api.login(loginBody = LoginBody(username, password, token))
         if (loginResponse.success) {
-            sessionManager.sessionId = createSession(token)
-            getAccountId()
-            if (sessionManager.sessionId != null) return true
-            else return false
-        } else return false
+            val newSessionId = createSession(token)
+            if (newSessionId != null) {
+                sessionManager.saveSessionId(newSessionId) // Yeni save fonksiyonu
+                getAccountId()
+                return true
+            }
+        }
+        return false
     }
 
     /*

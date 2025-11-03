@@ -1,10 +1,14 @@
 package com.example.absolutecinema.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.data.SessionManager
 import com.example.absolutecinema.data.authentication.AuthApiService
 import com.example.absolutecinema.data.authentication.AuthRepository
+import com.example.absolutecinema.data.datastore.CryptoData
 import com.example.absolutecinema.data.movie.MovieApiService
 import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.network.HeaderInterceptor
@@ -20,6 +24,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session_id_secure")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -53,12 +59,6 @@ object AppModule {
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideSessionManager(@ApplicationContext context: Context): SessionManager {
-        return SessionManager(context)
-    }
-
     // --- ApiServices ---
     @Provides
     @Singleton
@@ -83,5 +83,17 @@ object AppModule {
     @Singleton
     fun provideMovieRepository(movieApiService: MovieApiService, sessionManager: SessionManager): MovieRepository {
         return MovieRepository(movieApiService, sessionManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCryptoData(): CryptoData {
+        return CryptoData()
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.dataStore
     }
 }

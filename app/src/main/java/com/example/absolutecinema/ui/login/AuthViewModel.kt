@@ -19,8 +19,7 @@ class AuthViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val hasAccess = repository.hasAccess()
-            _loginState.value = hasAccess
+            _loginState.value = repository.hasAccess()
         }
     }
 

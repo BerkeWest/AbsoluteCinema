@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.absolutecinema.data.SessionManager
 import com.example.absolutecinema.ui.detail.DetailPage
 import com.example.absolutecinema.ui.detail.DetailScreen
 import com.example.absolutecinema.ui.login.LoginPage

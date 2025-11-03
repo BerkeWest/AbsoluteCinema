@@ -140,7 +140,7 @@ fun DetailScreen(
                                 y = 60.dp
                             ) //Aşağı iterek üst üste durma efektini verir.
                             .clip(RoundedCornerShape(12.dp))
-                            .border(width = 1.dp, Color.Gray, RoundedCornerShape(12.dp)),
+                            .border(width = (0.1).dp, Color.Gray, RoundedCornerShape(12.dp)),
                         contentScale = ContentScale.Crop
                     )
                 }
@@ -254,6 +254,6 @@ fun IconText(icon: Painter, text: String) {
             modifier = Modifier.size(16.dp)
         )
         Spacer(Modifier.width(4.dp))
-        Text(text, color = Color.Gray, fontSize = 13.sp)
+        Text(text, color = Color.Gray, fontSize = 11.sp)
     }
 }

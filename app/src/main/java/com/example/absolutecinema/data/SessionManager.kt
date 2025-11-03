@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets
 
 class SessionManager(context: Context) {
     var requestToken: String? = null
+
     var sessionId: String?
         get() {
             return if (file.exists()) {

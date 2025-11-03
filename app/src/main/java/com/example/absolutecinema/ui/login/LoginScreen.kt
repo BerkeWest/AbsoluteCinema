@@ -37,9 +37,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.absolutecinema.R
-import com.example.absolutecinema.ui.AppViewModelProvider
 import com.example.absolutecinema.ui.navigation.NavigationDestination
 
 
@@ -51,7 +50,7 @@ object LoginPage : NavigationDestination {
 @Composable
 fun LoginScreen(
     navigateToHome: () -> Unit,
-    authViewModel: AuthViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    authViewModel: AuthViewModel = hiltViewModel(),
 ) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }

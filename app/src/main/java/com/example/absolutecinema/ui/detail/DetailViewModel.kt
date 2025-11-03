@@ -6,13 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.remote.model.response.MovieDetails
 import com.example.absolutecinema.data.remote.model.response.MovieState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailViewModel(
+@HiltViewModel
+class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: MovieRepository
 ) : ViewModel() {

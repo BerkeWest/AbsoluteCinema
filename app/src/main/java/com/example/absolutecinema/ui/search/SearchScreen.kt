@@ -26,15 +26,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.absolutecinema.R
-import com.example.absolutecinema.ui.AppViewModelProvider
 import com.example.absolutecinema.ui.card.MovieCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    searchViewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    searchViewModel: SearchViewModel = hiltViewModel(),
     onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     val uiState by searchViewModel.uiState.collectAsState()
@@ -76,7 +75,7 @@ fun SearchScreen(
         } else {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize() ,
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 items(uiState.searchResults) { movie ->
@@ -92,7 +91,7 @@ fun SearchScreen(
 
 
 @Composable
-fun NoResultScreen(){
+fun NoResultScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()

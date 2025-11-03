@@ -5,13 +5,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.remote.model.request.MovieSearchResult
 import com.example.absolutecinema.data.remote.model.response.ResultPages
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeScreenViewModel(private val repository: MovieRepository) : ViewModel() {
+@HiltViewModel
+class HomeScreenViewModel @Inject constructor(
+    private val repository: MovieRepository
+) :
+    ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
@@ -34,7 +40,7 @@ class HomeScreenViewModel(private val repository: MovieRepository) : ViewModel()
                 1 -> repository.getUpcoming()
                 2 -> repository.getTopRated()
                 3 -> repository.getPopular()
-                else -> ResultPages(0,emptyList(),0,0)
+                else -> ResultPages(0, emptyList(), 0, 0)
             }
             _uiState.value = _uiState.value.copy(tabResult = movies.results)
         }

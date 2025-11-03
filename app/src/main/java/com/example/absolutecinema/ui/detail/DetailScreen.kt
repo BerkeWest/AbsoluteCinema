@@ -38,14 +38,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.data.movie.getGenreString
-import com.example.absolutecinema.ui.AppViewModelProvider
 import com.example.absolutecinema.ui.navigation.NavigationDestination
 import com.example.absolutecinema.ui.topbar.TopAppBar
 import java.util.Locale
@@ -57,7 +56,7 @@ object DetailPage : NavigationDestination {
 @Composable
 fun DetailScreen(
     navigateBack: () -> Unit,
-    detailViewModel: DetailViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
 
     val uiState by detailViewModel.uiState.collectAsStateWithLifecycle()

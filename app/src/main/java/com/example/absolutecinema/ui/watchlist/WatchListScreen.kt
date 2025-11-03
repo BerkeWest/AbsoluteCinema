@@ -25,18 +25,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.absolutecinema.R
 import com.example.absolutecinema.data.remote.model.request.MovieSearchResult
-import com.example.absolutecinema.ui.AppViewModelProvider
 import com.example.absolutecinema.ui.card.MovieCard
 
 @Composable
 fun WatchListScreen(
-    watchlistViewModel: WatchListViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    watchlistViewModel: WatchListViewModel = hiltViewModel(),
     onNavigateToDetails: (movieId: Int) -> Unit
 ) {
 

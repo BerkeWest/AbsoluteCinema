@@ -1,4 +1,4 @@
-package com.example.absolutecinema.domain.model.response
+package com.example.absolutecinema.data.model.response
 
 import kotlinx.serialization.Serializable
 

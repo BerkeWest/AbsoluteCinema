@@ -29,7 +29,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
-import com.example.absolutecinema.domain.model.response.MovieSearchResult
+import com.example.absolutecinema.data.model.response.MovieSearchResult
 import java.util.Locale
 
 

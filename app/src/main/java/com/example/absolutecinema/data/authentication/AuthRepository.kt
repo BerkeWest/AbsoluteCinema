@@ -1,8 +1,8 @@
 package com.example.absolutecinema.data.authentication
 
 import com.example.absolutecinema.data.SessionManager
-import com.example.absolutecinema.domain.model.request.LoginBody
-import com.example.absolutecinema.domain.model.request.TokenBody
+import com.example.absolutecinema.data.model.request.LoginBody
+import com.example.absolutecinema.data.model.request.TokenBody
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 

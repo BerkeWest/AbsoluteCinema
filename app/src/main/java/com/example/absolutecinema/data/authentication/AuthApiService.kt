@@ -1,10 +1,10 @@
 package com.example.absolutecinema.data.authentication
 
-import com.example.absolutecinema.domain.model.request.Account
-import com.example.absolutecinema.domain.model.request.LoginBody
-import com.example.absolutecinema.domain.model.request.TokenBody
-import com.example.absolutecinema.domain.model.response.RequestTokenResponse
-import com.example.absolutecinema.domain.model.response.SessionResponse
+import com.example.absolutecinema.data.model.request.Account
+import com.example.absolutecinema.data.model.request.LoginBody
+import com.example.absolutecinema.data.model.request.TokenBody
+import com.example.absolutecinema.data.model.response.RequestTokenResponse
+import com.example.absolutecinema.data.model.response.SessionResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

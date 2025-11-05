@@ -1,11 +1,11 @@
 package com.example.absolutecinema.data.movie
 
 import com.example.absolutecinema.data.SessionManager
-import com.example.absolutecinema.domain.model.request.WatchListBody
-import com.example.absolutecinema.domain.model.response.MovieDetails
-import com.example.absolutecinema.domain.model.response.MovieSearchResult
-import com.example.absolutecinema.domain.model.response.MovieState
-import com.example.absolutecinema.domain.model.response.ResultPages
+import com.example.absolutecinema.data.model.request.WatchListBody
+import com.example.absolutecinema.data.model.response.MovieDetails
+import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.data.model.response.MovieState
+import com.example.absolutecinema.data.model.response.ResultPages
 
 class MovieRepository(
     private val api: MovieApiService,

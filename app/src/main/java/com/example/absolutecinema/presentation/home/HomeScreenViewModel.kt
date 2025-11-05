@@ -3,8 +3,8 @@ package com.example.absolutecinema.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.data.movie.MovieRepository
-import com.example.absolutecinema.domain.model.response.MovieSearchResult
-import com.example.absolutecinema.domain.model.response.ResultPages
+import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.data.model.response.ResultPages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

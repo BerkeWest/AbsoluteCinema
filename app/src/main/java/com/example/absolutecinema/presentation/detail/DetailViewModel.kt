@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.data.movie.MovieRepository
-import com.example.absolutecinema.domain.model.response.MovieDetails
-import com.example.absolutecinema.domain.model.response.MovieState
+import com.example.absolutecinema.data.model.response.MovieDetails
+import com.example.absolutecinema.data.model.response.MovieState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

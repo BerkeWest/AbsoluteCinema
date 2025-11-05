@@ -1,10 +1,10 @@
 package com.example.absolutecinema.data.movie
 
-import com.example.absolutecinema.domain.model.request.WatchListBody
-import com.example.absolutecinema.domain.model.response.GenreList
-import com.example.absolutecinema.domain.model.response.MovieDetails
-import com.example.absolutecinema.domain.model.response.MovieState
-import com.example.absolutecinema.domain.model.response.ResultPages
+import com.example.absolutecinema.data.model.request.WatchListBody
+import com.example.absolutecinema.data.model.response.GenreList
+import com.example.absolutecinema.data.model.response.MovieDetails
+import com.example.absolutecinema.data.model.response.MovieState
+import com.example.absolutecinema.data.model.response.ResultPages
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

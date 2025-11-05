@@ -34,7 +34,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun onTabSelected(tabIndex: Int) {
-        _uiState.update { it.copy(selectedTabIndex = tabIndex) }
         viewModelScope.launch {
             val movies = when (tabIndex) {
                 0 -> repository.getNowPlaying()
@@ -43,7 +42,7 @@ class HomeScreenViewModel @Inject constructor(
                 3 -> repository.getPopular()
                 else -> ResultPages(0, emptyList(), 0, 0)
             }
-            _uiState.update { it.copy(tabResult = movies.results) }
+            _uiState.update { it.copy(selectedTabIndex = tabIndex, tabResult = movies.results) }
         }
     }
 }

@@ -58,14 +58,11 @@ class AuthRepository @Inject constructor(
     */
     suspend fun createSession(requestToken: String): String? {
         val sessionResponse = api.createSession(TokenBody(requestToken))
-        if (sessionResponse.success) return sessionResponse.session_id
-        else return null
+        return if (sessionResponse.success) sessionResponse.session_id else null
     }
 
     suspend fun logout() {
         sessionManager.clearSession()
-        sessionManager.accountId = null
-        sessionManager.requestToken = null
     }
 
 

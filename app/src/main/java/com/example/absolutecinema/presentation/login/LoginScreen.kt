@@ -17,6 +17,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.OutlinedButton
@@ -57,6 +59,8 @@ fun LoginScreen(
     var password by rememberSaveable { mutableStateOf("") }
     val loginState by authViewModel.loginState.collectAsState()
     var isError by rememberSaveable { mutableStateOf(false) }
+    val passwordState by authViewModel.passwordState.collectAsState()
+
     val focusManager = LocalFocusManager.current
 
     //Launched Effect, loginState'deki değişimde aktifleşir ve recompositionda tekrarlamaz.
@@ -67,11 +71,13 @@ fun LoginScreen(
                 navigateToHome()
                 authViewModel.onLoginStateConsumed()
             }
+
             false -> {
                 isError = true
                 password = ""
                 authViewModel.onLoginStateConsumed()
             }
+
             null -> {
             }
         }
@@ -136,7 +142,15 @@ fun LoginScreen(
                         if (isError) isError = false
                     },
                     label = { Text("Password") },
-                    //visualTransformation = PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { authViewModel.togglePasswordVisibility() }) {
+                            Icon(
+                                painterResource(passwordState.icon),
+                                contentDescription = passwordState.description
+                            )
+                        }
+                    },
+                    visualTransformation = passwordState.visualTransformation,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     ),

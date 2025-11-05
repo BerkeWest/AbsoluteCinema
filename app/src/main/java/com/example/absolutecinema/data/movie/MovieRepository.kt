@@ -1,12 +1,11 @@
 package com.example.absolutecinema.data.movie
 
 import com.example.absolutecinema.data.SessionManager
-import com.example.absolutecinema.data.remote.model.request.MovieSearchResult
-import com.example.absolutecinema.data.remote.model.request.WatchListBody
-import com.example.absolutecinema.data.remote.model.response.MovieDetails
-import com.example.absolutecinema.data.remote.model.response.MovieState
-import com.example.absolutecinema.data.remote.model.response.ResultPages
-
+import com.example.absolutecinema.domain.model.request.WatchListBody
+import com.example.absolutecinema.domain.model.response.MovieDetails
+import com.example.absolutecinema.domain.model.response.MovieSearchResult
+import com.example.absolutecinema.domain.model.response.MovieState
+import com.example.absolutecinema.domain.model.response.ResultPages
 
 class MovieRepository(
     private val api: MovieApiService,
@@ -26,7 +25,6 @@ class MovieRepository(
         genreMap = response.genres.associate { it.id to it.name }
         return genreMap ?: emptyMap()
     }
-
     /*
     Verilen genre idlerin, genreMapte eşleşen isimlerini döndürür.
     */
@@ -101,11 +99,4 @@ class MovieRepository(
         return response
     }
 
-}
-
-/*
-Genre isimlerini birleştirerek döndürür.
-*/
-fun getGenreString(genres: List<String>): String {
-    return genres.joinToString(", ")
 }

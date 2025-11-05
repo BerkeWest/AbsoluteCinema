@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.absolutecinema.ui.CinemaApp
-import com.example.absolutecinema.ui.theme.AbsoluteCinemaTheme
+import com.example.absolutecinema.presentation.CinemaApp
+import com.example.absolutecinema.presentation.theme.AbsoluteCinemaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

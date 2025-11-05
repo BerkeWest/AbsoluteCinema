@@ -1,8 +1,8 @@
 package com.example.absolutecinema.data.authentication
 
 import com.example.absolutecinema.data.SessionManager
-import com.example.absolutecinema.data.remote.model.request.LoginBody
-import com.example.absolutecinema.data.remote.model.request.TokenBody
+import com.example.absolutecinema.domain.model.request.LoginBody
+import com.example.absolutecinema.domain.model.request.TokenBody
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 
@@ -23,12 +23,13 @@ class AuthRepository @Inject constructor(
         return sessionManager.requestToken
     }
 
-    suspend fun hasAccess(): Boolean? {
+    suspend fun hasAccess(): Boolean {
         val sessionId = sessionManager.getSessionId()
         if (sessionId != null) {
             getAccountId()
             return true
-        } else return null
+        }
+        return false
     }
 
 
@@ -60,6 +61,13 @@ class AuthRepository @Inject constructor(
         if (sessionResponse.success) return sessionResponse.session_id
         else return null
     }
+
+    suspend fun logout() {
+        sessionManager.clearSession()
+        sessionManager.accountId = null
+        sessionManager.requestToken = null
+    }
+
 
     /*
     Account id'yi çekmek için api isteği atar.

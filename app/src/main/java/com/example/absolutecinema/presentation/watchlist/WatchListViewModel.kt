@@ -2,8 +2,8 @@ package com.example.absolutecinema.presentation.watchlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.domain.usecase.watchlist.LoadWatchListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WatchListViewModel @Inject constructor(
-    private val repository: MovieRepository
+    private val loadWatchListUseCase: LoadWatchListUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(WatchListUIState())
@@ -28,13 +28,9 @@ class WatchListViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                val watchList = repository.getWatchList()
-                val filteredResult =
-                    watchList.filter { !it.poster_path.isNullOrBlank() }.map { movieResult ->
-                        val genreNames = repository.getGenreNamesByIds(movieResult.genre_ids)
-                        movieResult.copy(genre = genreNames)
-                    }
-                _uiState.update { it.copy(isLoading = false, watchlist = filteredResult) }
+                loadWatchListUseCase().collect { result ->
+                    _uiState.update { it.copy(isLoading = false, watchlist = result) }
+                }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, watchlist = emptyList()) }
             }

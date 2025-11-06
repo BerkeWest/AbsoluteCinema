@@ -15,7 +15,7 @@ class AuthRepository @Inject constructor(
     /*
     Request Token için api isteği atar. Eğer başarılı ise sessionManager'daki requestToken'ı günceller.
     */
-    suspend fun fetchRequestToken(): String? {
+    suspend fun fetchRequestToken(): String{
         val response = api.getRequestToken()
         if (response.success) {
             sessionManager.requestToken = response.request_token
@@ -40,7 +40,7 @@ class AuthRepository @Inject constructor(
     Bütün bu işlemler sırasında dönen herhangi bir olumsuz durumda false döndürür.
     */
     suspend fun login(username: String, password: String): Boolean {
-        val token = sessionManager.requestToken ?: fetchRequestToken() ?: return false
+        val token = fetchRequestToken()
         val loginResponse = api.login(loginBody = LoginBody(username, password, token))
         if (loginResponse.success) {
             val newSessionId = createSession(token)

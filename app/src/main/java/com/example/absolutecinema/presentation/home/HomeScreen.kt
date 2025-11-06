@@ -51,7 +51,6 @@ fun HomeScreen(
     onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val tabs = listOf("Now Playing", "Upcoming", "Top rated", "Popular")
 
     Column(
         modifier = Modifier
@@ -64,7 +63,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(40.dp)
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
             items(uiState.topMovies) { movie ->
                 Box(
@@ -118,7 +117,7 @@ fun HomeScreen(
             contentColor = Color.White,
             divider = {}
         ) {
-            tabs.forEachIndexed { index, title ->
+            homeViewModel.tabs.forEachIndexed { index, title ->
                 Tab(
                     selected = uiState.selectedTabIndex == index,
                     onClick = {

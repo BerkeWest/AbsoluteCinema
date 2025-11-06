@@ -28,9 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.absolutecinema.R
+import com.example.absolutecinema.domain.model.authentication.LoginResult
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
 
 
@@ -53,32 +51,36 @@ object LoginPage : NavigationDestination {
 @Composable
 fun LoginScreen(
     navigateToHome: () -> Unit,
-    authViewModel: AuthViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    var username by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    val loginState by authViewModel.loginState.collectAsState()
-    var isError by rememberSaveable { mutableStateOf(false) }
-    val passwordState by authViewModel.passwordState.collectAsState()
 
+    val uiState by authViewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
     //Launched Effect, loginState'deki değişimde aktifleşir ve recompositionda tekrarlamaz.
-    LaunchedEffect(loginState) {
-        when (loginState) {
-            true -> {
-                // Giriş başarılı veya zaten oturum açıktı, ana sayfaya yönlendir.
-                navigateToHome()
-                authViewModel.onLoginStateConsumed()
+    LaunchedEffect(uiState.loginState) {
+        when (val state = uiState.loginState) {
+            is LoginResult.Idle -> {
             }
 
-            false -> {
-                isError = true
-                password = ""
-                authViewModel.onLoginStateConsumed()
+            is LoginResult.Loading -> {
             }
 
-            null -> {
+            is LoginResult.Success -> {
+                if (state.success) {
+                    navigateToHome()
+                    authViewModel.onLoginStateConsumed()
+                } else {
+                    uiState.isError = true
+                    uiState.password = ""
+                    authViewModel.onLoginStateConsumed()
+                }
+            }
+
+            is LoginResult.Error -> {
+                uiState.isError = true
+                uiState.password = ""
+                authViewModel.onLoginStateConsumed()
             }
         }
     }
@@ -117,14 +119,13 @@ fun LoginScreen(
                 )
 
                 OutlinedTextField(
-                    value = username,
-                    onValueChange = {
-                        username = it
-                        if (isError) isError = false
+                    value = uiState.username,
+                    onValueChange = { newUsername ->
+                        authViewModel.onUsernameChange(newUsername)
                     },
                     singleLine = true,
                     shape = shapes.large,
-                    isError = isError,
+                    isError = uiState.isError,
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Username") },
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -132,32 +133,31 @@ fun LoginScreen(
                     )
                 )
                 OutlinedTextField(
-                    value = password,
+                    value = uiState.password,
                     singleLine = true,
                     shape = shapes.large,
-                    isError = isError,
+                    isError = uiState.isError,
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = {
-                        password = it
-                        if (isError) isError = false
+                    onValueChange = { newPassword ->
+                        authViewModel.onPasswordChange(newPassword)
                     },
                     label = { Text("Password") },
                     trailingIcon = {
                         IconButton(onClick = { authViewModel.togglePasswordVisibility() }) {
                             Icon(
-                                painterResource(passwordState.icon),
-                                contentDescription = passwordState.description
+                                painterResource(uiState.passwordState.icon),
+                                contentDescription = uiState.passwordState.description
                             )
                         }
                     },
-                    visualTransformation = passwordState.visualTransformation,
+                    visualTransformation = uiState.passwordState.visualTransformation,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
-                            authViewModel.login(username, password)
+                            authViewModel.login(uiState.username, uiState.password)
                         }
                     )
 
@@ -166,7 +166,7 @@ fun LoginScreen(
                     modifier = Modifier.width(150.dp),
                     onClick = {
                         focusManager.clearFocus()
-                        authViewModel.login(username, password)
+                        authViewModel.login(uiState.username, uiState.password)
                     }
                 ) {
                     Text("Login")

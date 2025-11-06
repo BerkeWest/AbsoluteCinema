@@ -2,9 +2,9 @@ package com.example.absolutecinema.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.model.response.MovieSearchResult
-import com.example.absolutecinema.data.model.response.ResultPages
+import com.example.absolutecinema.domain.usecase.home.LoadTopMoviesUseCase
+import com.example.absolutecinema.domain.usecase.home.OnTabSelectedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,11 +15,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val repository: MovieRepository
-) :
-    ViewModel() {
+    private val loadTopMoviesUseCase: LoadTopMoviesUseCase,
+    private val onTabSelectedUseCase: OnTabSelectedUseCase,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    val tabs = listOf("Now Playing", "Upcoming", "Top rated", "Popular")
+
 
     init {
         loadTopMovies()
@@ -28,21 +31,17 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun loadTopMovies() {
         viewModelScope.launch {
-            val result = repository.getPopular()
-            _uiState.update { it.copy(topMovies = result.results.take(10)) }
+            loadTopMoviesUseCase().collect { result ->
+                _uiState.update { it.copy(topMovies = result) }
+            }
         }
     }
 
     fun onTabSelected(tabIndex: Int) {
         viewModelScope.launch {
-            val movies = when (tabIndex) {
-                0 -> repository.getNowPlaying()
-                1 -> repository.getUpcoming()
-                2 -> repository.getTopRated()
-                3 -> repository.getPopular()
-                else -> ResultPages(0, emptyList(), 0, 0)
+            onTabSelectedUseCase(tabIndex).collect { movies ->
+                _uiState.update { it.copy(selectedTabIndex = tabIndex, tabResult = movies) }
             }
-            _uiState.update { it.copy(selectedTabIndex = tabIndex, tabResult = movies.results) }
         }
     }
 }

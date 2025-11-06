@@ -18,7 +18,7 @@ class SessionManager @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
     var accountId: Int? = null
-    var requestToken: String? = null
+    var requestToken: String = ""
     private var _sessionId: String? = null
 
     private object PreferencesKeys {

@@ -2,8 +2,8 @@ package com.example.absolutecinema.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.domain.usecase.search.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 @OptIn(FlowPreview::class)
 class SearchViewModel @Inject constructor(
-    private val repository: MovieRepository
+    private val searchUseCase: SearchUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUIState())
@@ -50,15 +50,10 @@ class SearchViewModel @Inject constructor(
     private suspend fun searchMovies(word: String) {
         _uiState.update { it.copy(isSearching = true) }
         try {
-            val result = repository.search(word)
-            val filteredResult =
-                result.filter { !it.poster_path.isNullOrBlank() }.map { movieResult ->
-                    val genreNames = repository.getGenreNamesByIds(movieResult.genre_ids)
-                    movieResult.copy(genre = genreNames)
+            searchUseCase(word).collect { result ->
+                _uiState.update {
+                    it.copy(searchResults = result, isSearching = false, searchAttempted = true)
                 }
-
-            _uiState.update {
-                it.copy(searchResults = filteredResult, isSearching = false, searchAttempted = true)
             }
         } catch (e: Exception) {
             _uiState.update {

@@ -25,7 +25,6 @@ fun TopAppBar(
 ) {
     CenterAlignedTopAppBar(
         title = { Text(title) },
-        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
@@ -45,8 +44,7 @@ fun TopAppBar(
                         contentDescription = "WatchListIndicator"
                     )
                 }
-            }
-            else if (accountAccess()) {
+            } else if (accountAccess()) {
                 IconButton(onClick = logout) {
                     Icon(
                         painter = painterResource(R.drawable.logout),
@@ -60,8 +58,7 @@ fun TopAppBar(
             titleContentColor = Color.White,
             navigationIconContentColor = Color.White,
             actionIconContentColor = Color.White
-        )
-
+        ),
     )
 }
 

@@ -5,10 +5,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
-import com.example.absolutecinema.data.authentication.AuthRepository
+import com.example.absolutecinema.domain.model.authentication.LoginResult
+import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCase
+import com.example.absolutecinema.domain.usecase.authentication.LoginUseCase
+import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,83 +18,106 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository
+    private val loginUseCase: LoginUseCase,
+    private val checkAccessUseCase: CheckAccessUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
-    private val _loginState = MutableStateFlow<Boolean?>(null)
-    val loginState = _loginState.asStateFlow()
-
-    private val _passwordState = MutableStateFlow(
-        PasswordState(
-            visible = false,
-            icon = R.drawable.visibility_on,
-            description = "Show password",
-            visualTransformation = PasswordVisualTransformation()
-        )
-    )
-    val passwordState: StateFlow<PasswordState> = _passwordState.asStateFlow()
-
-    fun togglePasswordVisibility() {
-        if (_passwordState.value.visible) {
-            _passwordState.update {
-                it.copy(
-                    visible = false,
-                    icon = R.drawable.visibility_on,
-                    description = "Show password",
-                    visualTransformation = PasswordVisualTransformation()
-                )
-            }
-        } else {
-            _passwordState.update {
-                it.copy(
-                    visible = true,
-                    icon = R.drawable.visibility_off,
-                    description = "Hide password",
-                    visualTransformation = VisualTransformation.None
-                )
-            }
-        }
-    }
-
+    private val _uiState = MutableStateFlow(LoginScreenUIState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            if (repository.hasAccess()) {
-                _loginState.value = true
+            checkAccessUseCase().collect { hasAccess ->
+                if (hasAccess) {
+                    _uiState.update { it.copy(loginState = LoginResult.Success(true)) }
+                }
             }
         }
     }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
-            try {
-                if (username.isNotBlank() && password.isNotBlank()) {
-                    val result = repository.login(username, password)
-                    _loginState.value = result
-                } else {
-                    _loginState.value = false
-                }
-            } catch (e: Exception) {
-                _loginState.value = false
+            loginUseCase(username, password).collect { result ->
+                _uiState.update { it.copy(loginState = result) }
+            }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            logoutUseCase().collect {
+                _uiState.update { it.copy(loginState = LoginResult.Idle) }
             }
         }
     }
 
     fun onLoginStateConsumed() {
-        _loginState.value = null
+        _uiState.update { it.copy(loginState = LoginResult.Idle) }
     }
 
-    fun logout() {
-        viewModelScope.launch {
-            repository.logout()
-            _loginState.value = null
+    fun onUsernameChange(text: String) {
+        _uiState.update { currentState ->
+            currentState.copy(username = text, isError = false)
+        }
+    }
+
+    fun onPasswordChange(text: String) {
+        _uiState.update { currentState ->
+            currentState.copy(password = text, isError = false)
+        }
+    }
+
+    fun togglePasswordVisibility() {
+        if (_uiState.value.passwordState.visible) {
+            _uiState.update {
+                it.copy(
+                    passwordState =
+                        PassWordVisibility.INVISIBLE.state
+                )
+            }
+        } else {
+            _uiState.update {
+                it.copy(
+                    passwordState =
+                        PassWordVisibility.VISIBLE.state
+                )
+            }
         }
     }
 }
 
+data class LoginScreenUIState(
+    var loginState: LoginResult = LoginResult.Idle,
+    var username: String = "",
+    var password: String = "",
+    var isError: Boolean = false,
+    var passwordState: PasswordState = PasswordState()
+)
+
 data class PasswordState(
     var visible: Boolean = false,
-    var icon: Int = 0,
-    var description: String = "",
-    var visualTransformation: VisualTransformation = VisualTransformation.None
+    var icon: Int = R.drawable.visibility_on,
+    var description: String = "Show password",
+    var visualTransformation: VisualTransformation = PasswordVisualTransformation()
 )
+
+enum class PassWordVisibility(
+    val state: PasswordState
+) {
+    VISIBLE(
+        PasswordState(
+            visible = true,
+            icon = R.drawable.visibility_off,
+            description = "Hide password",
+            visualTransformation = VisualTransformation.None
+        )
+    ),
+    INVISIBLE(PasswordState(
+        visible = false,
+        icon = R.drawable.visibility_on,
+        description = "Show password",
+        visualTransformation = PasswordVisualTransformation()
+    )
+)
+}

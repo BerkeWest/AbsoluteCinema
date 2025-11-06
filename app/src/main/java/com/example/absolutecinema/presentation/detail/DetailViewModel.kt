@@ -3,9 +3,10 @@ package com.example.absolutecinema.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.data.movie.MovieRepository
 import com.example.absolutecinema.data.model.response.MovieDetails
 import com.example.absolutecinema.data.model.response.MovieState
+import com.example.absolutecinema.domain.usecase.detail.BookmarkUseCase
+import com.example.absolutecinema.domain.usecase.detail.LoadDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +18,16 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: MovieRepository
+    private val loadDetailsUseCase: LoadDetailsUseCase,
+    private val bookmarkUseCase: BookmarkUseCase,
 ) : ViewModel() {
 
     //Değiştirilebilir UI state
     private val _uiState = MutableStateFlow(DetailUIState())
+
     //UI için read. only UI state verisi
     val uiState: StateFlow<DetailUIState> = _uiState.asStateFlow()
+
     //navigation graphden gelen idyi çekerek kaydeder.
     private val movieId: Int = checkNotNull(savedStateHandle["movieId"])
 
@@ -35,14 +39,14 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                val movieDetails = repository.getDetails(movieId)
-                val movieState = repository.getMovieState(movieId)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        movieDetails = movieDetails,
-                        movieState = movieState
-                    )
+                loadDetailsUseCase(movieId).collect { (movieDetails, movieState) ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            movieDetails = movieDetails,
+                            movieState = movieState
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false) }
@@ -56,13 +60,15 @@ class DetailViewModel @Inject constructor(
             if (_uiState.value.isLoading) return@launch
 
             _uiState.update { it.copy(isLoading = true) }
-            try {
-                val currentState = _uiState.value.movieState
-                val currentlyBookmarked = currentState?.watchlist == true
-                repository.addToWatchlist(_uiState.value.movieDetails?.id ?: 0, !currentlyBookmarked)
 
-                _uiState.update {
-                    it.copy(movieState = it.movieState?.copy(watchlist = !currentlyBookmarked), isLoading = false)
+            try {
+                bookmarkUseCase(_uiState.value).collect { newWatchlistStatus ->
+                    _uiState.update {
+                        it.copy(
+                            movieState = it.movieState?.copy(watchlist = newWatchlistStatus),
+                            isLoading = false
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 _uiState.update {

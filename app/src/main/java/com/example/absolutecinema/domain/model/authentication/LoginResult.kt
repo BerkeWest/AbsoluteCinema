@@ -4,5 +4,5 @@ sealed class LoginResult {
     object Idle : LoginResult()
     object Loading : LoginResult()
     data class Success(val success: Boolean) : LoginResult()
-    data class Error(val message: String) : LoginResult()
+    data class Error(val message: String?) : LoginResult()
 }

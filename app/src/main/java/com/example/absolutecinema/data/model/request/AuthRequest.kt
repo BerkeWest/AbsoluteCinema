@@ -1,20 +1,21 @@
 package com.example.absolutecinema.data.model.request
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginBody(
-    val username: String,
-    val password: String,
-    val request_token: String,
+    @SerialName("username") val username: String,
+    @SerialName("password") val password: String,
+    @SerialName("request_token") val requestToken: String,
 )
 
 @Serializable
 data class TokenBody(
-    val request_token: String
+    @SerialName("request_token") val requestToken: String
 )
 
 @Serializable
 data class Account(
-    val id: Int,
+    @SerialName("id") val id: Int,
 )

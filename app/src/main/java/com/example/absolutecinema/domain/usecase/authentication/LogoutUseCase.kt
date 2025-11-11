@@ -7,7 +7,9 @@ import javax.inject.Inject
 class LogoutUseCase @Inject constructor(
     private val authRepository: AuthRepository,
 ) {
+
     operator fun invoke() = flow {
         emit(authRepository.logout())
     }
+
 }

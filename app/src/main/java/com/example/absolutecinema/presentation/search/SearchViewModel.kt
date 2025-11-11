@@ -2,7 +2,10 @@ package com.example.absolutecinema.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.base.onError
+import com.example.absolutecinema.base.onLoading
+import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.domain.usecase.search.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -11,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,25 +51,32 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private suspend fun searchMovies(word: String) {
-        _uiState.update { it.copy(isSearching = true) }
-        try {
-            searchUseCase(word).collect { result ->
+    private fun searchMovies(word: String) {
+
+        searchUseCase(SearchUseCase.Params(word))
+            .onLoading {
+                _uiState.update { it.copy(isSearching = true) }
+            }.onSuccess { data ->
                 _uiState.update {
-                    it.copy(searchResults = result, isSearching = false, searchAttempted = true)
+                    it.copy(searchResults = data, isSearching = false, searchAttempted = true)
                 }
-            }
-        } catch (e: Exception) {
-            _uiState.update {
-                it.copy(searchResults = emptyList(), isSearching = false, searchAttempted = true)
-            }
-        }
+            }.onError { error ->
+                _uiState.update {
+                    it.copy(
+                        snackBarMessage = error.localizedMessage,
+                        searchResults = emptyList(),
+                        isSearching = false,
+                        searchAttempted = true
+                    )
+                }
+            }.launchIn(viewModelScope)
     }
 }
 
 data class SearchUIState(
+    val snackBarMessage: String? = null,
     val searchText: String = "",
     val isSearching: Boolean = false,
-    val searchResults: List<MovieSearchResult> = emptyList(),
+    val searchResults: List<MovieSearchResultDomainModel> = emptyList(),
     val searchAttempted: Boolean = false
 )

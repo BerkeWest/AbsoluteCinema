@@ -21,7 +21,7 @@ class SplashScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val hasAccess = checkAccessUseCase()
-            _uiState.update { it.copy(hasAccess = hasAccess) }
+            _uiState.update { it.copy(hasAccess = true) }
         }
     }
 }

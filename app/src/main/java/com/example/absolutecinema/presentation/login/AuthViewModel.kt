@@ -5,6 +5,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
+import com.example.absolutecinema.base.onError
+import com.example.absolutecinema.base.onLoading
+import com.example.absolutecinema.base.onSuccess
 import com.example.absolutecinema.domain.model.authentication.LoginResult
 import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LoginUseCase
@@ -12,6 +15,7 @@ import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,11 +41,12 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login(username: String, password: String) {
-        viewModelScope.launch {
-            loginUseCase(username, password).collect { result ->
-                _uiState.update { it.copy(loginState = result) }
-            }
-        }
+        loginUseCase.invoke(LoginUseCase.Params(username, password))
+            .onLoading { }.onSuccess { data ->
+                _uiState.update { it.copy(loginState = data) }
+            }.onError { error ->
+                _uiState.update { it.copy(loginState = LoginResult.Error(error.localizedMessage)) }
+            }.launchIn(viewModelScope)
     }
 
     fun logout() {
@@ -113,11 +118,12 @@ enum class PassWordVisibility(
             visualTransformation = VisualTransformation.None
         )
     ),
-    INVISIBLE(PasswordState(
-        visible = false,
-        icon = R.drawable.visibility_on,
-        description = "Show password",
-        visualTransformation = PasswordVisualTransformation()
+    INVISIBLE(
+        PasswordState(
+            visible = false,
+            icon = R.drawable.visibility_on,
+            description = "Show password",
+            visualTransformation = PasswordVisualTransformation()
+        )
     )
-)
 }

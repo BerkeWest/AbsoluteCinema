@@ -3,16 +3,19 @@ package com.example.absolutecinema.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.data.model.response.MovieDetails
-import com.example.absolutecinema.data.model.response.MovieState
+import com.example.absolutecinema.base.onError
+import com.example.absolutecinema.base.onLoading
+import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.data.model.response.MovieDetailsDomainModel
+import com.example.absolutecinema.data.model.response.MovieStateDomainModel
 import com.example.absolutecinema.domain.usecase.detail.BookmarkUseCase
 import com.example.absolutecinema.domain.usecase.detail.LoadDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,46 +39,50 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun loadDetails() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            try {
-                loadDetailsUseCase(movieId).collect { (movieDetails, movieState) ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            movieDetails = movieDetails,
-                            movieState = movieState
-                        )
-                    }
+        _uiState.update { it.copy(isLoading = true) }
+        loadDetailsUseCase.invoke(LoadDetailsUseCase.Params(movieId))
+            .onSuccess { (movieDetails, movieState) ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        movieDetails = movieDetails,
+                        movieState = movieState
+                    )
                 }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false) }
-            }
-        }
+            }.onError { error ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        snackBarMessage = error.localizedMessage
+                    )
+                }
+            }.launchIn(viewModelScope)
     }
 
+
     fun bookmark() {
-        viewModelScope.launch {
-            //avoids double click while loading
-            if (_uiState.value.isLoading) return@launch
-
+        bookmarkUseCase.invoke(
+            BookmarkUseCase.Params(
+                _uiState.value.movieState?.watchlist ?: false,
+                _uiState.value.movieDetails?.id ?: 0
+            )
+        ).onLoading {
             _uiState.update { it.copy(isLoading = true) }
-
-            try {
-                bookmarkUseCase(_uiState.value).collect { newWatchlistStatus ->
-                    _uiState.update {
-                        it.copy(
-                            movieState = it.movieState?.copy(watchlist = newWatchlistStatus),
-                            isLoading = false
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(isLoading = false)
-                }
+        }.onSuccess {data ->
+            _uiState.update {
+                it.copy(
+                    movieState = it.movieState?.copy(
+                        watchlist = data
+                    ),
+                    isLoading = false
+                )
             }
-        }
+        }.onError {
+            _uiState.update {
+                it.copy(isLoading = false)
+            }
+        }.launchIn(viewModelScope)
+
     }
 
     fun getGenreString(genres: List<String>): String {
@@ -86,6 +93,7 @@ class DetailViewModel @Inject constructor(
 
 data class DetailUIState(
     val isLoading: Boolean = false,
-    val movieDetails: MovieDetails? = null,
-    val movieState: MovieState? = null
+    val snackBarMessage: String? = null,
+    val movieDetails: MovieDetailsDomainModel? = null,
+    val movieState: MovieStateDomainModel? = null
 )

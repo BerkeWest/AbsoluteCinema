@@ -18,7 +18,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.utils.MovieCard
 import com.example.absolutecinema.presentation.utils.NoResultScreen
 import com.example.absolutecinema.presentation.utils.NoResultScreenEnum
@@ -59,7 +59,10 @@ fun WatchListScreen(
 }
 
 @Composable
-fun WatchListContent(watchlist: List<MovieSearchResult>, onNavigateToDetails: (Int) -> Unit) {
+fun WatchListContent(
+    watchlist: List<MovieSearchResultDomainModel>,
+    onNavigateToDetails: (Int) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

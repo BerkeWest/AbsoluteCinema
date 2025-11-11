@@ -1,32 +1,30 @@
 package com.example.absolutecinema.data.movie
 
-import com.example.absolutecinema.data.model.response.MovieDetails
-import com.example.absolutecinema.data.model.response.MovieSearchResult
-import com.example.absolutecinema.data.model.response.MovieState
-import com.example.absolutecinema.data.model.response.ResultPages
+import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataModel
+import com.example.absolutecinema.data.model.response.MovieSearchResultRemoteDataModel
+import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
+import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepositoryInterface {
     fun getGenreMap(): Flow<Map<Int, String>>
 
-    fun getGenreNamesByIds(genreIds: List<Int>): Flow<String>
+    fun search(word: String): Flow<List<MovieSearchResultRemoteDataModel>>
 
-    fun search(word: String): Flow<List<MovieSearchResult>>
+    fun getDetails(id: Int): Flow<MovieDetailsRemoteDataModel>
 
-    fun getDetails(id: Int): Flow<MovieDetails>
+    fun getMovieState(id: Int): Flow<MovieStateRemoteDataModel>
 
-    fun getMovieState(id: Int): Flow<MovieState>
-
-    fun getWatchList(): Flow<List<MovieSearchResult>>
+    fun getWatchList(): Flow<ResultPagesRemoteDataModel>
 
     fun addToWatchlist(movieId: Int, add: Boolean): Flow<Unit>
 
-    fun getNowPlaying(): Flow<ResultPages>
+    fun getNowPlaying(): Flow<ResultPagesRemoteDataModel>
 
-    fun getUpcoming(): Flow<ResultPages>
+    fun getUpcoming(): Flow<ResultPagesRemoteDataModel>
 
-    fun getTopRated(): Flow<ResultPages>
+    fun getTopRated(): Flow<ResultPagesRemoteDataModel>
 
-    fun getPopular(): Flow<ResultPages>
+    fun getPopular(): Flow<ResultPagesRemoteDataModel>
 
 }

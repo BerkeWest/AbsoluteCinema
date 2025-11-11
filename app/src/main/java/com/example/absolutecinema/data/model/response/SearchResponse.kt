@@ -1,36 +1,37 @@
 package com.example.absolutecinema.data.model.response
 
+import com.example.absolutecinema.base.BaseDataModel
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResultPages(
+data class ResultPagesRemoteDataModel(
     val page: Int,
-    val results: List<MovieSearchResult>,
-    val total_pages: Int,
-    val total_results: Int
-)
+    val results: List<MovieSearchResultRemoteDataModel>,
+    @SerialName("total_pages") val totalPages: Int,
+    @SerialName("total_results") val totalResults: Int
+) : BaseDataModel
 
 @Serializable
-data class MovieSearchResult(
-    val genre_ids: List<Int>,
-    val id: Int = 0,
-    val original_title: String,
-    val overview: String,
-    val popularity: Double=0.0,
-    val poster_path: String?,
-    val release_date: String,
-    val title: String,
-    val vote_average: Double = 0.0,
-    val genre: String = ""
-)
+data class MovieSearchResultRemoteDataModel(
+    @SerialName("genre_ids") val genreIds: List<Int>?,
+    val id: Int?,
+    @SerialName("original_title") val originalTitle: String?,
+    val overview: String?,
+    val popularity: Double?,
+    @SerialName("poster_path") val posterPath: String?,
+    @SerialName("release_date") val releaseDate: String?,
+    val title: String?,
+    @SerialName("vote_average") val voteAverage: Double?,
+) : BaseDataModel
 
 @Serializable
-data class GenreList(
-    val genres: List<Genre>
-)
+data class GenreListRemoteDataModel(
+    val genres: List<GenreRemoteDataModel>
+) : BaseDataModel
 
 @Serializable
-data class Genre(
+data class GenreRemoteDataModel(
     val id: Int = 0,
     val name: String
-)
+) : BaseDataModel

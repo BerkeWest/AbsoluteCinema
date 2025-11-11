@@ -70,11 +70,11 @@ fun HomeScreen(
                     modifier = Modifier
                         .width(180.dp)
                         .height(260.dp)
-                        .clickable { onNavigateToDetails(movie.id) }
+                        .clickable { movie.id?.let { onNavigateToDetails(it) } }
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + movie.poster_path)
+                            .data(BuildConfig.IMAGE_URL + movie.posterPath)
                             .crossfade(true)
                             .build(),
                         error = painterResource(R.drawable.ic_broken_image),
@@ -146,7 +146,7 @@ fun HomeScreen(
             items(uiState.tabResult) { movie ->
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(BuildConfig.IMAGE_URL + movie.poster_path)
+                        .data(BuildConfig.IMAGE_URL + movie.posterPath)
                         .crossfade(true)
                         .build(),
                     error = painterResource(R.drawable.ic_broken_image),
@@ -157,7 +157,7 @@ fun HomeScreen(
                         .fillMaxSize()
                         .clip(RoundedCornerShape(12.dp))
                         .height(180.dp)
-                        .clickable { onNavigateToDetails(movie.id) }
+                        .clickable { movie.id?.let { onNavigateToDetails(it) } }
                 )
             }
         }

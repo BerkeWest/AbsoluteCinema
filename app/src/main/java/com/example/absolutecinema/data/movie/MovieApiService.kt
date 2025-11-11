@@ -1,10 +1,10 @@
 package com.example.absolutecinema.data.movie
 
 import com.example.absolutecinema.data.model.request.WatchListBody
-import com.example.absolutecinema.data.model.response.GenreList
-import com.example.absolutecinema.data.model.response.MovieDetails
-import com.example.absolutecinema.data.model.response.MovieState
-import com.example.absolutecinema.data.model.response.ResultPages
+import com.example.absolutecinema.data.model.response.GenreListRemoteDataModel
+import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataModel
+import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
+import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -15,7 +15,7 @@ interface MovieApiService {
 
     //GENRE LIST
     @GET("genre/movie/list")
-    suspend fun getGenreList(): GenreList
+    suspend fun getGenreList(): GenreListRemoteDataModel
 
 
     // SEARCH
@@ -23,40 +23,40 @@ interface MovieApiService {
     suspend fun searchMovies(
         @Query("query") searchWord: String,
         @Query("include_adult") includeAdult: Boolean = false,
-    ): ResultPages
+    ): ResultPagesRemoteDataModel
 
 
     // HOME
     @GET("movie/now_playing")
-    suspend fun getNowPlayingMovies(): ResultPages
+    suspend fun getNowPlayingMovies(): ResultPagesRemoteDataModel
 
     @GET("movie/popular")
-    suspend fun getPopularMovies(): ResultPages
+    suspend fun getPopularMovies(): ResultPagesRemoteDataModel
 
     @GET("movie/top_rated")
-    suspend fun getTopRatedMovies(): ResultPages
+    suspend fun getTopRatedMovies(): ResultPagesRemoteDataModel
 
     @GET("movie/upcoming")
-    suspend fun getUpcomingMovies(): ResultPages
+    suspend fun getUpcomingMovies(): ResultPagesRemoteDataModel
 
 
     // DETAILS
     @GET("movie/{movie_id}")
     suspend fun getMovieDetails(
         @Path("movie_id") movieId: Int
-    ): MovieDetails
+    ): MovieDetailsRemoteDataModel
 
     @GET("movie/{movie_id}/account_states")
     suspend fun getMovieAccountStates(
         @Path("movie_id") movieId: Int,
-    ): MovieState
+    ): MovieStateRemoteDataModel
 
 
     // WATCHLIST
     @GET("account/{account_id}/watchlist/movies")
     suspend fun getWatchlist(
         @Path("account_id") accountId: Int?,
-    ): ResultPages
+    ): ResultPagesRemoteDataModel
 
     @POST("account/{account_id}/watchlist")
     suspend fun addToWatchlist(

@@ -89,7 +89,7 @@ fun DetailScreen(
                 Box {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.backdrop_path)
+                            .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.backdropPath)
                             .crossfade(true)
                             .build(),
                         contentDescription = "Banner",
@@ -114,10 +114,11 @@ fun DetailScreen(
                             contentDescription = null,
                             tint = Color(0xFFFFA500)
                         )
+                        Spacer(Modifier.width(5.dp))
                         Text(
                             text = String.format(
                                 Locale.US, "%.1f",
-                                uiState.movieDetails?.vote_average
+                                uiState.movieDetails?.voteAverage
                             ),
                             color = Color(0xFFFFA500),
                             fontWeight = FontWeight.SemiBold
@@ -132,7 +133,7 @@ fun DetailScreen(
                         //Küçük Poster
                         AsyncImage(
                             model = ImageRequest.Builder(context = LocalContext.current)
-                                .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.poster_path)
+                                .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.posterPath)
                                 .crossfade(true)
                                 .build(),
                             contentDescription = "Poster",
@@ -172,7 +173,7 @@ fun DetailScreen(
                     ) {
                         IconText(
                             painterResource(R.drawable.calendar),
-                            uiState.movieDetails?.release_date?.take(4) ?: ""
+                            uiState.movieDetails?.releaseDate?.take(4) ?: ""
                         )
                         Spacer(
                             modifier = Modifier

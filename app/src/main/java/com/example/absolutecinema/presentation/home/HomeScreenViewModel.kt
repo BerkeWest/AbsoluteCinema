@@ -2,15 +2,18 @@ package com.example.absolutecinema.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.base.onError
+import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
+import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import com.example.absolutecinema.domain.usecase.home.LoadTopMoviesUseCase
 import com.example.absolutecinema.domain.usecase.home.OnTabSelectedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,25 +33,52 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun loadTopMovies() {
-        viewModelScope.launch {
-            loadTopMoviesUseCase().collect { result ->
-                _uiState.update { it.copy(topMovies = result) }
-            }
-        }
+        showLoading()
+        loadTopMoviesUseCase.invoke(FlowUseCase.Params())
+            .onSuccess { data ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        topMovies = data
+                    )
+                }
+            }.onError { error ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        snackBarMessage = error.localizedMessage
+                    )
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    fun showLoading() {
+        _uiState.update { it.copy(isLoading = true) }
     }
 
     fun onTabSelected(tabIndex: Int) {
-        viewModelScope.launch {
-            onTabSelectedUseCase(tabIndex).collect { movies ->
-                _uiState.update { it.copy(selectedTabIndex = tabIndex, tabResult = movies) }
-            }
-        }
+        onTabSelectedUseCase.invoke(OnTabSelectedUseCase.Params(tabIndex))
+            .onSuccess { result ->
+                _uiState.update {
+                    it.copy(
+                        selectedTabIndex = tabIndex,
+                        tabResult = result
+                    )
+                }
+            }.onError { error ->
+                _uiState.update {
+                    it.copy(
+                        snackBarMessage = error.localizedMessage
+                    )
+                }
+            }.launchIn(viewModelScope)
     }
 }
 
 data class HomeUiState(
     val isLoading: Boolean = false,
-    val topMovies: List<MovieSearchResult> = emptyList(),
+    val snackBarMessage: String? = null,
+    val topMovies: List<MovieSearchResultDomainModel> = emptyList(),
     val selectedTabIndex: Int = 0,
-    val tabResult: List<MovieSearchResult> = emptyList()
+    val tabResult: List<MovieSearchResultDomainModel> = emptyList()
 )

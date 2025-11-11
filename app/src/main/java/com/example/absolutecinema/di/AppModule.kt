@@ -17,12 +17,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session_id_secure")
@@ -75,13 +78,19 @@ object AppModule {
     // --- Repositories ---
     @Provides
     @Singleton
-    fun provideAuthRepository(authApiService: AuthApiService, sessionManager: SessionManager): AuthRepository {
+    fun provideAuthRepository(
+        authApiService: AuthApiService,
+        sessionManager: SessionManager
+    ): AuthRepository {
         return AuthRepository(authApiService, sessionManager)
     }
 
     @Provides
     @Singleton
-    fun provideMovieRepository(movieApiService: MovieApiService, sessionManager: SessionManager): MovieRepository {
+    fun provideMovieRepository(
+        movieApiService: MovieApiService,
+        sessionManager: SessionManager
+    ): MovieRepository {
         return MovieRepository(movieApiService, sessionManager)
     }
 
@@ -97,3 +106,17 @@ object AppModule {
         return context.dataStore
     }
 }
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DispatcherModule {
+
+    @IoDispatcher
+    @Provides
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+}
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class IoDispatcher

@@ -2,11 +2,6 @@ package com.example.absolutecinema.data.movie
 
 import com.example.absolutecinema.data.SessionManager
 import com.example.absolutecinema.data.model.request.WatchListBody
-import com.example.absolutecinema.data.model.response.MovieDetails
-import com.example.absolutecinema.data.model.response.MovieSearchResult
-import com.example.absolutecinema.data.model.response.MovieState
-import com.example.absolutecinema.data.model.response.ResultPages
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class MovieRepository(
@@ -20,7 +15,7 @@ class MovieRepository(
     /*
     GenreMap null değilse, istek atmadan kendisini döndürür, yoksa api'den alır ve güncelleyip döndürür.
     */
-    override fun getGenreMap(): Flow<Map<Int, String>> = flow {
+    override fun getGenreMap() = flow {
         genreMap?.let { emit(it) }
 
         val response = api.getGenreList()
@@ -31,18 +26,18 @@ class MovieRepository(
     /*
     Verilen genre idlerin, genreMapte eşleşen isimlerini döndürür.
     */
-    override fun getGenreNamesByIds(genreIds: List<Int>): Flow<String> = flow {
-        var map = ""
+    suspend fun getGenreNamesByIds(genreIds: List<Int>?): String? {
+        var map: String? = ""
         getGenreMap().collect { result ->
-            map = genreIds.mapNotNull { result[it] }.joinToString(", ")
+            map = genreIds?.mapNotNull { result[it] }?.joinToString(", ")
         }
-        emit(map)
+        return map
     }
 
     /*
     Aratıla kelimeyi vererek api'den arama yapar. Sonuç olarak bulunan filmleri döndürür.
     */
-    override fun search(word: String): Flow<List<MovieSearchResult>> = flow {
+    override fun search(word: String) = flow {
         val response = api.searchMovies(word)
         emit(response.results)
     }
@@ -50,7 +45,7 @@ class MovieRepository(
     /*
     Verilen id'ye göre api'den filmin detaylarını alır.
     */
-    override fun getDetails(id: Int): Flow<MovieDetails>  = flow{
+    override fun getDetails(id: Int) = flow {
         val response = api.getMovieDetails(id)
         emit(response)
     }
@@ -58,7 +53,7 @@ class MovieRepository(
     /*
     Verilen id'ye göre api'den filmin durumunu alır.
     */
-    override fun getMovieState(id: Int): Flow<MovieState> = flow{
+    override fun getMovieState(id: Int) = flow {
         val response = api.getMovieAccountStates(id)
         emit(response)
     }
@@ -66,19 +61,18 @@ class MovieRepository(
     /*
     Session managerdan dönen account id ile watchlist'i çeker.
     */
-    override fun getWatchList(): Flow<List<MovieSearchResult>> =flow{
+    override fun getWatchList() = flow {
         val accountId = sessionManager.accountId
-        val response = api.getWatchlist(accountId)
-        emit(response.results)
+        emit(api.getWatchlist(accountId))
     }
 
     /*
     Session managerdan dönen account id ile watchlist'e ekleme yapar. Verilen id ve boolean ile
     hangi film olduğu ve eklemek veya çıkarmak istediği bilgisini gönderir.
     */
-    override fun addToWatchlist(movieId: Int, add: Boolean): Flow<Unit> = flow {
+    override fun addToWatchlist(movieId: Int, add: Boolean) = flow {
         val accountId = sessionManager.accountId
-        val watchListBody = WatchListBody(mediaType = "movie", media_id = movieId, watchlist = add)
+        val watchListBody = WatchListBody(mediaType = "movie", mediaId = movieId, watchlist = add)
         api.addToWatchlist(accountId, watchListBody)
         emit(Unit)
     }
@@ -86,22 +80,20 @@ class MovieRepository(
     /*
     Alttaki 4 method da api'den filmleri çeker. HomeScreen'deki tablerde gösterilirler.
     */
-    override fun getNowPlaying(): Flow<ResultPages> = flow{
-        val response = api.getNowPlayingMovies()
-        emit(response)
+    override fun getNowPlaying() = flow {
+        emit(api.getNowPlayingMovies())
     }
 
-    override fun getPopular(): Flow<ResultPages> = flow{
-        val response = api.getPopularMovies()
-        emit(response)
+    override fun getPopular() = flow {
+        emit(api.getPopularMovies())
     }
-    override fun getUpcoming(): Flow<ResultPages> = flow{
-        val response = api.getUpcomingMovies()
-        emit(response)
+
+    override fun getUpcoming() = flow {
+        emit(api.getUpcomingMovies())
     }
-    override fun getTopRated(): Flow<ResultPages> = flow{
-        val response = api.getTopRatedMovies()
-        emit(response)
+
+    override fun getTopRated() = flow {
+        emit( api.getTopRatedMovies())
     }
 
 }

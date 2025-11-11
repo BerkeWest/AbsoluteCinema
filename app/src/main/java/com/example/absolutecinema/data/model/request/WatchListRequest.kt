@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WatchListBody(
     @SerialName("media_type") val mediaType: String,
-    val media_id: Int?,
+    @SerialName("media_id") val mediaId: Int?,
     val watchlist: Boolean
 )

@@ -1,16 +1,18 @@
 package com.example.absolutecinema.data.model.response
 
+import com.example.absolutecinema.base.BaseDataModel
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestTokenResponse(
-    val success: Boolean,
-    val expires_at: String,
-    val request_token: String
-)
+data class RequestTokenResponseRemoteDataModel(
+    @SerialName("success") val success: Boolean,
+    @SerialName("expires_at") val expiresAt: String,
+    @SerialName("request_token") val requestToken: String
+) : BaseDataModel
 
 @Serializable
-data class SessionResponse(
+data class SessionResponseRemoteDataModel(
     val success: Boolean,
-    val session_id: String
-)
+    @SerialName("session_id") val sessionId: String
+) : BaseDataModel

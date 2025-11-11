@@ -29,12 +29,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
-import com.example.absolutecinema.data.model.response.MovieSearchResult
+import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import java.util.Locale
 
 
 @Composable
-fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> Unit) {
+fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId: Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth(0.9f)
@@ -43,13 +43,13 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
         colors = CardDefaults.cardColors(containerColor = Color(0x00242A32)),
         //kartın kendisine clickte filmin detayına gidilir.
         onClick = {
-            onNavigateToDetails(movie.id)
+            onNavigateToDetails(movie.id ?: 0)
         }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current) //Coil kütüphanesiyle resim yükleme isteği atılır.
-                    .data(BuildConfig.IMAGE_URL + movie.poster_path)// full url oluşturulur
+                    .data(BuildConfig.IMAGE_URL + movie.posterPath)// full url oluşturulur
                     .crossfade(true) // yüklenirken animasyon ekler
                     .build(),
                 error = painterResource(R.drawable.ic_broken_image),
@@ -64,14 +64,16 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
             Spacer(Modifier.width(5.dp))
             Column(modifier = Modifier.padding(start = 16.dp)) {
 
-                Text(
-                    movie.title, style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(24.dp),
-                    maxLines = 1,
-                    color = Color.White
-                )
+                movie.title?.let {
+                    Text(
+                        it, style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(24.dp),
+                        maxLines = 1,
+                        color = Color.White
+                    )
+                }
 
                 Spacer(Modifier.height(14.dp))
 
@@ -88,7 +90,7 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
                         tint = colorResource(id = R.color.Rating)
                     )
                     Text(
-                        String.format(Locale.US, "%.1f", movie.vote_average),
+                        String.format(Locale.US, "%.1f", movie.voteAverage),
                         style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.Rating),
                     )
@@ -106,11 +108,13 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
                             .padding(horizontal = 3.dp),
                         tint = Color.White
                     )
-                    Text(
-                        movie.genre,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
-                    )
+                    movie.genre?.let {
+                        Text(
+                            it,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
+                    }
                 }
 
                 Row(
@@ -126,7 +130,7 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
                         tint = Color.White
                     )
                     Text(
-                        movie.release_date.take(4),
+                        movie.releaseDate?.take(4) ?: "",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White
                     )
@@ -139,16 +143,17 @@ fun MovieCard(movie: MovieSearchResult, onNavigateToDetails: (movieId: Int) -> U
 @Preview
 @Composable
 fun MovieCardPreview() {
-    val movie = MovieSearchResult(
-        genre_ids = listOf(1, 2),
+    val movie = MovieSearchResultDomainModel(
+        genreIds = listOf(1, 2),
         id = 0,
-        original_title = "Haha",
+        originalTitle = "Haha",
         overview = "",
         popularity = 0.0,
-        poster_path = "",
-        release_date = "2018",
+        posterPath = "",
+        releaseDate = "2018",
         title = "HAHA",
-        vote_average = 7.8
+        voteAverage = 7.8,
+        genre = "action"
     )
 
     MovieCard(movie, onNavigateToDetails = {

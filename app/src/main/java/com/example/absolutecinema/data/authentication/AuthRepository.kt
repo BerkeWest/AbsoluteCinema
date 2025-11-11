@@ -15,10 +15,10 @@ class AuthRepository @Inject constructor(
     /*
     Request Token için api isteği atar. Eğer başarılı ise sessionManager'daki requestToken'ı günceller.
     */
-    suspend fun fetchRequestToken(): String{
+    suspend fun fetchRequestToken(): String {
         val response = api.getRequestToken()
         if (response.success) {
-            sessionManager.requestToken = response.request_token
+            sessionManager.requestToken = response.requestToken
         }
         return sessionManager.requestToken
     }
@@ -41,9 +41,9 @@ class AuthRepository @Inject constructor(
     */
     suspend fun login(username: String, password: String): Boolean {
         val token = fetchRequestToken()
-        val loginResponse = api.login(loginBody = LoginBody(username, password, token))
+        val loginResponse = api.login(loginBody = LoginBody(username, password, requestToken = token))
         if (loginResponse.success) {
-            val newSessionId = createSession(token)
+            val newSessionId = createSession(loginResponse.requestToken)
             if (newSessionId != null) {
                 sessionManager.saveSessionId(newSessionId) // Yeni save fonksiyonu
                 getAccountId()
@@ -58,7 +58,7 @@ class AuthRepository @Inject constructor(
     */
     suspend fun createSession(requestToken: String): String? {
         val sessionResponse = api.createSession(TokenBody(requestToken))
-        return if (sessionResponse.success) sessionResponse.session_id else null
+        return if (sessionResponse.success) sessionResponse.sessionId else null
     }
 
     suspend fun logout() {
@@ -70,7 +70,8 @@ class AuthRepository @Inject constructor(
     Account id'yi çekmek için api isteği atar.
     */
     suspend fun getAccountId() {
-        val response = api.getAccountId()
+        val sessionId = sessionManager.getSessionId()
+        val response = api.getAccountId(sessionId)
         sessionManager.accountId = response.id
     }
 }

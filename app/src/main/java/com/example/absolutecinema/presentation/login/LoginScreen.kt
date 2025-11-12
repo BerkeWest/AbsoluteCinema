@@ -91,11 +91,13 @@ fun LoginScreen(
             .background(Color(0xFF242A32))
             .padding(horizontal = 24.dp),
         contentAlignment = Alignment.Center,
+
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),

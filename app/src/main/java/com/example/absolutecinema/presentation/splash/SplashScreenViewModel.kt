@@ -2,7 +2,6 @@ package com.example.absolutecinema.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,14 +12,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
-    private val checkAccessUseCase: CheckAccessUseCase
-): ViewModel() {
+    //private val checkAccessUseCase: CheckAccessUseCase
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SplashState(null))
     val uiState: StateFlow<SplashState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            val hasAccess = checkAccessUseCase()
+            //val hasAccess = checkAccessUseCase()
             _uiState.update { it.copy(hasAccess = true) }
         }
     }

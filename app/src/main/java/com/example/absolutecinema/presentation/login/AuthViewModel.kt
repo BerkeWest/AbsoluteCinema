@@ -6,18 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
 import com.example.absolutecinema.base.onError
-import com.example.absolutecinema.base.onLoading
 import com.example.absolutecinema.base.onSuccess
 import com.example.absolutecinema.domain.model.authentication.LoginResult
 import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LoginUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
+import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,18 +30,23 @@ class AuthViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            checkAccessUseCase().collect { hasAccess ->
-                if (hasAccess) {
-                    _uiState.update { it.copy(loginState = LoginResult.Success(true)) }
+        accessControl()
+    }
+
+    fun accessControl() {
+        checkAccessUseCase.invoke(FlowUseCase.Params())
+            .onSuccess { data ->
+                if (data) _uiState.update { it.copy(loginState = LoginResult.Success(true)) }
+            }.onError { error ->
+                _uiState.update {
+                    it.copy(loginState = LoginResult.Error(error.localizedMessage))
                 }
-            }
-        }
+            }.launchIn(viewModelScope)
     }
 
     fun login(username: String, password: String) {
         loginUseCase.invoke(LoginUseCase.Params(username, password))
-            .onLoading { }.onSuccess { data ->
+            .onSuccess { data ->
                 _uiState.update { it.copy(loginState = data) }
             }.onError { error ->
                 _uiState.update { it.copy(loginState = LoginResult.Error(error.localizedMessage)) }
@@ -50,11 +54,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun logout() {
-        viewModelScope.launch {
-            logoutUseCase().collect {
-                _uiState.update { it.copy(loginState = LoginResult.Idle) }
-            }
-        }
+        logoutUseCase(FlowUseCase.Params()).launchIn(viewModelScope)
     }
 
     fun onLoginStateConsumed() {

@@ -4,14 +4,6 @@ import com.example.absolutecinema.base.BaseDomainModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResultPagesDomainModel(
-    val page: Int,
-    val results: List<MovieSearchResultDomainModel>,
-    val totalPages: Int,
-    val totalResults: Int
-) : BaseDomainModel
-
-@Serializable
 data class MovieSearchResultDomainModel(
     val genreIds: List<Int>?,
     val id: Int?,
@@ -23,12 +15,6 @@ data class MovieSearchResultDomainModel(
     val title: String?,
     val voteAverage: Double?,
     val genre: String?
-) : BaseDomainModel
-
-
-@Serializable
-data class GenreListDomainModel(
-    val genres: List<GenreDomainModel>
 ) : BaseDomainModel
 
 @Serializable

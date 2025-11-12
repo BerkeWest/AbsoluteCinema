@@ -5,6 +5,7 @@ import com.example.absolutecinema.data.model.request.LoginBody
 import com.example.absolutecinema.data.model.request.TokenBody
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import kotlinx.coroutines.flow.flow
 
 @Singleton
 class AuthRepository @Inject constructor(
@@ -23,13 +24,13 @@ class AuthRepository @Inject constructor(
         return sessionManager.requestToken
     }
 
-    suspend fun hasAccess(): Boolean {
+    fun hasAccess() = flow{
         val sessionId = sessionManager.getSessionId()
         if (sessionId != null) {
             getAccountId()
-            return true
+            emit(true)
         }
-        return false
+        emit(false)
     }
 
 
@@ -41,7 +42,7 @@ class AuthRepository @Inject constructor(
     */
     suspend fun login(username: String, password: String): Boolean {
         val token = fetchRequestToken()
-        val loginResponse = api.login(loginBody = LoginBody(username, password, requestToken = token))
+        val loginResponse = api.login(loginBody = LoginBody(username, password, token))
         if (loginResponse.success) {
             val newSessionId = createSession(loginResponse.requestToken)
             if (newSessionId != null) {
@@ -61,8 +62,9 @@ class AuthRepository @Inject constructor(
         return if (sessionResponse.success) sessionResponse.sessionId else null
     }
 
-    suspend fun logout() {
+    fun logout() = flow{
         sessionManager.clearSession()
+        emit(Unit)
     }
 
 

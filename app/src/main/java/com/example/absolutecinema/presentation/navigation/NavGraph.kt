@@ -24,7 +24,7 @@ fun CinemaNavHost(
         navController = navController, startDestination = LoginPage.route, modifier = modifier
     ) {
         composable(route = LoginPage.route) {
-            LoginScreen(navigateToHome = { navController.navigate(NavigationBarRoute.route) })
+            LoginScreen(navigateToHome = { navController.navigate(NavigationBarRoute.route) {popUpTo(0)} })
         }
         composable(route = NavigationBarRoute.route) {
             NavigationBarScreen(

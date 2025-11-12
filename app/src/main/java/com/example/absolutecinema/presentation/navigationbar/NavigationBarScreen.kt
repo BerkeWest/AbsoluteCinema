@@ -78,11 +78,11 @@ fun NavigationBarScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(1.dp)
+                        .height(0.8.dp)
                         .background(Color(0xFF2A80FF))
                 )
                 NavigationBar(
-                    modifier = Modifier.height(120.dp),
+                    modifier = Modifier.height(90.dp),
                     containerColor = Color(0xFF242A32),
                     windowInsets = NavigationBarDefaults.windowInsets,
                 ) {

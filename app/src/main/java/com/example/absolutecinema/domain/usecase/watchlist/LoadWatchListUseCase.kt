@@ -14,6 +14,7 @@ class LoadWatchListUseCase @Inject constructor(
     private val repository: MovieRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : FlowUseCase<FlowUseCase.Params, List<MovieSearchResultDomainModel>>(dispatcher) {
+
     override fun execute(params: Params): Flow<List<MovieSearchResultDomainModel>> {
         return repository.getWatchList()
             .map { watchList ->

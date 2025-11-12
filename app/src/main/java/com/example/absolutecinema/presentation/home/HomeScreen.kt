@@ -24,6 +24,9 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +46,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
+import com.example.absolutecinema.presentation.utils.NotificationData
+import com.example.absolutecinema.presentation.utils.NotificationHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,27 +56,110 @@ fun HomeScreen(
     onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    var notification by remember { mutableStateOf<NotificationData?>(null) }
 
-    Column(
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF242A32))
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 12.dp)
     ) {
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF242A32))
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp)
         ) {
-            items(uiState.topMovies) { movie ->
-                Box(
-                    modifier = Modifier
-                        .width(180.dp)
-                        .height(260.dp)
-                        .clickable { movie.id?.let { onNavigateToDetails(it) } }
-                ) {
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(uiState.topMovies) { movie ->
+                    Box(
+                        modifier = Modifier
+                            .width(180.dp)
+                            .height(260.dp)
+                            .clickable { movie.id?.let { onNavigateToDetails(it) } }
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                                .crossfade(true)
+                                .build(),
+                            error = painterResource(R.drawable.ic_broken_image),
+                            placeholder = painterResource(R.drawable.loading_img),
+                            contentDescription = movie.title,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .width(160.dp)
+                                .height(230.dp)
+                                .clip(RoundedCornerShape(12.dp)),
+                        )
+
+                        // Rank Number
+                        Text(
+                            text = (uiState.topMovies.indexOf(movie) + 1).toString(),
+                            fontSize = 72.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFACDFFA),
+                            style = TextStyle(
+                                shadow = Shadow(
+                                    color = Color(0xFF0296E5), // Outline color (cyan)
+                                    offset = Offset(0f, 0f),
+                                    blurRadius = 20f // controls how thick the outline looks
+                                )
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            //Tab Row
+            SecondaryTabRow(
+                selectedTabIndex = uiState.selectedTabIndex,
+                containerColor = Color.Transparent,
+                contentColor = Color.White,
+                divider = {}
+            ) {
+                homeViewModel.tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = uiState.selectedTabIndex == index,
+                        onClick = {
+                            homeViewModel.onTabSelected(index)
+                            notification = NotificationData(
+                                message = title.repeat(15),
+                                icon = R.drawable.home_filled,
+                                onClick = { /* navigate somewhere */ }
+                            )
+                        },
+                        text = {
+                            Text(
+                                text = title,
+                                color = if (uiState.selectedTabIndex == index) Color.White else Color.Gray,
+                                fontWeight = if (uiState.selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
+                                fontSize = (11.8).sp
+                            )
+                        }
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            //Movie posters grid
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier.height(600.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(uiState.tabResult) { movie ->
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
                             .data(BuildConfig.IMAGE_URL + movie.posterPath)
@@ -82,84 +170,18 @@ fun HomeScreen(
                         contentDescription = movie.title,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .width(160.dp)
-                            .height(230.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                    )
-
-                    // Rank Number
-                    Text(
-                        text = (uiState.topMovies.indexOf(movie) + 1).toString(),
-                        fontSize = 72.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFACDFFA),
-                        style = TextStyle(
-                            shadow = Shadow(
-                                color = Color(0xFF0296E5), // Outline color (cyan)
-                                offset = Offset(0f, 0f),
-                                blurRadius = 20f // controls how thick the outline looks
-                            )
-                        ),
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(12.dp))
+                            .height(180.dp)
+                            .clickable { movie.id?.let { onNavigateToDetails(it) } }
                     )
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        //Tab Row
-        SecondaryTabRow(
-            selectedTabIndex = uiState.selectedTabIndex,
-            containerColor = Color.Transparent,
-            contentColor = Color.White,
-            divider = {}
-        ) {
-            homeViewModel.tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = uiState.selectedTabIndex == index,
-                    onClick = {
-                        homeViewModel.onTabSelected(index)
-                    },
-                    text = {
-                        Text(
-                            text = title,
-                            color = if (uiState.selectedTabIndex == index) Color.White else Color.Gray,
-                            fontWeight = if (uiState.selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
-                            fontSize = (11.8).sp
-                        )
-                    }
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-
-        //Movie posters grid
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier.height(600.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(uiState.tabResult) { movie ->
-                AsyncImage(
-                    model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                        .crossfade(true)
-                        .build(),
-                    error = painterResource(R.drawable.ic_broken_image),
-                    placeholder = painterResource(R.drawable.loading_img),
-                    contentDescription = movie.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(12.dp))
-                        .height(180.dp)
-                        .clickable { movie.id?.let { onNavigateToDetails(it) } }
-                )
-            }
-        }
+        NotificationHost(
+            notificationData = notification,
+            onDismiss = { notification = null }
+        )
     }
+
 }

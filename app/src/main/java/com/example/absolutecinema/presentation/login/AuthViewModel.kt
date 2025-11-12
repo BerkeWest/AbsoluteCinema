@@ -12,6 +12,8 @@ import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCa
 import com.example.absolutecinema.domain.usecase.authentication.LoginUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
+import com.example.absolutecinema.presentation.utils.Notification
+import com.example.absolutecinema.presentation.utils.NotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,6 +50,15 @@ class AuthViewModel @Inject constructor(
         loginUseCase.invoke(LoginUseCase.Params(username, password))
             .onSuccess { data ->
                 _uiState.update { it.copy(loginState = data) }
+                if (data is LoginResult.Success) {
+                NotificationManager.show {
+                    Notification(
+                        message = "Welcome to ABSOLUTE CINEMA \n View and search your favorite movies \n Make sure to add new movies to your watchlist :)",
+                        icon = R.drawable.visibility_off,
+                        onClick = { /* navigate */ },
+                        onDismiss = { NotificationManager.dismiss() }
+                    )}
+                }
             }.onError { error ->
                 _uiState.update { it.copy(loginState = LoginResult.Error(error.localizedMessage)) }
             }.launchIn(viewModelScope)

@@ -5,13 +5,18 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.absolutecinema.BuildConfig
-import com.example.absolutecinema.data.SessionManager
 import com.example.absolutecinema.data.authentication.AuthApiService
 import com.example.absolutecinema.data.authentication.AuthRepository
 import com.example.absolutecinema.data.datastore.CryptoData
 import com.example.absolutecinema.data.movie.MovieApiService
 import com.example.absolutecinema.data.movie.MovieRepository
+// Düzeltme: Doğru importları ekleyin
+import com.example.absolutecinema.data.datasource.local.MovieLocalDataSource
+import com.example.absolutecinema.data.datasource.local.MovieLocalDataSourceImpl
+import com.example.absolutecinema.data.datasource.remote.MovieRemoteDataSource
+import com.example.absolutecinema.data.datasource.remote.MovieRemoteDataSourceImpl
 import com.example.absolutecinema.data.network.HeaderInterceptor
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -80,18 +85,19 @@ object AppModule {
     @Singleton
     fun provideAuthRepository(
         authApiService: AuthApiService,
-        sessionManager: SessionManager
+        localDataSource: MovieLocalDataSourceImpl,
+        remoteDataSource: MovieRemoteDataSourceImpl
     ): AuthRepository {
-        return AuthRepository(authApiService, sessionManager)
+        return AuthRepository(authApiService, localDataSource, remoteDataSource)
     }
 
     @Provides
     @Singleton
     fun provideMovieRepository(
         movieApiService: MovieApiService,
-        sessionManager: SessionManager
+        localDataSource: MovieLocalDataSourceImpl
     ): MovieRepository {
-        return MovieRepository(movieApiService, sessionManager)
+        return MovieRepository(movieApiService, localDataSource)
     }
 
     @Provides
@@ -105,6 +111,24 @@ object AppModule {
     fun providePreferencesDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return context.dataStore
     }
+}
+
+// DÜZELTME 1: DataSourceModule'ü @Binds kullanacak şekilde düzeltin
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourceModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindMovieLocalDataSource(
+        movieLocalDataSourceImpl: MovieLocalDataSourceImpl
+    ): MovieLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindMovieRemoteDataSource(
+        movieRemoteDataSourceImpl: MovieRemoteDataSourceImpl
+    ): MovieRemoteDataSource
 }
 
 

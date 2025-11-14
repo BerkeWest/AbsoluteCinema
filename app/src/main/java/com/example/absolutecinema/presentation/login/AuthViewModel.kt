@@ -1,5 +1,7 @@
 package com.example.absolutecinema.presentation.login
 
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.ViewModel
@@ -114,7 +116,7 @@ data class LoginScreenUIState(
 data class PasswordState(
     var visible: Boolean = false,
     var icon: Int = R.drawable.visibility_on,
-    var description: String = "Show password",
+    @StringRes var description: Int = R.string.show_password,
     var visualTransformation: VisualTransformation = PasswordVisualTransformation()
 )
 
@@ -125,7 +127,7 @@ enum class PassWordVisibility(
         PasswordState(
             visible = true,
             icon = R.drawable.visibility_off,
-            description = "Hide password",
+            description = R.string.hide_password,
             visualTransformation = VisualTransformation.None
         )
     ),
@@ -133,7 +135,7 @@ enum class PassWordVisibility(
         PasswordState(
             visible = false,
             icon = R.drawable.visibility_on,
-            description = "Show password",
+            description = R.string.show_password,
             visualTransformation = PasswordVisualTransformation()
         )
     )

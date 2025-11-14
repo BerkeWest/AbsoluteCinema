@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,6 +46,7 @@ import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
+import com.example.absolutecinema.presentation.utils.ShowComposeToast
 import com.example.absolutecinema.presentation.utils.TopAppBar
 import java.util.Locale
 
@@ -64,7 +66,7 @@ fun DetailScreen(
         containerColor = Color(0xFF242A32),
         topBar = {
             TopAppBar(
-                title = "Detail",
+                title = stringResource(R.string.details),
                 canNavigateBack = true,
                 navigateUp = navigateBack,
                 canBookmark = true,
@@ -92,7 +94,7 @@ fun DetailScreen(
                             .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.backdropPath)
                             .crossfade(true)
                             .build(),
-                        contentDescription = "Banner",
+                        contentDescription = stringResource(R.string.banner_image),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp),
@@ -106,12 +108,12 @@ fun DetailScreen(
                             .offset(x = (-16).dp, y = (-16).dp)
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color.Black.copy(alpha = 0.3f))
-                            .clickable { }
+                            .clickable {  }
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.rating),
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.rating),
                             tint = Color(0xFFFFA500)
                         )
                         Spacer(Modifier.width(5.dp))
@@ -136,7 +138,7 @@ fun DetailScreen(
                                 .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.posterPath)
                                 .crossfade(true)
                                 .build(),
-                            contentDescription = "Poster",
+                            contentDescription = stringResource(R.string.poster_image),
                             modifier = Modifier
                                 .width(114.dp)
                                 .height(171.dp)

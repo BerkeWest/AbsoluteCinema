@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -71,6 +72,7 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
                             .width(200.dp)
                             .height(24.dp),
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         color = Color.White
                     )
                 }
@@ -112,7 +114,9 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
                         Text(
                             it,
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.White
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
@@ -146,12 +150,12 @@ fun MovieCardPreview() {
     val movie = MovieSearchResultDomainModel(
         genreIds = listOf(1, 2),
         id = 0,
-        originalTitle = "Haha",
+        originalTitle = "Demon Slayer Kimetsu No Yaiba Infinity Castle",
         overview = "",
         popularity = 0.0,
         posterPath = "",
         releaseDate = "2018",
-        title = "HAHA",
+        title = "Demon Slayer Kimetsu No Yaiba Infinity Castle",
         voteAverage = 7.8,
         genre = "action"
     )

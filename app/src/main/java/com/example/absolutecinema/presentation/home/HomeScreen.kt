@@ -157,7 +157,7 @@ fun HomeScreen(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier.height(600.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(uiState.tabResult) { movie ->
                     AsyncImage(
@@ -173,7 +173,9 @@ fun HomeScreen(
                             .fillMaxSize()
                             .clip(RoundedCornerShape(12.dp))
                             .height(180.dp)
-                            .clickable { movie.id?.let { onNavigateToDetails(it) } }
+                            .clickable {
+                                movie.id?.let { onNavigateToDetails(it) }
+                            }
                     )
                 }
             }

@@ -1,12 +1,12 @@
 package com.example.absolutecinema.data.movie
 
-import com.example.absolutecinema.data.SessionManager
 import com.example.absolutecinema.data.model.request.WatchListBody
+import com.example.absolutecinema.data.datasource.local.MovieLocalDataSource
 import kotlinx.coroutines.flow.flow
 
 class MovieRepository(
     private val api: MovieApiService,
-    private val sessionManager: SessionManager
+    private val localDataSource: MovieLocalDataSource,
 ) : MovieRepositoryInterface {
 
 
@@ -62,7 +62,7 @@ class MovieRepository(
     Session managerdan dönen account id ile watchlist'i çeker.
     */
     override fun getWatchList() = flow {
-        val accountId = sessionManager.accountId
+        val accountId = localDataSource.getLocalAccountId()
         emit(api.getWatchlist(accountId))
     }
 
@@ -71,7 +71,7 @@ class MovieRepository(
     hangi film olduğu ve eklemek veya çıkarmak istediği bilgisini gönderir.
     */
     override fun addToWatchlist(movieId: Int, add: Boolean) = flow {
-        val accountId = sessionManager.accountId
+        val accountId = localDataSource.getLocalAccountId()
         val watchListBody = WatchListBody(mediaType = "movie", mediaId = movieId, watchlist = add)
         api.addToWatchlist(accountId, watchListBody)
         emit(Unit)

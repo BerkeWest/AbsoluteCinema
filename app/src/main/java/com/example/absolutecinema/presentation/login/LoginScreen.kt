@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -109,13 +110,14 @@ fun LoginScreen(
                     )
             ) {
                 Text(
-                    "Welcome to",
+                    stringResource(R.string.login_welcome),
                     style = MaterialTheme.typography.headlineMedium,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
                 )
                 Image(
                     painter = painterResource(R.drawable.absolute_cinema),
-                    contentDescription = "ABSOLUTE CINEMA",
+                    contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
                 )
@@ -129,7 +131,7 @@ fun LoginScreen(
                     shape = shapes.large,
                     isError = uiState.isError,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Username") },
+                    label = { Text(stringResource(R.string.username), color = Color.Black) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Next
                     )
@@ -143,12 +145,13 @@ fun LoginScreen(
                     onValueChange = { newPassword ->
                         authViewModel.onPasswordChange(newPassword)
                     },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(R.string.password), color = Color.Black) },
                     trailingIcon = {
                         IconButton(onClick = { authViewModel.togglePasswordVisibility() }) {
                             Icon(
                                 painterResource(uiState.passwordState.icon),
-                                contentDescription = uiState.passwordState.description
+                                contentDescription = stringResource(uiState.passwordState.description),
+                                tint = Color.Black
                             )
                         }
                     },
@@ -171,7 +174,7 @@ fun LoginScreen(
                         authViewModel.login(uiState.username, uiState.password)
                     }
                 ) {
-                    Text("Login")
+                    Text(stringResource(R.string.login_button), color = Color.Black)
                 }
             }
         }

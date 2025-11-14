@@ -51,18 +51,16 @@ fun NavigationBarScreen(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val currentDestination = Destination.entries.find { it.route == currentRoute }
 
     val startDestination = Destination.HOME
-    var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
-
     val authViewModel: AuthViewModel = hiltViewModel()
 
     Scaffold(
         modifier = modifier,
         topBar = {
+            val currentDestination = Destination.entries.find { it.route == currentRoute } ?: startDestination
             TopAppBar(
-                title = currentDestination?.label ?: Destination.HOME.label,
+                title = currentDestination.label,
                 canNavigateBack = false,
                 navigateUp = { },
                 canBookmark = false,
@@ -89,11 +87,21 @@ fun NavigationBarScreen(
                     windowInsets = NavigationBarDefaults.windowInsets,
                 ) {
                     Destination.entries.forEachIndexed { index, destination ->
+
+                        val selected = destination.route == currentRoute
+
                         NavigationBarItem(
-                            selected = selectedDestination == index,
+                            selected = selected,
                             onClick = {
-                                navController.navigate(route = destination.route)
-                                selectedDestination = index
+                                if (currentRoute != destination.route) {
+                                    navController.navigate(destination.route) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
                                 NotificationManager.show {
                                     Notification(
                                         message = index.toString().repeat(3000),

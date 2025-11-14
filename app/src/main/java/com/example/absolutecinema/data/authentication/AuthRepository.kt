@@ -1,8 +1,8 @@
 package com.example.absolutecinema.data.authentication
 
-import com.example.absolutecinema.data.SessionManager
+import com.example.absolutecinema.data.datasource.local.MovieLocalDataSourceImpl
+import com.example.absolutecinema.data.datasource.remote.MovieRemoteDataSourceImpl
 import com.example.absolutecinema.data.model.request.LoginBody
-import com.example.absolutecinema.data.model.request.TokenBody
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.flow
@@ -10,27 +10,23 @@ import kotlinx.coroutines.flow.flow
 @Singleton
 class AuthRepository @Inject constructor(
     private val api: AuthApiService,
-    private val sessionManager: SessionManager
+    private val localDataSource: MovieLocalDataSourceImpl,
+    private val remoteDataSource: MovieRemoteDataSourceImpl
 ) {
 
     /*
     Request Token için api isteği atar. Eğer başarılı ise sessionManager'daki requestToken'ı günceller.
     */
-    suspend fun fetchRequestToken(): String {
-        val response = api.getRequestToken()
-        if (response.success) {
-            sessionManager.requestToken = response.requestToken
-        }
-        return sessionManager.requestToken
+    suspend fun fetchRequestToken(): String? {
+        return if (localDataSource.getLocalRequestToken() != null) localDataSource.getLocalRequestToken()
+        else remoteDataSource.getRemoteRequestToken()
     }
 
-    fun hasAccess() = flow{
-        val sessionId = sessionManager.getSessionId()
+    fun hasAccess() = flow {
+        val sessionId = localDataSource.getLocalSessionId()
         if (sessionId != null) {
-            getAccountId()
             emit(true)
-        }
-        emit(false)
+        } else emit(false)
     }
 
 
@@ -42,12 +38,12 @@ class AuthRepository @Inject constructor(
     */
     suspend fun login(username: String, password: String): Boolean {
         val token = fetchRequestToken()
+        if (token == null) return false
         val loginResponse = api.login(loginBody = LoginBody(username, password, token))
         if (loginResponse.success) {
             val newSessionId = createSession(loginResponse.requestToken)
             if (newSessionId != null) {
-                sessionManager.saveSessionId(newSessionId) // Yeni save fonksiyonu
-                getAccountId()
+                getAccountId(newSessionId)
                 return true
             }
         }
@@ -58,12 +54,12 @@ class AuthRepository @Inject constructor(
     Session oluşturmak için api isteği atar. Eğer başarılı ise dönen sessionId'yi döndürür.
     */
     suspend fun createSession(requestToken: String): String? {
-        val sessionResponse = api.createSession(TokenBody(requestToken))
-        return if (sessionResponse.success) sessionResponse.sessionId else null
+        return if (localDataSource.getLocalSessionId() != null) localDataSource.getLocalSessionId()
+        else remoteDataSource.getRemoteSessionId(requestToken)
     }
 
-    fun logout() = flow{
-        sessionManager.clearSession()
+    fun logout() = flow {
+        localDataSource.clearLocalSession()
         emit(Unit)
     }
 
@@ -71,9 +67,8 @@ class AuthRepository @Inject constructor(
     /*
     Account id'yi çekmek için api isteği atar.
     */
-    suspend fun getAccountId() {
-        val sessionId = sessionManager.getSessionId()
-        val response = api.getAccountId(sessionId)
-        sessionManager.accountId = response.id
+    suspend fun getAccountId(sessionId: String): Int? {
+        return if (localDataSource.getLocalAccountId() != null) localDataSource.getLocalAccountId()
+        else remoteDataSource.getRemoteAccountId(sessionId)
     }
 }

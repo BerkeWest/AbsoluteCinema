@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
 data class MovieDetailsDomainModel(
     val backdropPath: String?,
     val genres: List<GenreDomainModel>,
-    val id: Int=0,
+    val id: Int = 0,
     val originalTitle: String,
     val overview: String,
-    val popularity: Double=0.0,
+    val popularity: Double = 0.0,
     val posterPath: String,
     val releaseDate: String,
     val runtime: Int,
@@ -19,7 +19,7 @@ data class MovieDetailsDomainModel(
     val title: String,
     val video: Boolean,
     val voteAverage: Double,
-): BaseDomainModel
+) : BaseDomainModel
 
 @Serializable
 data class MovieStateDomainModel(
@@ -27,4 +27,11 @@ data class MovieStateDomainModel(
     val favorite: Boolean,
     val rated: Boolean,
     val watchlist: Boolean
-): BaseDomainModel
+) : BaseDomainModel
+
+@Serializable
+data class CastDomainModel(
+    val name: String,
+    val profilePath: String?,
+    val character: String,
+) : BaseDomainModel

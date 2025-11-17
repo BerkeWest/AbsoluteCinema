@@ -2,6 +2,7 @@ package com.example.absolutecinema.data.movie
 
 import com.example.absolutecinema.data.model.request.WatchListBody
 import com.example.absolutecinema.data.model.response.GenreListRemoteDataModel
+import com.example.absolutecinema.data.model.response.MovieCastRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
 import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
@@ -50,6 +51,11 @@ interface MovieApiService {
     suspend fun getMovieAccountStates(
         @Path("movie_id") movieId: Int,
     ): MovieStateRemoteDataModel
+
+    @GET("movie/{movie_id}/credits")
+    suspend fun getMovieCast(
+        @Path("movie_id") movieId: Int
+    ): MovieCastRemoteDataModel
 
 
     // WATCHLIST

@@ -28,3 +28,15 @@ data class MovieStateRemoteDataModel(
     val rated: Boolean,
     val watchlist: Boolean
 ) : BaseDataModel
+
+@Serializable
+data class MovieCastRemoteDataModel(
+    val cast: List<CastRemoteDataModel>,
+): BaseDataModel
+
+@Serializable
+data class CastRemoteDataModel(
+    val name: String,
+    @SerialName("profile_path") val profilePath: String?,
+    val character: String,
+) : BaseDataModel

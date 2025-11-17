@@ -1,5 +1,6 @@
 package com.example.absolutecinema.data.movie
 
+import com.example.absolutecinema.data.model.response.CastRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieSearchResultRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
@@ -14,6 +15,8 @@ interface MovieRepositoryInterface {
     fun getDetails(id: Int): Flow<MovieDetailsRemoteDataModel>
 
     fun getMovieState(id: Int): Flow<MovieStateRemoteDataModel>
+
+    fun getCast(id: Int): Flow<List<CastRemoteDataModel>>
 
     fun getWatchList(): Flow<ResultPagesRemoteDataModel>
 

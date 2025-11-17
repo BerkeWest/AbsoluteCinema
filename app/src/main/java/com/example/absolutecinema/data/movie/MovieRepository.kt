@@ -58,6 +58,11 @@ class MovieRepository(
         emit(response)
     }
 
+    override fun getCast(id: Int) = flow {
+        val response = api.getMovieCast(id)
+        emit(response.cast)
+    }
+
     /*
     Session managerdan dönen account id ile watchlist'i çeker.
     */

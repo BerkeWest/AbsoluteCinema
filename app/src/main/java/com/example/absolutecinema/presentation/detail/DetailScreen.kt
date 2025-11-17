@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
@@ -37,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,6 +52,7 @@ import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
+import com.example.absolutecinema.presentation.utils.CastMember
 import com.example.absolutecinema.presentation.utils.TopAppBar
 import java.util.Locale
 
@@ -88,7 +94,7 @@ fun DetailScreen(
 
             //region Banner
             item {
-                Box {
+                Box(Modifier.padding(bottom = 10.dp)) {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
                             .data(BuildConfig.IMAGE_URL + uiState.movieDetails?.backdropPath)
@@ -129,10 +135,7 @@ fun DetailScreen(
                     Row(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
-                            .offset(
-                                x = 16.dp,
-                                y = 60.dp
-                            ) //Aşağı iterek üst üste durma efektini verir.,
+                            .offset(x = 16.dp, y = 60.dp)
                     ) {
                         //Küçük Poster
                         AsyncImage(
@@ -155,14 +158,16 @@ fun DetailScreen(
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             overflow = TextOverflow.Ellipsis,
-                            maxLines = 3,
+                            maxLines = 2,
                             modifier = Modifier
-                                .offset(y = 120.dp)
                                 .padding(end = 20.dp)
+                                .offset(y = 120.dp)
+                                .weight(5f)
                         )
                     }
                 }
             }
+
             //endregion
             item {
                 Column(
@@ -247,11 +252,15 @@ fun DetailScreen(
 
                 when (selectedTab) {
                     0 -> Text(
-                        text = uiState.movieDetails?.overview ?: stringResource(R.string.no_details),
+                        text = uiState.movieDetails?.overview
+                            ?: stringResource(R.string.no_details),
                         color = Color.White,
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
+                        style = LocalTextStyle.current.copy(
+                            textIndent = TextIndent(firstLine = 24.sp)
+                        )
                     )
 
                     1 -> Text(
@@ -260,11 +269,21 @@ fun DetailScreen(
                         modifier = Modifier.padding(16.dp)
                     )
 
-                    2 -> Text(
-                        stringResource(R.string.no_cast),
-                        color = Color.Gray,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    2 -> LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.height(600.dp),
+                        verticalArrangement = Arrangement.spacedBy(25.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(items = uiState.cast ?: listOf()) { cast ->
+                            CastMember(
+                                name = cast.name,
+                                character = cast.character,
+                                profilePath = cast.profilePath
+                            )
+                        }
+
+                    }
                 }
             }
         }

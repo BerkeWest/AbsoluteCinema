@@ -1,9 +1,6 @@
 package com.example.absolutecinema.presentation.login
 
-import androidx.annotation.StringRes
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
@@ -16,6 +13,8 @@ import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import com.example.absolutecinema.presentation.utils.Notification
 import com.example.absolutecinema.presentation.utils.NotificationManager
+import com.example.absolutecinema.presentation.utils.PassWordVisibility
+import com.example.absolutecinema.presentation.utils.PasswordState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,13 +52,14 @@ class AuthViewModel @Inject constructor(
             .onSuccess { data ->
                 _uiState.update { it.copy(loginState = data) }
                 if (data is LoginResult.Success) {
-                NotificationManager.show {
-                    Notification(
-                        message = "Welcome to ABSOLUTE CINEMA \n View and search your favorite movies \n Make sure to add new movies to your watchlist :)",
-                        icon = R.drawable.visibility_off,
-                        onClick = { /* navigate */ },
-                        onDismiss = { NotificationManager.dismiss() }
-                    )}
+                    NotificationManager.show {
+                        Notification(
+                            message = stringResource(R.string.welcome_message),
+                            icon = R.drawable.visibility_off,
+                            onClick = { /* navigate */ },
+                            onDismiss = { NotificationManager.dismiss() }
+                        )
+                    }
                 }
             }.onError { error ->
                 _uiState.update { it.copy(loginState = LoginResult.Error(error.localizedMessage)) }
@@ -112,31 +112,3 @@ data class LoginScreenUIState(
     var isError: Boolean = false,
     var passwordState: PasswordState = PasswordState()
 )
-
-data class PasswordState(
-    var visible: Boolean = false,
-    var icon: Int = R.drawable.visibility_on,
-    @StringRes var description: Int = R.string.show_password,
-    var visualTransformation: VisualTransformation = PasswordVisualTransformation()
-)
-
-enum class PassWordVisibility(
-    val state: PasswordState
-) {
-    VISIBLE(
-        PasswordState(
-            visible = true,
-            icon = R.drawable.visibility_off,
-            description = R.string.hide_password,
-            visualTransformation = VisualTransformation.None
-        )
-    ),
-    INVISIBLE(
-        PasswordState(
-            visible = false,
-            icon = R.drawable.visibility_on,
-            description = R.string.show_password,
-            visualTransformation = PasswordVisualTransformation()
-        )
-    )
-}

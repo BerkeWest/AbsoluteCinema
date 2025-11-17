@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -86,7 +87,7 @@ fun Notification(
                 ) {
                     Icon(
                         painter = painterResource(icon),
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.notification_icon),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(42.667.dp)
                     )
@@ -104,15 +105,11 @@ fun Notification(
     }
 }
 
-val message: String =
-    "Notification 32x32 ikon ve görsel alabilir. etin kullanımı en fazla üç satır ile sınırlıdır. Üç satırdan sonrası üç nokta olacaktır"
-
-
 @Preview(showBackground = true)
 @Composable
 fun NotificationPreview() {
     Notification(
-        message = message,
+        message = stringResource(R.string.default_message),
         icon = R.drawable.ic_broken_image,
         onDismiss = { },
         onClick = { }

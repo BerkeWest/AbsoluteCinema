@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -46,7 +47,6 @@ import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
-import com.example.absolutecinema.presentation.utils.ShowComposeToast
 import com.example.absolutecinema.presentation.utils.TopAppBar
 import java.util.Locale
 
@@ -108,7 +108,7 @@ fun DetailScreen(
                             .offset(x = (-16).dp, y = (-16).dp)
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color.Black.copy(alpha = 0.3f))
-                            .clickable {  }
+                            .clickable { }
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Icon(
@@ -127,10 +127,12 @@ fun DetailScreen(
                         )
                     }
                     Row(
-                        modifier = Modifier.align(Alignment.BottomStart).offset(
-                            x = 16.dp,
-                            y = 60.dp
-                        ) //Aşağı iterek üst üste durma efektini verir.,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .offset(
+                                x = 16.dp,
+                                y = 60.dp
+                            ) //Aşağı iterek üst üste durma efektini verir.,
                     ) {
                         //Küçük Poster
                         AsyncImage(
@@ -152,7 +154,11 @@ fun DetailScreen(
                             color = Color.White,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.offset(y = 120.dp).padding(end = 20.dp)
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 3,
+                            modifier = Modifier
+                                .offset(y = 120.dp)
+                                .padding(end = 20.dp)
                         )
                     }
                 }
@@ -171,11 +177,15 @@ fun DetailScreen(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(space = 7.dp, alignment = Alignment.CenterHorizontally)
+                        horizontalArrangement = Arrangement.spacedBy(
+                            space = 7.dp,
+                            alignment = Alignment.CenterHorizontally
+                        )
                     ) {
                         IconText(
                             painterResource(R.drawable.calendar),
-                            uiState.movieDetails?.releaseDate?.take(4) ?: ""
+                            uiState.movieDetails?.releaseDate?.take(4) ?: "",
+                            R.string.release_date
                         )
                         Spacer(
                             modifier = Modifier
@@ -185,7 +195,8 @@ fun DetailScreen(
                         )
                         IconText(
                             painterResource(R.drawable.time),
-                            "${uiState.movieDetails?.runtime} Minutes"
+                            "${uiState.movieDetails?.runtime} Minutes",
+                            R.string.runtime
                         )
                         Spacer(
                             modifier = Modifier
@@ -196,7 +207,8 @@ fun DetailScreen(
                         IconText(
                             painterResource(R.drawable.ticket),
                             detailViewModel.getGenreString(uiState.movieDetails?.genres?.map { it.name }
-                                ?: listOf())
+                                ?: listOf()),
+                            R.string.genre
                         )
                     }
 
@@ -207,7 +219,7 @@ fun DetailScreen(
             //Tablar
             item {
                 var selectedTab by remember { mutableIntStateOf(0) }
-                val tabs = listOf("About Movie", "Reviews", "Cast")
+                val tabs = listOf(R.string.about_movie, R.string.reviews, R.string.cast)
 
                 SecondaryTabRow(
                     selectedTabIndex = selectedTab,
@@ -221,7 +233,7 @@ fun DetailScreen(
                             onClick = { selectedTab = index },
                             text = {
                                 Text(
-                                    text = text,
+                                    text = stringResource(text),
                                     color = if (selectedTab == index) Color.White else Color.Gray,
                                     fontWeight = if (selectedTab == index)
                                         FontWeight.Bold else FontWeight.Normal
@@ -235,7 +247,7 @@ fun DetailScreen(
 
                 when (selectedTab) {
                     0 -> Text(
-                        text = uiState.movieDetails?.overview ?: "",
+                        text = uiState.movieDetails?.overview ?: stringResource(R.string.no_details),
                         color = Color.White,
                         fontSize = 15.sp,
                         lineHeight = 22.sp,
@@ -243,13 +255,13 @@ fun DetailScreen(
                     )
 
                     1 -> Text(
-                        "Reviews section placeholder",
+                        stringResource(R.string.no_reviews),
                         color = Color.Gray,
                         modifier = Modifier.padding(16.dp)
                     )
 
                     2 -> Text(
-                        "Cast section placeholder",
+                        stringResource(R.string.no_cast),
                         color = Color.Gray,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -261,15 +273,22 @@ fun DetailScreen(
 }
 
 @Composable
-fun IconText(icon: Painter, text: String) {
+fun IconText(icon: Painter, text: String, description: Int) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             painter = icon,
-            contentDescription = "IconText",
+            contentDescription = stringResource(description),
             tint = Color.Gray,
             modifier = Modifier.size(16.dp)
         )
         Spacer(Modifier.width(4.dp))
-        Text(text, color = Color.Gray, fontSize = 11.sp)
+        Text(
+            text,
+            color = Color.Gray,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+        )
     }
 }

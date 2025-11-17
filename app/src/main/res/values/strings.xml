@@ -1,46 +1,66 @@
 <resources>
+    //App Name
     <string name="app_name">Absolute Cinema</string>
+
+    //Login Page
     <string name="login_welcome">Welcome to</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login_button">Login</string>
 
+    //Password Visibility
     <string name="show_password">Show Password</string>
     <string name="hide_password">Hide Password</string>
 
+    //Pages
     <string name="home">Home</string>
     <string name="search">Search</string>
     <string name="watchlist">Watchlist</string>
     <string name="details">Details</string>
 
+    //TopAppBar
+    <string name="back_button">Back Button</string>
+    <string name="logout_button">Logout</string>
+    <string name="add_watchlist_button">Add to Watchlist</string>
+    <string name="remove_watchlist_button">Remove from Watchlist</string>
+
+    //Home Tabs
     <string name="now_playing">Now Playing</string>
     <string name="popular">Popular</string>
     <string name="upcoming">Upcoming</string>
     <string name="top_rated">Top Rated</string>
 
-    <string name="search_hint">Search for a movie</string>
+    //Search
     <string name="search_button">Search</string>
 
-    <string name="watchlist_empty">Your watchlist is empty</string>
+    //Movie Card
+    <string name="no_search_result">"We Are Sorry, We Can Not Find The Movie :("</string>
+    <string name="watchlist_empty">"There Is No Movie Yet!"</string>
+    <string name="no_result_description">"Find your movie by type title, categories, years, etc."</string>
+    <string name="no_result">No Result</string>
+
+    //WatchList
     <string name="watchlist_button">Add to Watchlist</string>
 
+    //Details
     <string name="banner_image">Banner Image</string>
     <string name="poster_image">Poster Image</string>
     <string name="rating">Rating</string>
     <string name="release_date">Release Date</string>
     <string name="runtime">Runtime</string>
     <string name="genre">Genre</string>
+
+    //Detail Tabs
     <string name="about_movie">About Movie</string>
     <string name="reviews">Reviews</string>
     <string name="cast">Cast</string>
+    <string name="no_details">No details found</string>
     <string name="no_reviews">No reviews found</string>
     <string name="no_cast">No cast found</string>
-    <string name="no_results">No results found</string>
 
-
-
-
-    <string name="logout_button">Logout</string>
-
+    //Notification
+    <string name="notification_icon">Notification Icon</string>
+    <string name="default_message">"Notification 32x32 ikon ve görsel alabilir. etin kullanımı en fazla üç satır ile sınırlıdır. Üç satırdan sonrası üç nokta olacaktır"</string>
+    <string name="welcome_message">"Welcome to ABSOLUTE CINEMA \n View and search your favorite movies \n Make sure to add new movies to your watchlist :)"</string>
 
 </resources>

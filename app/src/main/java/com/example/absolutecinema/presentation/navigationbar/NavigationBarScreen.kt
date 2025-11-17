@@ -1,5 +1,6 @@
 package com.example.absolutecinema.presentation.navigationbar
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +16,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -58,9 +57,10 @@ fun NavigationBarScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            val currentDestination = Destination.entries.find { it.route == currentRoute } ?: startDestination
+            val currentDestination =
+                Destination.entries.find { it.route == currentRoute } ?: startDestination
             TopAppBar(
-                title = currentDestination.label,
+                title = stringResource(currentDestination.label),
                 canNavigateBack = false,
                 navigateUp = { },
                 canBookmark = false,
@@ -114,10 +114,10 @@ fun NavigationBarScreen(
                             icon = {
                                 Icon(
                                     painter = painterResource(id = destination.icon),
-                                    contentDescription = destination.label
+                                    contentDescription = stringResource(destination.label)
                                 )
                             },
-                            label = { Text(destination.label) },
+                            label = { Text(stringResource(destination.label)) },
                             alwaysShowLabel = true,
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Color(0xFF0296E5),
@@ -170,9 +170,9 @@ fun AppNavHost(
 }
 
 enum class Destination(
-    val route: String, val label: String, val icon: Int
+    val route: String, @StringRes val label: Int, val icon: Int
 ) {
-    HOME("home", "Home", R.drawable.home),
-    SEARCH("search", "Search", R.drawable.search),
-    WATCH_LIST("watchList", "Watch List", R.drawable.watch_list)
+    HOME("home", R.string.home, R.drawable.home),
+    SEARCH("search", R.string.search, R.drawable.search),
+    WATCH_LIST("watchList", R.string.watchlist, R.drawable.watch_list)
 }

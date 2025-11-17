@@ -24,9 +24,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +33,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,8 +44,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
-import com.example.absolutecinema.presentation.utils.NotificationData
-import com.example.absolutecinema.presentation.utils.NotificationHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,8 +52,6 @@ fun HomeScreen(
     onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    var notification by remember { mutableStateOf<NotificationData?>(null) }
-
 
     Box(
         modifier = Modifier
@@ -133,15 +127,10 @@ fun HomeScreen(
                         selected = uiState.selectedTabIndex == index,
                         onClick = {
                             homeViewModel.onTabSelected(index)
-                            notification = NotificationData(
-                                message = title.repeat(15),
-                                icon = R.drawable.home_filled,
-                                onClick = { /* navigate somewhere */ }
-                            )
                         },
                         text = {
                             Text(
-                                text = title,
+                                text = stringResource(title),
                                 color = if (uiState.selectedTabIndex == index) Color.White else Color.Gray,
                                 fontWeight = if (uiState.selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
                                 fontSize = (11.8).sp
@@ -180,10 +169,6 @@ fun HomeScreen(
                 }
             }
         }
-        NotificationHost(
-            notificationData = notification,
-            onDismiss = { notification = null }
-        )
     }
 
 }

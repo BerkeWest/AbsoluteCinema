@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,16 +30,16 @@ fun NoResultScreen(screenName: NoResultScreenEnum) {
 
     var imageId: Int
     var title: String
-    val description = "Find your movie by type title, categories, years, etc."
+    val description = stringResource(R.string.no_result_description)
 
     when (screenName) {
         NoResultScreenEnum.SEARCH -> {
             imageId = R.drawable.no_result
-            title = "We Are Sorry, We Can Not Find The Movie :("
+            title = stringResource(R.string.no_search_result)
         }
         NoResultScreenEnum.WATCHLIST -> {
             imageId = R.drawable.empty_watchlist
-            title = "There Is No Movie Yet!"
+            title = stringResource(R.string.watchlist_empty)
         }
     }
 
@@ -51,7 +52,7 @@ fun NoResultScreen(screenName: NoResultScreenEnum) {
     ) {
         Image(
             painterResource(imageId),
-            contentDescription = "No Result"
+            contentDescription = stringResource(R.string.no_result)
         )
         Spacer(modifier = Modifier.height(16.dp))
 

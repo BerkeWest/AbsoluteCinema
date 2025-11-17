@@ -2,6 +2,7 @@ package com.example.absolutecinema.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.absolutecinema.R
 import com.example.absolutecinema.base.onError
 import com.example.absolutecinema.base.onSuccess
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
@@ -24,7 +25,7 @@ class HomeScreenViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    val tabs = listOf("Now Playing", "Upcoming", "Top rated", "Popular")
+    val tabs = listOf(R.string.now_playing, R.string.popular, R.string.upcoming, R.string.top_rated)
 
 
     init {

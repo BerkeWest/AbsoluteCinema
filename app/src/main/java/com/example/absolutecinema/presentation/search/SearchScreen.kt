@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.absolutecinema.R
@@ -46,12 +47,12 @@ fun SearchScreen(
             value = uiState.searchText,
             onValueChange = searchViewModel::onSearchTextChange, //pass the value to the function on change
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search") },
+            placeholder = { Text(stringResource(R.string.search)) },
             singleLine = true,
             shape = MaterialTheme.shapes.large,
 
             trailingIcon = {
-                Icon(painterResource(R.drawable.search), contentDescription = "Search Icon")
+                Icon(painterResource(R.drawable.search), contentDescription = stringResource(R.string.search))
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color(0xFF3A3F47),

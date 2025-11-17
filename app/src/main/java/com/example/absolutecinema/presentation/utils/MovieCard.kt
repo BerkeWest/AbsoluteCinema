@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,7 +86,7 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.rating),
-                        contentDescription = "Rating",
+                        contentDescription = stringResource(R.string.rating),
                         modifier = Modifier
                             .size(20.dp)
                             .padding(horizontal = 3.dp),
@@ -104,7 +105,7 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ticket),
-                        contentDescription = "Genre",
+                        contentDescription = stringResource(R.string.genre),
                         modifier = Modifier
                             .size(18.dp)
                             .padding(horizontal = 3.dp),
@@ -127,7 +128,7 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.calendar),
-                        contentDescription = "Release Date",
+                        contentDescription = stringResource(R.string.release_date),
                         modifier = Modifier
                             .size(18.dp)
                             .padding(horizontal = 3.dp),

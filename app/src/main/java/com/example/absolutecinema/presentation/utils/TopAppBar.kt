@@ -9,6 +9,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.example.absolutecinema.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +31,7 @@ fun TopAppBar(
                 IconButton(onClick = navigateUp) {
                     Icon(
                         painter = painterResource(R.drawable.back),
-                        contentDescription = "Back Button"
+                        contentDescription = stringResource(R.string.back_button)
                     )
                 }
             }
@@ -41,14 +42,15 @@ fun TopAppBar(
                     Icon(
                         painter = if (isBookmarked) painterResource(R.drawable.bookmark_filled)
                         else painterResource(R.drawable.bookmark),
-                        contentDescription = "WatchListIndicator"
+                        contentDescription = if (isBookmarked) stringResource(R.string.remove_watchlist_button)
+                        else stringResource(R.string.add_watchlist_button)
                     )
                 }
             } else if (accountAccess()) {
                 IconButton(onClick = logout) {
                     Icon(
                         painter = painterResource(R.drawable.logout),
-                        contentDescription = "Account"
+                        contentDescription = stringResource(R.string.logout_button)
                     )
                 }
             }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -35,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -53,6 +51,8 @@ import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
 import com.example.absolutecinema.presentation.utils.CastMember
+import com.example.absolutecinema.presentation.utils.IconText
+import com.example.absolutecinema.presentation.utils.PlaceholderText
 import com.example.absolutecinema.presentation.utils.TopAppBar
 import java.util.Locale
 
@@ -251,23 +251,20 @@ fun DetailScreen(
                 Spacer(Modifier.height(8.dp))
 
                 when (selectedTab) {
-                    0 -> Text(
-                        text = uiState.movieDetails?.overview
-                            ?: stringResource(R.string.no_details),
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        lineHeight = 22.sp,
-                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
-                        style = LocalTextStyle.current.copy(
-                            textIndent = TextIndent(firstLine = 24.sp)
+                    0 -> if (uiState.movieDetails?.overview != null) {
+                        Text(
+                            text = uiState.movieDetails?.overview!!,
+                            color = Color.White,
+                            fontSize = 15.sp,
+                            lineHeight = 22.sp,
+                            modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
+                            style = LocalTextStyle.current.copy(
+                                textIndent = TextIndent(firstLine = 24.sp)
+                            )
                         )
-                    )
+                    } else PlaceholderText(R.string.no_details)
 
-                    1 -> Text(
-                        stringResource(R.string.no_reviews),
-                        color = Color.Gray,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    1 -> PlaceholderText(R.string.no_reviews)
 
                     2 -> if (uiState.cast != null) {
                         LazyVerticalGrid(
@@ -284,36 +281,10 @@ fun DetailScreen(
                                 )
                             }
                         }
-                    }
-                    else Text(
-                        stringResource(R.string.no_cast),
-                        color = Color.Gray,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    } else PlaceholderText(R.string.no_cast)
                 }
             }
         }
     }
 
-}
-
-@Composable
-fun IconText(icon: Painter, text: String, description: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            painter = icon,
-            contentDescription = stringResource(description),
-            tint = Color.Gray,
-            modifier = Modifier.size(16.dp)
-        )
-        Spacer(Modifier.width(4.dp))
-        Text(
-            text,
-            color = Color.Gray,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-        )
-    }
 }

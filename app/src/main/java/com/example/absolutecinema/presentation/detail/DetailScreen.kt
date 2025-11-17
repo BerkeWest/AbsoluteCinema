@@ -269,21 +269,27 @@ fun DetailScreen(
                         modifier = Modifier.padding(16.dp)
                     )
 
-                    2 -> LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.height(600.dp),
-                        verticalArrangement = Arrangement.spacedBy(25.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        items(items = uiState.cast ?: listOf()) { cast ->
-                            CastMember(
-                                name = cast.name,
-                                character = cast.character,
-                                profilePath = cast.profilePath
-                            )
+                    2 -> if (uiState.cast != null) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier.height(600.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            items(items = uiState.cast ?: listOf()) { cast ->
+                                CastMember(
+                                    name = cast.name,
+                                    character = cast.character,
+                                    profilePath = cast.profilePath
+                                )
+                            }
                         }
-
                     }
+                    else Text(
+                        stringResource(R.string.no_cast),
+                        color = Color.Gray,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
             }
         }

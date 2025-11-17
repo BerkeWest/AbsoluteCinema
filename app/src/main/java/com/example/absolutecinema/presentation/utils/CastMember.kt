@@ -3,6 +3,7 @@ package com.example.absolutecinema.presentation.utils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -35,7 +36,10 @@ fun CastMember(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = Modifier.width(90.dp).padding(horizontal = 10.dp)
+        modifier = Modifier
+            .width(90.dp)
+            .height(204.dp)
+            .padding(horizontal = 10.dp)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(context = LocalContext.current)
@@ -43,7 +47,7 @@ fun CastMember(
                 .crossfade(true)
                 .build(),
             error = painterResource(R.drawable.account),
-            placeholder = painterResource(R.drawable.loading_img),
+            placeholder = painterResource(R.drawable.account),
             contentDescription = name,
             contentScale = ContentScale.Crop,
             modifier = Modifier

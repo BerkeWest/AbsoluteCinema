@@ -102,6 +102,7 @@ fun NavigationBarScreen(
                                         restoreState = true
                                     }
                                 }
+                                /*
                                 NotificationManager.show {
                                     Notification(
                                         message = index.toString().repeat(3000),
@@ -110,6 +111,7 @@ fun NavigationBarScreen(
                                         onDismiss = { NotificationManager.dismiss() }
                                     )
                                 }
+                                */
                             },
                             icon = {
                                 Icon(

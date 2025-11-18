@@ -1,4 +1,4 @@
-package com.example.absolutecinema.presentation.utils
+package com.example.absolutecinema.presentation.utils.notifications
 
 import android.content.Context
 import android.widget.Toast

@@ -50,10 +50,11 @@ import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
-import com.example.absolutecinema.presentation.utils.CastMember
-import com.example.absolutecinema.presentation.utils.IconText
-import com.example.absolutecinema.presentation.utils.PlaceholderText
 import com.example.absolutecinema.presentation.utils.TopAppBar
+import com.example.absolutecinema.presentation.utils.detail.CastMember
+import com.example.absolutecinema.presentation.utils.detail.IconText
+import com.example.absolutecinema.presentation.utils.detail.PlaceholderText
+import com.example.absolutecinema.presentation.utils.detail.Review
 import java.util.Locale
 
 object DetailPage : NavigationDestination {
@@ -264,7 +265,19 @@ fun DetailScreen(
                         )
                     } else PlaceholderText(R.string.no_details)
 
-                    1 -> PlaceholderText(R.string.no_reviews)
+                    1 -> if (uiState.reviews != null) {
+                        Column {
+                            uiState.reviews?.forEachIndexed { index, review ->
+                                Review(
+                                    author = review.author,
+                                    rating = review.authorDetails.rating.toString(),
+                                    content = review.content,
+                                    avatarPath = review.authorDetails.avatarPath
+                                )
+                            }
+                        }
+
+                    } else PlaceholderText(R.string.no_reviews)
 
                     2 -> if (uiState.cast != null) {
                         LazyVerticalGrid(

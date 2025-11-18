@@ -32,8 +32,6 @@ import com.example.absolutecinema.presentation.home.HomeScreen
 import com.example.absolutecinema.presentation.login.AuthViewModel
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
 import com.example.absolutecinema.presentation.search.SearchScreen
-import com.example.absolutecinema.presentation.utils.Notification
-import com.example.absolutecinema.presentation.utils.NotificationManager
 import com.example.absolutecinema.presentation.utils.TopAppBar
 import com.example.absolutecinema.presentation.watchlist.WatchListScreen
 

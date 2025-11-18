@@ -11,8 +11,8 @@ import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCa
 import com.example.absolutecinema.domain.usecase.authentication.LoginUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
-import com.example.absolutecinema.presentation.utils.Notification
-import com.example.absolutecinema.presentation.utils.NotificationManager
+import com.example.absolutecinema.presentation.utils.notifications.Notification
+import com.example.absolutecinema.presentation.utils.notifications.NotificationManager
 import com.example.absolutecinema.presentation.utils.PassWordVisibility
 import com.example.absolutecinema.presentation.utils.PasswordState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,21 +31,6 @@ class AuthViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(LoginScreenUIState())
     val uiState = _uiState.asStateFlow()
-
-    init {
-        accessControl()
-    }
-
-    fun accessControl() {
-        checkAccessUseCase.invoke(FlowUseCase.Params())
-            .onSuccess { data ->
-                if (data) _uiState.update { it.copy(loginState = LoginResult.Success(true)) }
-            }.onError { error ->
-                _uiState.update {
-                    it.copy(loginState = LoginResult.Error(error.localizedMessage))
-                }
-            }.launchIn(viewModelScope)
-    }
 
     fun login(username: String, password: String) {
         loginUseCase.invoke(LoginUseCase.Params(username, password))

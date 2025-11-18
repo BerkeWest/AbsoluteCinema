@@ -35,3 +35,24 @@ data class CastDomainModel(
     val profilePath: String?,
     val character: String,
 ) : BaseDomainModel
+
+
+@Serializable
+data class ReviewsDomainModel(
+    val results: List<ReviewResultDomainModel>
+) : BaseDomainModel
+
+@Serializable
+data class ReviewResultDomainModel(
+    val author: String,
+    val authorDetails: AuthorDomainModel,
+    val content: String,
+) : BaseDomainModel
+
+@Serializable
+data class AuthorDomainModel(
+    val name: String,
+    val username: String,
+    val avatarPath: String?,
+    val rating: Double?
+) : BaseDomainModel

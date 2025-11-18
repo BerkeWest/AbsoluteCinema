@@ -36,7 +36,36 @@ data class MovieCastRemoteDataModel(
 
 @Serializable
 data class CastRemoteDataModel(
+    @SerialName("name")
     val name: String,
-    @SerialName("profile_path") val profilePath: String?,
+    @SerialName("profile_path")
+    val profilePath: String?,
+    @SerialName("character")
     val character: String,
-) : BaseDataModel
+): BaseDataModel
+
+@Serializable
+data class ReviewsRemoteDataModel(
+    @SerialName("results")
+    val results: List<ReviewResultRemoteDataModel>
+): BaseDataModel
+
+@Serializable
+data class ReviewResultRemoteDataModel(
+    @SerialName("author")
+    val author: String,
+    @SerialName("author_details") val authorDetails: AuthorRemoteDataModel,
+    val content: String,
+): BaseDataModel
+
+@Serializable
+data class AuthorRemoteDataModel(
+    @SerialName("name")
+    val name: String,
+    @SerialName("username")
+    val username: String,
+    @SerialName("avatar_path")
+    val avatarPath: String?,
+    @SerialName("rating")
+    val rating: Double?
+): BaseDataModel

@@ -9,9 +9,11 @@ import com.example.absolutecinema.base.onSuccess
 import com.example.absolutecinema.data.model.response.CastDomainModel
 import com.example.absolutecinema.data.model.response.MovieDetailsDomainModel
 import com.example.absolutecinema.data.model.response.MovieStateDomainModel
+import com.example.absolutecinema.data.model.response.ReviewResultDomainModel
 import com.example.absolutecinema.domain.usecase.detail.BookmarkUseCase
 import com.example.absolutecinema.domain.usecase.detail.LoadCastUseCase
 import com.example.absolutecinema.domain.usecase.detail.LoadDetailsUseCase
+import com.example.absolutecinema.domain.usecase.detail.LoadReviewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +27,7 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val loadDetailsUseCase: LoadDetailsUseCase,
     private val loadCastUseCase: LoadCastUseCase,
+    private val loadReviewsUseCase: LoadReviewsUseCase,
     private val bookmarkUseCase: BookmarkUseCase,
 ) : ViewModel() {
 
@@ -40,6 +43,7 @@ class DetailViewModel @Inject constructor(
     init {
         loadDetails()
         getMovieCast()
+        loadMovieReviews()
     }
 
     private fun loadDetails() {
@@ -112,6 +116,26 @@ class DetailViewModel @Inject constructor(
                 }
             }.launchIn(viewModelScope)
     }
+
+    private fun loadMovieReviews() {
+        _uiState.update { it.copy(isLoading = true) }
+        loadReviewsUseCase.invoke(LoadReviewsUseCase.Params(movieId))
+            .onSuccess { reviews ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        reviews = reviews
+                    )
+                }
+            }.onError { error ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        snackBarMessage = error.localizedMessage
+                    )
+                }
+            }.launchIn(viewModelScope)
+    }
 }
 
 data class DetailUIState(
@@ -119,5 +143,6 @@ data class DetailUIState(
     val snackBarMessage: String? = null,
     val movieDetails: MovieDetailsDomainModel? = null,
     val movieState: MovieStateDomainModel? = null,
-    val cast: List<CastDomainModel>? = null
+    val cast: List<CastDomainModel>? = null,
+    val reviews: List<ReviewResultDomainModel>? = null
 )

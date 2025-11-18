@@ -18,13 +18,20 @@ import com.example.absolutecinema.presentation.navigationbar.NavigationBarScreen
 @Composable
 fun CinemaNavHost(
     navController: NavHostController,
+    startDestination: String,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
-        navController = navController, startDestination = LoginPage.route, modifier = modifier
+        navController = navController, startDestination = startDestination, modifier = modifier
     ) {
         composable(route = LoginPage.route) {
-            LoginScreen(navigateToHome = { navController.navigate(NavigationBarRoute.route) {popUpTo(0)} })
+            LoginScreen(navigateToHome = {
+                navController.navigate(NavigationBarRoute.route) {
+                    popUpTo(
+                        0
+                    )
+                }
+            })
         }
         composable(route = NavigationBarRoute.route) {
             NavigationBarScreen(

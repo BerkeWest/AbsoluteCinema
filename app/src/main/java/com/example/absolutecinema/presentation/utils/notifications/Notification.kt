@@ -1,4 +1,4 @@
-package com.example.absolutecinema.presentation.utils
+package com.example.absolutecinema.presentation.utils.notifications
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

@@ -5,6 +5,7 @@ import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataMode
 import com.example.absolutecinema.data.model.response.MovieSearchResultRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
 import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
+import com.example.absolutecinema.data.model.response.ReviewsRemoteDataModel
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepositoryInterface {
@@ -17,6 +18,8 @@ interface MovieRepositoryInterface {
     fun getMovieState(id: Int): Flow<MovieStateRemoteDataModel>
 
     fun getCast(id: Int): Flow<List<CastRemoteDataModel>>
+
+    fun getReviews(id: Int): Flow<ReviewsRemoteDataModel>
 
     fun getWatchList(): Flow<ResultPagesRemoteDataModel>
 

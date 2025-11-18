@@ -6,6 +6,7 @@ import com.example.absolutecinema.data.model.response.MovieCastRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
 import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
+import com.example.absolutecinema.data.model.response.ReviewsRemoteDataModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -56,6 +57,11 @@ interface MovieApiService {
     suspend fun getMovieCast(
         @Path("movie_id") movieId: Int
     ): MovieCastRemoteDataModel
+
+    @GET("movie/{movie_id}/reviews")
+    suspend fun getMovieReviews(
+        @Path("movie_id") movieId: Int
+    ): ReviewsRemoteDataModel
 
 
     // WATCHLIST

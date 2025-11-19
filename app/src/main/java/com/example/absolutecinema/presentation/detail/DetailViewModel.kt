@@ -124,7 +124,7 @@ class DetailViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        reviews = reviews
+                        reviews = reviews.ifEmpty { null }
                     )
                 }
             }.onError { error ->

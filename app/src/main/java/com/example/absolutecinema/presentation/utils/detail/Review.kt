@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 
 @Composable
@@ -51,7 +52,7 @@ fun Review(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(avatarPath?.removePrefix("/"))
+                    .data(BuildConfig.AVATAR_URL + avatarPath)
                     .crossfade(true)
                     .build(),
                 error = painterResource(R.drawable.account),
@@ -68,7 +69,7 @@ fun Review(
                 color = Color.Cyan
             )
         }
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(15.dp))
         Column {
             Text(
                 text = author,

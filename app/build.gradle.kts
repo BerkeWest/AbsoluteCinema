@@ -30,6 +30,7 @@ android {
         buildConfigField("String", "API_KEY", "\"${secretProperties["API_KEY"]}\"")
         buildConfigField("String", "BASE_URL", "\"${secretProperties["BASE_URL"]}\"")
         buildConfigField("String", "IMAGE_URL", "\"${secretProperties["IMAGE_URL"]}\"")
+        buildConfigField("String", "AVATAR_URL", "\"${secretProperties["AVATAR_URL"]}\"")
 
     }
 
@@ -48,7 +49,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
+        @Suppress("DEPRECATION")
         jvmTarget = "11"
+        @Suppress("DEPRECATION")
         freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
     }
     buildFeatures {

@@ -70,7 +70,7 @@ fun HomeScreen(
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                items(uiState.topMovies) { movie ->
+                items(uiState.popular.take(10)) { movie ->
                     Box(
                         modifier = Modifier
                             .width(180.dp)
@@ -95,7 +95,7 @@ fun HomeScreen(
 
                         // Rank Number
                         Text(
-                            text = (uiState.topMovies.indexOf(movie) + 1).toString(),
+                            text = (uiState.popular.take(10).indexOf(movie) + 1).toString(),
                             fontSize = 72.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFFACDFFA),
@@ -148,7 +148,15 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(uiState.tabResult) { movie ->
+                val currentMovieList = when (uiState.selectedTabIndex) {
+                    0 -> uiState.nowPlaying
+                    1 -> uiState.upcoming
+                    2 -> uiState.topRated
+                    3 -> uiState.popular
+                    else -> emptyList()
+                }
+
+                items(currentMovieList) { movie ->
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
                             .data(BuildConfig.IMAGE_URL + movie.posterPath)

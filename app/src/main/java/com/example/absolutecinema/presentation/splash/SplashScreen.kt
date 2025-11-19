@@ -45,7 +45,7 @@ fun SplashScreen(
             .background(Color(0xFF242A32))
     ) {
         Image(
-            painter = painterResource(R.drawable.popcorn),
+            painter = painterResource(R.drawable.empty_watchlist),
             contentDescription = stringResource(R.string.app_name),
             modifier = Modifier.fillMaxWidth(),
         )

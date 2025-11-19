@@ -70,8 +70,7 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
                     Text(
                         it, style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
-                            .width(200.dp)
-                            .height(24.dp),
+                            .fillMaxWidth(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = Color.White

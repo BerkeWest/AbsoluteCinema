@@ -2,11 +2,10 @@ package com.example.absolutecinema.presentation.navigationbar
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
@@ -73,14 +72,12 @@ fun NavigationBarScreen(
         },
         bottomBar = {
             Column {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(0.8.dp)
-                        .background(Color(0xFF2A80FF))
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = Color(0xFF2A80FF)
                 )
                 NavigationBar(
-                    modifier = Modifier.height(90.dp),
                     containerColor = Color(0xFF242A32),
                     windowInsets = NavigationBarDefaults.windowInsets,
                 ) {

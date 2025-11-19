@@ -14,11 +14,9 @@ class LoginUseCase @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : FlowUseCase<LoginUseCase.Params, LoginResult>(dispatcher) {
 
-    override fun execute(params: Params): Flow<LoginResult> {
-        if (params.username.isBlank() || params.password.isBlank()) {
-            return flow { emit(LoginResult.Error("Username and password cannot be empty")) }
-        }
-        return flow {
+    override fun execute(params: Params): Flow<LoginResult> = flow{
+        if (params.username.isBlank() || params.password.isBlank()) emit(LoginResult.Error("Username and password cannot be empty"))
+        else {
             emit(LoginResult.Loading)
             try {
                 val result = authRepository.login(params.username, params.password)

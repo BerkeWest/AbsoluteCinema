@@ -169,7 +169,6 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(12.dp))
-                            .height(180.dp)
                             .clickable {
                                 movie.id?.let { onNavigateToDetails(it) }
                             }

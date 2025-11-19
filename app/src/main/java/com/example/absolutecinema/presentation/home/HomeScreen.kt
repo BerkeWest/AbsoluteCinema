@@ -70,7 +70,7 @@ fun HomeScreen(
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                items(uiState.popular.take(10)) { movie ->
+                items(uiState.topMovies) { movie ->
                     Box(
                         modifier = Modifier
                             .width(180.dp)
@@ -95,7 +95,7 @@ fun HomeScreen(
 
                         // Rank Number
                         Text(
-                            text = (uiState.popular.take(10).indexOf(movie) + 1).toString(),
+                            text = (uiState.topMovies.indexOf(movie) + 1).toString(),
                             fontSize = 72.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFFACDFFA),

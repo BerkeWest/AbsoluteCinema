@@ -270,7 +270,7 @@ fun DetailScreen(
                             uiState.reviews?.forEachIndexed { index, review ->
                                 Review(
                                     author = review.author,
-                                    rating = review.authorDetails.rating.toString(),
+                                    rating = if (review.authorDetails.rating != null) review.authorDetails.rating.toString() else "0.0",
                                     content = review.content,
                                     avatarPath = review.authorDetails.avatarPath
                                 )

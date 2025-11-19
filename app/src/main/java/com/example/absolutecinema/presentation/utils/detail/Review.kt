@@ -35,7 +35,7 @@ import com.example.absolutecinema.R
 @Composable
 fun Review(
     author: String,
-    rating: String?,
+    rating: String,
     content: String,
     avatarPath: String?
 ) {
@@ -65,7 +65,7 @@ fun Review(
             )
             Spacer(modifier = Modifier.height(5.dp))
             Text(
-                text = rating ?: "0/10",
+                text = rating,
                 color = Color.Cyan
             )
         }

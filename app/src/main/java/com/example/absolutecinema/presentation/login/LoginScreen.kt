@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -93,7 +94,7 @@ fun LoginScreen(
             .padding(horizontal = 24.dp),
         contentAlignment = Alignment.Center,
 
-    ) {
+        ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -134,6 +135,17 @@ fun LoginScreen(
                     label = { Text(stringResource(R.string.username), color = Color.Black) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Next
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.DarkGray,
+                        unfocusedBorderColor = Color.DarkGray,
+                        focusedLabelColor = Color.Gray,
+                        unfocusedLabelColor = Color.Gray,
+                        focusedTextColor = Color.DarkGray,
+                        unfocusedTextColor = Color.DarkGray,
+                        cursorColor = Color.DarkGray,
+                        errorLabelColor = Color.Red,
+                        errorBorderColor = Color.Red
                     )
                 )
                 OutlinedTextField(
@@ -164,6 +176,17 @@ fun LoginScreen(
                             focusManager.clearFocus()
                             authViewModel.login(uiState.username, uiState.password)
                         }
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.DarkGray,
+                        unfocusedBorderColor = Color.DarkGray,
+                        focusedLabelColor = Color.Gray,
+                        unfocusedLabelColor = Color.Gray,
+                        focusedTextColor = Color.DarkGray,
+                        unfocusedTextColor = Color.DarkGray,
+                        cursorColor = Color.DarkGray,
+                        errorLabelColor = Color.Red,
+                        errorBorderColor = Color.Red
                     )
 
                 )

@@ -1,7 +1,7 @@
 package com.example.absolutecinema.data.movie
 
-import com.example.absolutecinema.data.model.request.WatchListBody
 import com.example.absolutecinema.data.datasource.local.MovieLocalDataSource
+import com.example.absolutecinema.data.model.request.WatchListBody
 import kotlinx.coroutines.flow.flow
 
 class MovieRepository(
@@ -16,11 +16,12 @@ class MovieRepository(
     GenreMap null değilse, istek atmadan kendisini döndürür, yoksa api'den alır ve güncelleyip döndürür.
     */
     override fun getGenreMap() = flow {
-        genreMap?.let { emit(it) }
-
-        val response = api.getGenreList()
-        genreMap = response.genres.associate { it.id to it.name }
-        emit(genreMap ?: emptyMap())
+        if (genreMap?.isNotEmpty() == true) genreMap?.let { emit(it) }
+        else {
+            val response = api.getGenreList()
+            genreMap = response.genres.associate { it.id to it.name }
+            emit(genreMap ?: emptyMap())
+        }
     }
 
     /*
@@ -103,7 +104,7 @@ class MovieRepository(
     }
 
     override fun getTopRated() = flow {
-        emit( api.getTopRatedMovies())
+        emit(api.getTopRatedMovies())
     }
 
 }

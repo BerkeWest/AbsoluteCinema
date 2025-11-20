@@ -27,9 +27,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -224,24 +221,22 @@ fun DetailScreen(
 
             //Tablar
             item {
-                var selectedTab by remember { mutableIntStateOf(0) }
-                val tabs = listOf(R.string.about_movie, R.string.reviews, R.string.cast)
 
                 SecondaryTabRow(
-                    selectedTabIndex = selectedTab,
+                    selectedTabIndex = uiState.selectedTabIndex,
                     containerColor = Color.Transparent,
                     contentColor = Color.White,
                     divider = {}
                 ) {
-                    tabs.forEachIndexed { index, text ->
+                    detailViewModel.tabs.forEachIndexed { index, text ->
                         Tab(
-                            selected = selectedTab == index,
-                            onClick = { selectedTab = index },
+                            selected = uiState.selectedTabIndex == index,
+                            onClick = { detailViewModel.onTabSelected(index) },
                             text = {
                                 Text(
                                     text = stringResource(text),
-                                    color = if (selectedTab == index) Color.White else Color.Gray,
-                                    fontWeight = if (selectedTab == index)
+                                    color = if (uiState.selectedTabIndex == index) Color.White else Color.Gray,
+                                    fontWeight = if (uiState.selectedTabIndex == index)
                                         FontWeight.Bold else FontWeight.Normal
                                 )
                             }
@@ -251,7 +246,7 @@ fun DetailScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                when (selectedTab) {
+                when (uiState.selectedTabIndex) {
                     0 -> if (uiState.movieDetails?.overview != null) {
                         Text(
                             text = uiState.movieDetails?.overview!!,
@@ -281,7 +276,7 @@ fun DetailScreen(
 
                     2 -> if (uiState.cast != null) {
                         LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
+                            columns = GridCells.Adaptive(150.dp),
                             modifier = Modifier.height(600.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),

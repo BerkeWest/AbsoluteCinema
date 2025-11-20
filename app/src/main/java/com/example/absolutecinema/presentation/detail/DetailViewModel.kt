@@ -3,6 +3,7 @@ package com.example.absolutecinema.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.absolutecinema.R
 import com.example.absolutecinema.base.onError
 import com.example.absolutecinema.base.onLoading
 import com.example.absolutecinema.base.onSuccess
@@ -40,10 +41,11 @@ class DetailViewModel @Inject constructor(
     //navigation graphden gelen idyi çekerek kaydeder.
     private val movieId: Int = checkNotNull(savedStateHandle["movieId"])
 
+    val tabs = listOf(R.string.about_movie, R.string.reviews, R.string.cast)
+
+
     init {
         loadDetails()
-        getMovieCast()
-        loadMovieReviews()
     }
 
     private fun loadDetails() {
@@ -117,6 +119,15 @@ class DetailViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
+    fun onTabSelected(tabIndex: Int) {
+        when (tabIndex) {
+            1 -> if (_uiState.value.reviews == null) loadMovieReviews()
+
+            2 -> if (_uiState.value.cast == null) getMovieCast()
+        }
+        _uiState.update { it.copy(selectedTabIndex = tabIndex) }
+    }
+
     private fun loadMovieReviews() {
         _uiState.update { it.copy(isLoading = true) }
         loadReviewsUseCase.invoke(LoadReviewsUseCase.Params(movieId))
@@ -141,6 +152,7 @@ class DetailViewModel @Inject constructor(
 data class DetailUIState(
     val isLoading: Boolean = false,
     val snackBarMessage: String? = null,
+    val selectedTabIndex: Int = 0,
     val movieDetails: MovieDetailsDomainModel? = null,
     val movieState: MovieStateDomainModel? = null,
     val cast: List<CastDomainModel>? = null,

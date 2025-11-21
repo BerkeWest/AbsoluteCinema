@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -75,3 +76,40 @@ fun WatchListContent(
         }
     }
 }
+
+//region Preview
+@Preview
+@Composable
+fun WatchListContentPreview() {
+    val watchlist = listOf(
+        MovieSearchResultDomainModel(
+            id = 1,
+            title = "Avatar: The Way of Water",
+            posterPath = "poster1.jpg",
+            releaseDate = "2023-01-01",
+            voteAverage = 7.5,
+            genreIds = listOf(1,2,3),
+            originalTitle = "Original Title",
+            overview = "",
+            popularity = 12.00,
+            genre = "Scienci Fiction"
+        ),
+        MovieSearchResultDomainModel(
+            id = 2,
+            title = "Demon Slayer: Kimetsu No Yaiba Infinity Castle",
+            posterPath = "poster2.jpg",
+            releaseDate = "2025-02-01",
+            voteAverage = 8.0,
+            genreIds = listOf(1,2,3),
+            originalTitle = "Original Title",
+            overview = "",
+            popularity = 12.00,
+            genre = "Action, Animation, Horror, Thriller, Comedy"
+        )
+    )
+    WatchListContent(
+        watchlist = watchlist,
+        onNavigateToDetails = {}
+    )
+}
+// endregion

@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
-import com.example.absolutecinema.base.onError
-import com.example.absolutecinema.base.onLoading
-import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.domain.base.onError
+import com.example.absolutecinema.domain.base.onLoading
+import com.example.absolutecinema.domain.base.onSuccess
 import com.example.absolutecinema.data.model.response.CastDomainModel
 import com.example.absolutecinema.data.model.response.MovieDetailsDomainModel
 import com.example.absolutecinema.data.model.response.MovieStateDomainModel

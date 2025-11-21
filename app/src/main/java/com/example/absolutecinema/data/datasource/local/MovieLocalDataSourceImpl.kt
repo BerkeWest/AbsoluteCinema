@@ -20,10 +20,6 @@ class MovieLocalDataSourceImpl @Inject constructor(
         return dataStore.getAccountId()
     }
 
-    suspend fun saveLocalRequestToken(requestToken: String) {
-        dataStore.requestToken = requestToken
-    }
-
     override suspend fun saveLocalSessionId(sessionId: String) {
         dataStore.saveSessionId(sessionId)
     }

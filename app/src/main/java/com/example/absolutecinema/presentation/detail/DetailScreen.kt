@@ -221,7 +221,6 @@ fun DetailScreen(
 
             //Tablar
             item {
-
                 SecondaryTabRow(
                     selectedTabIndex = uiState.selectedTabIndex,
                     containerColor = Color.Transparent,

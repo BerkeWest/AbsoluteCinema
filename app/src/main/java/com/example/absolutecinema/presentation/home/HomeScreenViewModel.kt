@@ -3,8 +3,8 @@ package com.example.absolutecinema.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
-import com.example.absolutecinema.base.onError
-import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.domain.base.onError
+import com.example.absolutecinema.domain.base.onSuccess
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import com.example.absolutecinema.domain.usecase.home.LoadTopMoviesUseCase

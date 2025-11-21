@@ -2,9 +2,9 @@ package com.example.absolutecinema.presentation.watchlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.base.onError
-import com.example.absolutecinema.base.onLoading
-import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.domain.base.onError
+import com.example.absolutecinema.domain.base.onLoading
+import com.example.absolutecinema.domain.base.onSuccess
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import com.example.absolutecinema.domain.usecase.watchlist.LoadWatchListUseCase

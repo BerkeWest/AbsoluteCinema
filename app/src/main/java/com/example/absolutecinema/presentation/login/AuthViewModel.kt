@@ -4,17 +4,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
-import com.example.absolutecinema.base.onError
-import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.domain.base.onError
+import com.example.absolutecinema.domain.base.onSuccess
 import com.example.absolutecinema.domain.model.authentication.LoginResult
-import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LoginUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
-import com.example.absolutecinema.presentation.utils.notifications.Notification
-import com.example.absolutecinema.presentation.utils.notifications.NotificationManager
 import com.example.absolutecinema.presentation.utils.PassWordVisibility
 import com.example.absolutecinema.presentation.utils.PasswordState
+import com.example.absolutecinema.presentation.utils.notifications.Notification
+import com.example.absolutecinema.presentation.utils.notifications.NotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val checkAccessUseCase: CheckAccessUseCase,
     private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 

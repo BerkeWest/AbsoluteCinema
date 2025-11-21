@@ -2,7 +2,7 @@ package com.example.absolutecinema.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.base.onSuccess
+import com.example.absolutecinema.domain.base.onSuccess
 import com.example.absolutecinema.domain.usecase.authentication.CheckAccessUseCase
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

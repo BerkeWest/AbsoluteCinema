@@ -1,6 +1,6 @@
 package com.example.absolutecinema.data.model.response
 
-import com.example.absolutecinema.base.BaseDataModel
+import com.example.absolutecinema.domain.base.BaseDataModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

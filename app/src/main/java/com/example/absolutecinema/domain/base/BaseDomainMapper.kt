@@ -1,4 +1,4 @@
-package com.example.absolutecinema.base
+package com.example.absolutecinema.domain.base
 
 interface BaseDomainMapper<Data : BaseDataModel, Domain : BaseDomainModel> {
     fun Data.toDomain(): Domain

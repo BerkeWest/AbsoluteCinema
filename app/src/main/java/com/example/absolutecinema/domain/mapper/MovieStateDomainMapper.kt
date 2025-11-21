@@ -1,6 +1,6 @@
 package com.example.absolutecinema.domain.mapper
 
-import com.example.absolutecinema.base.BaseDomainMapper
+import com.example.absolutecinema.domain.base.BaseDomainMapper
 import com.example.absolutecinema.data.model.response.MovieStateDomainModel
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
 

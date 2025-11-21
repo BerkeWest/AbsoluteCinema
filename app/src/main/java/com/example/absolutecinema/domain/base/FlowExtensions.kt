@@ -1,4 +1,4 @@
-package com.example.absolutecinema.base
+package com.example.absolutecinema.domain.base
 
 import com.example.absolutecinema.domain.model.generic.Result
 import kotlinx.coroutines.flow.Flow

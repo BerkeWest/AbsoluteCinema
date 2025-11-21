@@ -29,6 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,11 +40,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.authentication.LoginResult
+import com.example.absolutecinema.presentation.login.components.PassWordVisibility
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
 
 
@@ -122,42 +128,23 @@ fun LoginScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
                 )
-
-                OutlinedTextField(
+                LoginInputField(
                     value = uiState.username,
+                    isError = uiState.isError,
                     onValueChange = { newUsername ->
                         authViewModel.onUsernameChange(newUsername)
                     },
-                    singleLine = true,
-                    shape = shapes.large,
-                    isError = uiState.isError,
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(stringResource(R.string.username), color = Color.Black) },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Next
-                    ),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.DarkGray,
-                        unfocusedBorderColor = Color.DarkGray,
-                        focusedLabelColor = Color.Gray,
-                        unfocusedLabelColor = Color.Gray,
-                        focusedTextColor = Color.DarkGray,
-                        unfocusedTextColor = Color.DarkGray,
-                        cursorColor = Color.DarkGray,
-                        errorLabelColor = Color.Red,
-                        errorBorderColor = Color.Red
-                    )
+                    label = R.string.username,
+                    trailingIcon = null,
+                    imeAction = ImeAction.Next,
                 )
-                OutlinedTextField(
+                LoginInputField(
                     value = uiState.password,
-                    singleLine = true,
-                    shape = shapes.large,
                     isError = uiState.isError,
-                    modifier = Modifier.fillMaxWidth(),
                     onValueChange = { newPassword ->
                         authViewModel.onPasswordChange(newPassword)
                     },
-                    label = { Text(stringResource(R.string.password), color = Color.Black) },
+                    label = R.string.password,
                     trailingIcon = {
                         IconButton(onClick = { authViewModel.togglePasswordVisibility() }) {
                             Icon(
@@ -168,38 +155,109 @@ fun LoginScreen(
                         }
                     },
                     visualTransformation = uiState.passwordState.visualTransformation,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            authViewModel.login(uiState.username, uiState.password)
-                        }
-                    ),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.DarkGray,
-                        unfocusedBorderColor = Color.DarkGray,
-                        focusedLabelColor = Color.Gray,
-                        unfocusedLabelColor = Color.Gray,
-                        focusedTextColor = Color.DarkGray,
-                        unfocusedTextColor = Color.DarkGray,
-                        cursorColor = Color.DarkGray,
-                        errorLabelColor = Color.Red,
-                        errorBorderColor = Color.Red
-                    )
-
-                )
-                OutlinedButton(
-                    modifier = Modifier.width(150.dp),
-                    onClick = {
+                    imeAction = ImeAction.Done,
+                    onKeyboardDone = {
                         focusManager.clearFocus()
                         authViewModel.login(uiState.username, uiState.password)
                     }
-                ) {
-                    Text(stringResource(R.string.login_button), color = Color.Black)
-                }
+                )
+                LoginButton(
+                    {
+                        focusManager.clearFocus()
+                        authViewModel.login(uiState.username, uiState.password)
+                    }
+                )
             }
         }
     }
+}
+
+@Composable
+private fun LoginInputField(
+    value: String,
+    isError: Boolean,
+    onValueChange: (String) -> Unit,
+    label: Int,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    imeAction: ImeAction = ImeAction.Next,
+    onKeyboardDone: () -> Unit = {}
+
+) {
+    OutlinedTextField(
+        value = value,
+        singleLine = true,
+        shape = shapes.large,
+        isError = isError,
+        modifier = Modifier.fillMaxWidth(),
+        onValueChange = onValueChange,
+        label = { Text(stringResource(label), color = Color.Black) },
+        trailingIcon = trailingIcon,
+        visualTransformation = visualTransformation,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = imeAction
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { onKeyboardDone() }
+        ),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.DarkGray,
+            unfocusedBorderColor = Color.DarkGray,
+            focusedLabelColor = Color.Gray,
+            unfocusedLabelColor = Color.Gray,
+            focusedTextColor = Color.DarkGray,
+            unfocusedTextColor = Color.DarkGray,
+            cursorColor = Color.DarkGray,
+            errorLabelColor = Color.Red,
+            errorBorderColor = Color.Red
+        )
+    )
+}
+
+@Composable
+private fun LoginButton(
+    onClick: () -> Unit,
+) {
+    OutlinedButton(
+        modifier = Modifier.width(150.dp),
+        onClick = onClick,
+    ) {
+        Text(stringResource(R.string.login_button), color = Color.Black)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginInputFieldPreview() {
+    var input by remember { mutableStateOf("") }
+    var passwordState by remember { mutableStateOf(PassWordVisibility.INVISIBLE) }
+    LoginInputField(
+        value = input,
+        isError = false,
+        onValueChange = { input = it },
+        label = R.string.password,
+        trailingIcon = {
+            IconButton(onClick = {
+                passwordState =
+                    if (passwordState == PassWordVisibility.INVISIBLE) PassWordVisibility.VISIBLE
+                    else PassWordVisibility.INVISIBLE
+            }
+            ) {
+                Icon(
+                    painterResource(passwordState.state.icon),
+                    contentDescription = stringResource(passwordState.state.description),
+                    tint = Color.Black
+                )
+            }
+        },
+        visualTransformation = passwordState.state.visualTransformation,
+        imeAction = ImeAction.Next,
+        onKeyboardDone = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginButtonPreview() {
+    LoginButton(onClick = {})
 }

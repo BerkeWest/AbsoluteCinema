@@ -97,16 +97,6 @@ fun NavigationBarScreen(
                                         restoreState = true
                                     }
                                 }
-                                /*
-                                NotificationManager.show {
-                                    Notification(
-                                        message = index.toString().repeat(3000),
-                                        icon = R.drawable.visibility_off,
-                                        onClick = { /* navigate */ },
-                                        onDismiss = { NotificationManager.dismiss() }
-                                    )
-                                }
-                                */
                             },
                             icon = {
                                 Icon(

@@ -1,4 +1,4 @@
-package com.example.absolutecinema.presentation.utils.detail
+package com.example.absolutecinema.presentation.detail.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,11 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.absolutecinema.R
 
 @Composable
 fun IconText(icon: Painter, text: String, description: Int) {
@@ -49,3 +52,21 @@ fun PlaceholderText(
         modifier = Modifier.padding(16.dp)
     )
 }
+
+//region Previews
+@Preview
+@Composable
+fun IconTextPreview() {
+    IconText(
+        icon = painterResource(R.drawable.calendar),
+        text = "2023",
+        description = R.string.release_date
+    )
+}
+
+@Preview
+@Composable
+fun PlaceholderTextPreview() {
+    PlaceholderText(resource = R.string.no_cast)
+}
+//endregion

@@ -10,10 +10,10 @@ import com.example.absolutecinema.domain.model.authentication.LoginResult
 import com.example.absolutecinema.domain.usecase.authentication.LoginUseCase
 import com.example.absolutecinema.domain.usecase.authentication.LogoutUseCase
 import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
-import com.example.absolutecinema.presentation.utils.PassWordVisibility
-import com.example.absolutecinema.presentation.utils.PasswordState
-import com.example.absolutecinema.presentation.utils.notifications.Notification
-import com.example.absolutecinema.presentation.utils.notifications.NotificationManager
+import com.example.absolutecinema.presentation.login.components.PassWordVisibility
+import com.example.absolutecinema.presentation.login.components.PasswordState
+import com.example.absolutecinema.presentation.components.notifications.Notification
+import com.example.absolutecinema.presentation.components.notifications.NotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

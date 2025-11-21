@@ -1,4 +1,4 @@
-package com.example.absolutecinema.presentation.utils
+package com.example.absolutecinema.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

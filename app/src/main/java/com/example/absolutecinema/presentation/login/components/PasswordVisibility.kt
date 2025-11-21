@@ -1,4 +1,4 @@
-package com.example.absolutecinema.presentation.utils
+package com.example.absolutecinema.presentation.login.components
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.text.input.PasswordVisualTransformation

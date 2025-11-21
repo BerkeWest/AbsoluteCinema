@@ -1,4 +1,4 @@
-package com.example.absolutecinema.presentation.utils.notifications
+package com.example.absolutecinema.presentation.components.notifications
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

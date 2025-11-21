@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
-import com.example.absolutecinema.presentation.utils.MovieCard
-import com.example.absolutecinema.presentation.utils.NoResultScreen
-import com.example.absolutecinema.presentation.utils.NoResultScreenEnum
+import com.example.absolutecinema.presentation.components.MovieCard
+import com.example.absolutecinema.presentation.components.NoResultScreen
+import com.example.absolutecinema.presentation.components.NoResultScreenEnum
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

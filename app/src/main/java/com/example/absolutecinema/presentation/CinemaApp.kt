@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.absolutecinema.presentation.login.LoginPage
 import com.example.absolutecinema.presentation.navigation.CinemaNavHost
 import com.example.absolutecinema.presentation.navigationbar.NavigationBarRoute
-import com.example.absolutecinema.presentation.utils.notifications.NotificationOverlayHost
+import com.example.absolutecinema.presentation.components.notifications.NotificationOverlayHost
 
 @Composable
 fun CinemaApp(

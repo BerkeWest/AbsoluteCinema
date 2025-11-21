@@ -1,4 +1,4 @@
-package com.example.absolutecinema.presentation.utils
+package com.example.absolutecinema.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

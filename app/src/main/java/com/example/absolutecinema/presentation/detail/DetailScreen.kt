@@ -55,11 +55,11 @@ import com.example.absolutecinema.data.model.response.AuthorDomainModel
 import com.example.absolutecinema.data.model.response.CastDomainModel
 import com.example.absolutecinema.data.model.response.ReviewResultDomainModel
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
-import com.example.absolutecinema.presentation.utils.TopAppBar
-import com.example.absolutecinema.presentation.utils.detail.CastMember
-import com.example.absolutecinema.presentation.utils.detail.IconText
-import com.example.absolutecinema.presentation.utils.detail.PlaceholderText
-import com.example.absolutecinema.presentation.utils.detail.Review
+import com.example.absolutecinema.presentation.components.TopAppBar
+import com.example.absolutecinema.presentation.detail.components.CastMember
+import com.example.absolutecinema.presentation.detail.components.IconText
+import com.example.absolutecinema.presentation.detail.components.PlaceholderText
+import com.example.absolutecinema.presentation.detail.components.Review
 import java.util.Locale
 
 object DetailPage : NavigationDestination {

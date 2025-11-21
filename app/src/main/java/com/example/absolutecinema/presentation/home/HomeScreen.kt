@@ -1,5 +1,9 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.absolutecinema.presentation.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,20 +26,28 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -44,6 +56,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
+import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,115 +81,508 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(15.dp)
-            ) {
-                items(uiState.topMovies) { movie ->
-                    Box(
-                        modifier = Modifier
-                            .width(180.dp)
-                            .height(260.dp)
-                            .clickable { movie.id?.let { onNavigateToDetails(it) } }
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(context = LocalContext.current)
-                                .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                                .crossfade(true)
-                                .build(),
-                            error = painterResource(R.drawable.ic_broken_image),
-                            placeholder = painterResource(R.drawable.loading_img),
-                            contentDescription = movie.title,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .width(160.dp)
-                                .height(230.dp)
-                                .clip(RoundedCornerShape(12.dp)),
-                        )
-
-                        // Rank Number
-                        Text(
-                            text = (uiState.topMovies.indexOf(movie) + 1).toString(),
-                            fontSize = 72.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFACDFFA),
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color(0xFF0296E5), // Outline color (cyan)
-                                    offset = Offset(0f, 0f),
-                                    blurRadius = 20f // controls how thick the outline looks
-                                )
-                            ),
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                        )
-                    }
-                }
-            }
+            TopMoviesCarousel(uiState.topMovies, onNavigateToDetails)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            //Tab Row
-            SecondaryTabRow(
+            HomeTabs(
+                tabs = homeViewModel.tabs,
                 selectedTabIndex = uiState.selectedTabIndex,
-                containerColor = Color.Transparent,
-                contentColor = Color.White,
-                divider = {}
-            ) {
-                homeViewModel.tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = uiState.selectedTabIndex == index,
-                        onClick = {
-                            homeViewModel.onTabSelected(index)
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(title),
-                                color = if (uiState.selectedTabIndex == index) Color.White else Color.Gray,
-                                fontWeight = if (uiState.selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
-                                fontSize = (11.8).sp
-                            )
-                        }
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
+                onTabSelected = { index -> homeViewModel.onTabSelected(index) },
+                tab1 = uiState.nowPlaying,
+                tab2 = uiState.upcoming,
+                tab3 = uiState.topRated,
+                tab4 = uiState.popular,
+                onNavigateToDetails = onNavigateToDetails
+            )
+        }
+    }
+}
 
-            //Movie posters grid
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(100.dp),
-                modifier = Modifier.height(600.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                val currentMovieList = when (uiState.selectedTabIndex) {
-                    0 -> uiState.nowPlaying
-                    1 -> uiState.upcoming
-                    2 -> uiState.topRated
-                    3 -> uiState.popular
-                    else -> emptyList()
-                }
+//region Experimental
+@Composable
+private fun ExperimentalTopMoviesCarousel(
+    itemList: List<MovieSearchResultDomainModel> = emptyList(),
+    onNavigateToDetails: (Int) -> Unit
+) {
+    val itemCount = itemList.size
+    val state = rememberCarouselState(
+        itemCount = { itemCount }
+    )
 
-                items(currentMovieList) { movie ->
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                            .crossfade(true)
-                            .build(),
-                        error = painterResource(R.drawable.ic_broken_image),
-                        placeholder = painterResource(R.drawable.loading_img),
-                        contentDescription = movie.title,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable {
-                                movie.id?.let { onNavigateToDetails(it) }
-                            }
-                    )
-                }
-            }
+    // AUTO SCROLL EVERY 10s WHEN USER IS IDLE
+    LaunchedEffect(state.currentItem) {
+        while (true) {
+            delay(10_000)
+            val next = (state.currentItem + 1).mod(itemCount)
+            state.animateScrollToItem(next)
         }
     }
 
+    HorizontalMultiBrowseCarousel(
+        state = state,
+        preferredItemWidth = 180.dp,
+        itemSpacing = 15.dp
+    ) { index ->
+
+        val movie = itemList[index]
+
+        // SCALE ANIMATION: focused = 1f, others = 0.85f
+        val isFocused = (index == state.currentItem)
+        val scale by animateFloatAsState(
+            targetValue = if (isFocused) 1f else 0.85f,
+            label = "scaleAnim"
+        )
+
+        Box(
+            modifier = Modifier
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .width(180.dp)
+                .height(260.dp)
+                .clickable { movie.id?.let { onNavigateToDetails(it) } }
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                    .crossfade(true)
+                    .build(),
+                error = painterResource(R.drawable.ic_broken_image),
+                placeholder = painterResource(R.drawable.loading_img),
+                contentDescription = movie.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .width(160.dp)
+                    .height(230.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+
+            // SHOW INDEX NUMBER ONLY FOR ACTIVE ITEM
+            AnimatedVisibility(
+                visible = isFocused
+            ) {
+                Text(
+                    text = (index + 1).toString(),
+                    fontSize = 72.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFACDFFA),
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = Color(0xFF0296E5),
+                            offset = Offset.Zero,
+                            blurRadius = 20f
+                        )
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                )
+            }
+        }
+    }
 }
+//endregion
+
+@Composable
+private fun TopMoviesCarousel(
+    itemList: List<MovieSearchResultDomainModel> = emptyList(),
+    onNavigateToDetails: (Int) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        items(itemList) { movie ->
+            Box(
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(260.dp)
+                    .clickable { movie.id?.let { onNavigateToDetails(it) } }
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                        .crossfade(true)
+                        .build(),
+                    error = painterResource(R.drawable.ic_broken_image),
+                    placeholder = painterResource(R.drawable.loading_img),
+                    contentDescription = movie.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .width(160.dp)
+                        .height(230.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                )
+
+                // Rank Number
+                Text(
+                    text = (itemList.indexOf(movie) + 1).toString(),
+                    fontSize = 72.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFACDFFA),
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = Color(0xFF0296E5), // Outline color (cyan)
+                            offset = Offset(0f, 0f),
+                            blurRadius = 20f // controls how thick the outline looks
+                        )
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeTabs(
+    tabs: List<Int> = emptyList(),
+    selectedTabIndex: Int,
+    onTabSelected: (Int) -> Unit,
+    tab1: List<MovieSearchResultDomainModel> = emptyList(),
+    tab2: List<MovieSearchResultDomainModel> = emptyList(),
+    tab3: List<MovieSearchResultDomainModel> = emptyList(),
+    tab4: List<MovieSearchResultDomainModel> = emptyList(),
+    onNavigateToDetails: (Int) -> Unit
+) {
+    SecondaryTabRow(
+        selectedTabIndex = selectedTabIndex,
+        containerColor = Color.Transparent,
+        contentColor = Color.White,
+        divider = {}
+    ) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                selected = selectedTabIndex == index,
+                onClick = {
+                    onTabSelected(index)
+                },
+                text = {
+                    Text(
+                        text = stringResource(title),
+                        color = if (selectedTabIndex == index) Color.White else Color.Gray,
+                        fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
+                        fontSize = (11.8).sp
+                    )
+                }
+            )
+        }
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+
+    //Movie posters grid
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(100.dp),
+        modifier = Modifier.height(600.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        val currentMovieList = when (selectedTabIndex) {
+            0 -> tab1
+            1 -> tab2
+            2 -> tab3
+            3 -> tab4
+            else -> emptyList()
+        }
+
+        items(currentMovieList) { movie ->
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                    .crossfade(true)
+                    .build(),
+                error = painterResource(R.drawable.ic_broken_image),
+                placeholder = painterResource(R.drawable.loading_img),
+                contentDescription = movie.title,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        movie.id?.let { onNavigateToDetails(it) }
+                    }
+            )
+        }
+    }
+}
+
+//region Previews
+@Preview
+@Composable
+fun TopMoviesCarouselPreview() {
+    val itemList = listOf(
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 2,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 1,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 3,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 4,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 5,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 6,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 7,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 8,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 9,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ), MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 0,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        )
+    )
+
+    TopMoviesCarousel(
+        itemList = itemList,
+        onNavigateToDetails = {}
+    )
+}
+
+@Preview
+@Composable
+fun HomeTabsPreview() {
+    var tab by remember { mutableIntStateOf(0) }
+
+    val itemList = listOf(
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 2,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 1,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 3,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 4,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 5,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 6,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 7,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 8,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ),
+        MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 9,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        ), MovieSearchResultDomainModel(
+            genreIds = listOf(1, 2, 3),
+            id = 0,
+            originalTitle = "Demon Slayer",
+            overview = "Overview",
+            popularity = 1.0,
+            posterPath = "posterPath",
+            releaseDate = "2",
+            title = "Demon Slayer",
+            voteAverage = 4.8,
+            genre = "Anime, Action, Animation, Drama, Fantasy"
+        )
+    )
+    Column {
+        HomeTabs(
+            tabs = listOf(
+                R.string.now_playing,
+                R.string.upcoming,
+                R.string.top_rated,
+                R.string.popular
+            ),
+            selectedTabIndex = tab,
+            onTabSelected = { tab = it },
+            tab1 = itemList,
+            tab2 = itemList,
+            tab3 = emptyList(),
+            tab4 = emptyList(),
+            onNavigateToDetails = {}
+        )
+    }
+}
+//endregion

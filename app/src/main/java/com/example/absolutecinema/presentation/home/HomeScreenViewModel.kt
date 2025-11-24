@@ -27,7 +27,6 @@ class HomeScreenViewModel @Inject constructor(
 
     val tabs = listOf(R.string.now_playing, R.string.upcoming, R.string.top_rated, R.string.popular)
 
-
     init {
         loadTopMovies()
         getTabSelected(0)
@@ -76,16 +75,45 @@ class HomeScreenViewModel @Inject constructor(
     fun getTabSelected(tabIndex: Int) {
         onTabSelectedUseCase.invoke(OnTabSelectedUseCase.Params(tabIndex))
             .onSuccess { result ->
+                _uiState.update { it.copy(isLoading = true) }
                 when (tabIndex) {
-                    0 -> _uiState.update { it.copy(selectedTabIndex = tabIndex, nowPlaying = result) }
-                    1 -> _uiState.update { it.copy(selectedTabIndex = tabIndex, upcoming = result) }
-                    2 -> _uiState.update { it.copy(selectedTabIndex = tabIndex, topRated = result) }
-                    3 -> _uiState.update { it.copy(selectedTabIndex = tabIndex, popular = result) }
+                    0 -> _uiState.update {
+                        it.copy(
+                            selectedTabIndex = tabIndex,
+                            nowPlaying = result,
+                            isLoading = false
+                        )
+                    }
+
+                    1 -> _uiState.update {
+                        it.copy(
+                            selectedTabIndex = tabIndex,
+                            upcoming = result,
+                            isLoading = false
+                        )
+                    }
+
+                    2 -> _uiState.update {
+                        it.copy(
+                            selectedTabIndex = tabIndex,
+                            topRated = result,
+                            isLoading = false
+                        )
+                    }
+
+                    3 -> _uiState.update {
+                        it.copy(
+                            selectedTabIndex = tabIndex,
+                            popular = result,
+                            isLoading = false
+                        )
+                    }
                 }
             }.onError { error ->
                 _uiState.update {
                     it.copy(
-                        snackBarMessage = error.localizedMessage
+                        snackBarMessage = error.localizedMessage,
+                        isLoading = false
                     )
                 }
             }.launchIn(viewModelScope)

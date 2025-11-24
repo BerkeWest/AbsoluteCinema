@@ -65,7 +65,6 @@ fun LoginScreen(
     val uiState by authViewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
-    //Launched Effect, loginState'deki değişimde aktifleşir ve recompositionda tekrarlamaz.
     LaunchedEffect(uiState.loginState) {
         when (val state = uiState.loginState) {
             is LoginResult.Idle -> {

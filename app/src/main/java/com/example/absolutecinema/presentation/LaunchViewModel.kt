@@ -21,21 +21,16 @@ class LaunchViewModel @Inject constructor(
     val hasAccess: StateFlow<Boolean?> = _hasAccess
 
     init {
-        // Run the check as soon as the ViewModel is created
         performAccessCheck()
     }
 
     private fun performAccessCheck() {
-        // The .first() terminal operator will suspend until one value is emitted
-        // and then return it. This elegantly handles the async nature.
-        // We wrap in a try-catch to handle potential errors from the use case.
         try {
             checkAccessUseCase.invoke(FlowUseCase.Params())
                 .onSuccess { data ->
                     _hasAccess.value = data
                 }.launchIn(viewModelScope)
         } catch (e: Exception) {
-            // If any error occurs during the flow, treat it as no access.
             _hasAccess.value = false
         }
     }

@@ -55,6 +55,9 @@ fun CinemaNavHost(
                 })
         ) { navBackStack ->
             DetailScreen(
+                onNavigateToDetails = { movieId ->
+                    navController.navigate(DetailPage.route + "/$movieId")
+                },
                 navigateBack = { navController.navigateUp() }
             )
         }

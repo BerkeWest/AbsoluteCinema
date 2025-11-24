@@ -54,9 +54,11 @@
     <string name="about_movie">About Movie</string>
     <string name="reviews">Reviews</string>
     <string name="cast">Cast</string>
+    <string name="recommendations">For You</string>
     <string name="no_details">No details found</string>
     <string name="no_reviews">No reviews found</string>
     <string name="no_cast">No cast found</string>
+    <string name="no_recommendations">No recommendations found</string>
 
     //Notification
     <string name="notification_icon">Notification Icon</string>

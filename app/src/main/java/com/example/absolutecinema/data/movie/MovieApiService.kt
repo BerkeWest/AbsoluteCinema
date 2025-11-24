@@ -63,6 +63,10 @@ interface MovieApiService {
         @Path("movie_id") movieId: Int
     ): ReviewsRemoteDataModel
 
+    @GET("movie/{movie_id}/recommendations")
+    suspend fun getRecommendations(
+        @Path("movie_id") movieId: Int
+    ): ResultPagesRemoteDataModel
 
     // WATCHLIST
     @GET("account/{account_id}/watchlist/movies")

@@ -21,6 +21,8 @@ interface MovieRepositoryInterface {
 
     fun getReviews(id: Int): Flow<ReviewsRemoteDataModel>
 
+    fun getRecommendations(id: Int): Flow<ResultPagesRemoteDataModel>
+
     fun getWatchList(): Flow<ResultPagesRemoteDataModel>
 
     fun addToWatchlist(movieId: Int, add: Boolean): Flow<Unit>

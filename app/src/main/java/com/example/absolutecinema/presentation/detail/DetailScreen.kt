@@ -54,12 +54,13 @@ import com.example.absolutecinema.R
 import com.example.absolutecinema.data.model.response.AuthorDomainModel
 import com.example.absolutecinema.data.model.response.CastDomainModel
 import com.example.absolutecinema.data.model.response.ReviewResultDomainModel
-import com.example.absolutecinema.presentation.navigation.NavigationDestination
+import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.TopAppBar
 import com.example.absolutecinema.presentation.detail.components.CastMember
 import com.example.absolutecinema.presentation.detail.components.IconText
 import com.example.absolutecinema.presentation.detail.components.PlaceholderText
 import com.example.absolutecinema.presentation.detail.components.Review
+import com.example.absolutecinema.presentation.navigation.NavigationDestination
 import java.util.Locale
 
 object DetailPage : NavigationDestination {
@@ -70,6 +71,7 @@ object DetailPage : NavigationDestination {
 fun DetailScreen(
     navigateBack: () -> Unit,
     detailViewModel: DetailViewModel = hiltViewModel(),
+    onNavigateToDetails: (movieId: Int) -> Unit
 ) {
 
     val uiState by detailViewModel.uiState.collectAsStateWithLifecycle()
@@ -134,6 +136,8 @@ fun DetailScreen(
                     overview = uiState.movieDetails?.overview,
                     reviews = uiState.reviews,
                     cast = uiState.cast,
+                    recommendations = uiState.recommendations,
+                    onNavigateToDetails = onNavigateToDetails
                 )
             }
         }
@@ -276,7 +280,9 @@ private fun DetailTabs(
     isLoading: Boolean,
     overview: String?,
     reviews: List<ReviewResultDomainModel>?,
-    cast: List<CastDomainModel>?
+    cast: List<CastDomainModel>?,
+    recommendations: List<MovieSearchResultDomainModel>?,
+    onNavigateToDetails: (Int) -> Unit
 ) {
     SecondaryTabRow(
         selectedTabIndex = selectedTabIndex,
@@ -350,6 +356,35 @@ private fun DetailTabs(
             }
         } else if (isLoading) CircularProgressIndicator()
         else PlaceholderText(R.string.no_cast)
+
+        3 -> if (recommendations != null) {
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(100.dp),
+                modifier = Modifier.height(600.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(recommendations) { movie ->
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = LocalContext.current)
+                            .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                            .crossfade(true)
+                            .build(),
+                        error = painterResource(R.drawable.ic_broken_image),
+                        placeholder = painterResource(R.drawable.loading_img),
+                        contentDescription = movie.title,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable {
+                                movie.id?.let { onNavigateToDetails(it) }
+                            }
+                    )
+                }
+            }
+        } else if (isLoading) CircularProgressIndicator()
+        else PlaceholderText(R.string.no_recommendations)
     }
 }
 
@@ -429,7 +464,9 @@ fun DetailTabsPreview() {
             isLoading = false,
             overview = overview,
             reviews = reviews,
-            cast = cast
+            cast = cast,
+            recommendations = null,
+            onNavigateToDetails = {}
         )
     }
 }

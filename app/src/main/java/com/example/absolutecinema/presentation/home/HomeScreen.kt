@@ -443,7 +443,8 @@ private fun HomeTabsPager(
 
     LaunchedEffect(selectedTabIndex) {
         if (pagerState.currentPage != selectedTabIndex) {
-            pagerState.animateScrollToPage(selectedTabIndex)
+            if ((selectedTabIndex - pagerState.currentPage).absoluteValue > 1) pagerState.scrollToPage(selectedTabIndex)
+            else pagerState.animateScrollToPage(selectedTabIndex)
         }
     }
 
@@ -482,7 +483,7 @@ private fun HomeTabsPager(
         state = pagerState,
         pageSize = PageSize.Fill
     ) { page ->
-        if (isLoading) CircularProgressIndicator(modifier = Modifier.fillMaxSize())
+        if (isLoading) CircularProgressIndicator(modifier = Modifier)
         else {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(100.dp),

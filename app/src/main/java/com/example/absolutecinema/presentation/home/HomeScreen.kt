@@ -2,8 +2,6 @@
 
 package com.example.absolutecinema.presentation.home
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -34,8 +32,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
-import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -212,92 +208,6 @@ fun TopMoviesPager(
     }
 }
 
-//region Experimental
-@Composable
-private fun ExperimentalTopMoviesCarousel(
-    itemList: List<MovieSearchResultDomainModel> = emptyList(),
-    onNavigateToDetails: (Int) -> Unit
-) {
-    val itemCount = itemList.size
-    val state = rememberCarouselState(
-        itemCount = { itemCount }
-    )
-
-    // AUTO SCROLL EVERY 10s WHEN USER IS IDLE
-    LaunchedEffect(state.currentItem) {
-        while (true) {
-            delay(10_000)
-            val next = (state.currentItem + 1).mod(itemCount)
-            state.animateScrollToItem(next)
-        }
-    }
-
-    HorizontalMultiBrowseCarousel(
-        state = state,
-        preferredItemWidth = 180.dp,
-        itemSpacing = 15.dp
-    ) { index ->
-
-        val movie = itemList[index]
-
-        // SCALE ANIMATION: focused = 1f, others = 0.85f
-        val isFocused = (index == state.currentItem)
-        val scale by animateFloatAsState(
-            targetValue = if (isFocused) 1f else 0.85f,
-            label = "scaleAnim"
-        )
-
-        Box(
-            modifier = Modifier
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
-                .width(180.dp)
-                .height(260.dp)
-                .clickable { movie.id?.let { onNavigateToDetails(it) } }
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                    .crossfade(true)
-                    .build(),
-                error = painterResource(R.drawable.ic_broken_image),
-                placeholder = painterResource(R.drawable.loading_img),
-                contentDescription = movie.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .width(160.dp)
-                    .height(230.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
-
-            // SHOW INDEX NUMBER ONLY FOR ACTIVE ITEM
-            AnimatedVisibility(
-                visible = isFocused
-            ) {
-                Text(
-                    text = (index + 1).toString(),
-                    fontSize = 72.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFACDFFA),
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = Color(0xFF0296E5),
-                            offset = Offset.Zero,
-                            blurRadius = 20f
-                        )
-                    ),
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                )
-            }
-        }
-    }
-}
-//endregion
-
 @Composable
 private fun TopMoviesCarousel(
     itemList: List<MovieSearchResultDomainModel> = emptyList(),
@@ -443,7 +353,9 @@ private fun HomeTabsPager(
 
     LaunchedEffect(selectedTabIndex) {
         if (pagerState.currentPage != selectedTabIndex) {
-            if ((selectedTabIndex - pagerState.currentPage).absoluteValue > 1) pagerState.scrollToPage(selectedTabIndex)
+            if ((selectedTabIndex - pagerState.currentPage).absoluteValue > 1) pagerState.scrollToPage(
+                selectedTabIndex
+            )
             else pagerState.animateScrollToPage(selectedTabIndex)
         }
     }

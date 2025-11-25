@@ -16,11 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -207,132 +205,6 @@ fun TopMoviesPager(
         }
     }
 }
-
-@Composable
-private fun TopMoviesCarousel(
-    itemList: List<MovieSearchResultDomainModel> = emptyList(),
-    onNavigateToDetails: (Int) -> Unit
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        items(itemList) { movie ->
-            Box(
-                modifier = Modifier
-                    .width(180.dp)
-                    .height(260.dp)
-                    .clickable { movie.id?.let { onNavigateToDetails(it) } }
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                        .crossfade(true)
-                        .build(),
-                    error = painterResource(R.drawable.ic_broken_image),
-                    placeholder = painterResource(R.drawable.loading_img),
-                    contentDescription = movie.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .width(160.dp)
-                        .height(230.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                )
-
-                // Rank Number
-                Text(
-                    text = (itemList.indexOf(movie) + 1).toString(),
-                    fontSize = 72.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFACDFFA),
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = Color(0xFF0296E5), // Outline color (cyan)
-                            offset = Offset(0f, 0f),
-                            blurRadius = 20f // controls how thick the outline looks
-                        )
-                    ),
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun HomeTabs(
-    tabs: List<Int> = emptyList(),
-    selectedTabIndex: Int,
-    onTabSelected: (Int) -> Unit,
-    tab1: List<MovieSearchResultDomainModel> = emptyList(),
-    tab2: List<MovieSearchResultDomainModel> = emptyList(),
-    tab3: List<MovieSearchResultDomainModel> = emptyList(),
-    tab4: List<MovieSearchResultDomainModel> = emptyList(),
-    onNavigateToDetails: (Int) -> Unit
-) {
-    SecondaryTabRow(
-        selectedTabIndex = selectedTabIndex,
-        containerColor = Color.Transparent,
-        contentColor = Color.White,
-        divider = {}
-    ) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                selected = selectedTabIndex == index,
-                onClick = {
-                    onTabSelected(index)
-
-                },
-                text = {
-                    Text(
-                        text = stringResource(title),
-                        color = if (selectedTabIndex == index) Color.White else Color.Gray,
-                        fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
-                        fontSize = (11.8).sp
-                    )
-                }
-            )
-        }
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-
-    //Movie posters grid
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(100.dp),
-        modifier = Modifier.height(600.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        val currentMovieList = when (selectedTabIndex) {
-            0 -> tab1
-            1 -> tab2
-            2 -> tab3
-            3 -> tab4
-            else -> emptyList()
-        }
-
-        items(currentMovieList) { movie ->
-            AsyncImage(
-                model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                    .crossfade(true)
-                    .build(),
-                error = painterResource(R.drawable.ic_broken_image),
-                placeholder = painterResource(R.drawable.loading_img),
-                contentDescription = movie.title,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable {
-                        movie.id?.let { onNavigateToDetails(it) }
-                    }
-            )
-        }
-    }
-}
-
 
 @Composable
 private fun HomeTabsPager(
@@ -564,38 +436,6 @@ fun TopMoviesPagerPreview() {
         itemList = previewItemList,
         onNavigateToDetails = {}
     )
-}
-
-@Preview
-@Composable
-fun TopMoviesCarouselPreview() {
-    TopMoviesCarousel(
-        itemList = previewItemList,
-        onNavigateToDetails = {}
-    )
-}
-
-@Preview
-@Composable
-fun HomeTabsPreview() {
-    var tab by remember { mutableIntStateOf(0) }
-    Column {
-        HomeTabs(
-            tabs = listOf(
-                R.string.now_playing,
-                R.string.upcoming,
-                R.string.top_rated,
-                R.string.popular
-            ),
-            selectedTabIndex = tab,
-            onTabSelected = { tab = it },
-            tab1 = previewItemList,
-            tab2 = previewItemList,
-            tab3 = emptyList(),
-            tab4 = previewItemList,
-            onNavigateToDetails = {}
-        )
-    }
 }
 
 @Preview

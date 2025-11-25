@@ -140,7 +140,7 @@ class DetailViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        reviews = reviews.ifEmpty { null }
+                        reviews = reviews
                     )
                 }
             }.onError { error ->
@@ -160,7 +160,7 @@ class DetailViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        recommendations = results.ifEmpty { null }
+                        recommendations = results
                     )
                 }
             }.onError { error ->

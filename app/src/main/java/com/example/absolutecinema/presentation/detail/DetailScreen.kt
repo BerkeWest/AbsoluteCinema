@@ -18,6 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -27,6 +30,7 @@ import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +66,7 @@ import com.example.absolutecinema.presentation.detail.components.PlaceholderText
 import com.example.absolutecinema.presentation.detail.components.Review
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
 import java.util.Locale
+import kotlin.math.absoluteValue
 
 object DetailPage : NavigationDestination {
     override val route = "detail"
@@ -128,7 +133,7 @@ fun DetailScreen(
             }
 
             item {
-                DetailTabs(
+                DetailTabsPager(
                     selectedTabIndex = uiState.selectedTabIndex,
                     tabsList = detailViewModel.tabs,
                     onTabSelected = { index -> detailViewModel.onTabSelected(index) },
@@ -142,7 +147,6 @@ fun DetailScreen(
             }
         }
     }
-
 }
 
 @Composable
@@ -273,7 +277,7 @@ private fun IconTextRow(
 }
 
 @Composable
-private fun DetailTabs(
+private fun DetailTabsPager(
     selectedTabIndex: Int,
     tabsList: List<Int>,
     onTabSelected: (Int) -> Unit,
@@ -284,107 +288,141 @@ private fun DetailTabs(
     recommendations: List<MovieSearchResultDomainModel>?,
     onNavigateToDetails: (Int) -> Unit
 ) {
+    val pagerState = rememberPagerState(
+        initialPage = selectedTabIndex,
+        pageCount = { tabsList.size }
+    )
+
+    LaunchedEffect(selectedTabIndex) {
+        if (pagerState.currentPage != selectedTabIndex) {
+            if ((selectedTabIndex - pagerState.currentPage).absoluteValue > 1) pagerState.scrollToPage(
+                selectedTabIndex
+            )
+            else pagerState.animateScrollToPage(selectedTabIndex)
+        }
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage != selectedTabIndex) {
+            onTabSelected(pagerState.currentPage)
+        }
+    }
+
     SecondaryTabRow(
         selectedTabIndex = selectedTabIndex,
         containerColor = Color.Transparent,
         contentColor = Color.White,
         divider = {}
     ) {
-        tabsList.forEachIndexed { index, text ->
+        tabsList.forEachIndexed { index, title ->
             Tab(
                 selected = selectedTabIndex == index,
-                onClick = { onTabSelected(index) },
+                onClick = {
+                    onTabSelected(index)
+                },
                 text = {
                     Text(
-                        text = stringResource(text),
+                        text = stringResource(title),
                         color = if (selectedTabIndex == index) Color.White else Color.Gray,
-                        fontWeight = if (selectedTabIndex == index)
-                            FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
+                        fontSize = (11.8).sp
                     )
                 }
             )
         }
     }
+    Spacer(modifier = Modifier.height(8.dp))
 
-    Spacer(Modifier.height(8.dp))
+    HorizontalPager(
+        state = pagerState,
+        pageSize = PageSize.Fill
+    ) { page ->
+        when (page) {
 
-    when (selectedTabIndex) {
-
-        0 -> if (overview != null) {
-            Text(
-                text = overview,
-                color = Color.White,
-                fontSize = 15.sp,
-                lineHeight = 22.sp,
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
-                style = LocalTextStyle.current.copy(
-                    textIndent = TextIndent(firstLine = 24.sp)
-                )
-            )
-        } else if (isLoading) CircularProgressIndicator()
-        else PlaceholderText(R.string.no_details)
-
-        1 -> if (reviews != null) {
-            Column {
-                reviews.forEachIndexed { index, review ->
-                    Review(
-                        author = review.author,
-                        rating = if (review.authorDetails.rating != null) review.authorDetails.rating.toString() else "0.0",
-                        content = review.content,
-                        avatarPath = review.authorDetails.avatarPath
+            0 -> if (overview != null) {
+                if (overview.isNotEmpty() && !isLoading) {
+                    Text(
+                        text = overview,
+                        color = Color.White,
+                        fontSize = 15.sp,
+                        lineHeight = 22.sp,
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
+                        style = LocalTextStyle.current.copy(
+                            textIndent = TextIndent(firstLine = 24.sp)
+                        )
                     )
-                }
+                } else if (isLoading) CircularProgressIndicator()
+                else PlaceholderText(R.string.no_details)
             }
 
-        } else if (isLoading) CircularProgressIndicator()
-        else PlaceholderText(R.string.no_reviews)
+            1 -> if (reviews != null) {
+                if (reviews.isNotEmpty() && !isLoading) {
+                    Column {
+                        reviews.forEachIndexed { index, review ->
+                            Review(
+                                author = review.author,
+                                rating = if (review.authorDetails.rating != null) review.authorDetails.rating.toString() else "0.0",
+                                content = review.content,
+                                avatarPath = review.authorDetails.avatarPath
+                            )
+                        }
+                    }
 
-        2 -> if (cast != null) {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(150.dp),
-                modifier = Modifier.height(600.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(items = cast) { cast ->
-                    CastMember(
-                        name = cast.name,
-                        character = cast.character,
-                        profilePath = cast.profilePath
-                    )
-                }
+                } else if (isLoading) CircularProgressIndicator()
+                else PlaceholderText(R.string.no_reviews)
             }
-        } else if (isLoading) CircularProgressIndicator()
-        else PlaceholderText(R.string.no_cast)
 
-        3 -> if (recommendations != null) {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(100.dp),
-                modifier = Modifier.height(600.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(recommendations) { movie ->
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                            .crossfade(true)
-                            .build(),
-                        error = painterResource(R.drawable.ic_broken_image),
-                        placeholder = painterResource(R.drawable.loading_img),
-                        contentDescription = movie.title,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable {
-                                movie.id?.let { onNavigateToDetails(it) }
-                            }
-                    )
-                }
+            2 -> if (cast != null) {
+                if (cast.isNotEmpty() && !isLoading) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(150.dp),
+                        modifier = Modifier.height(600.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(items = cast) { cast ->
+                            CastMember(
+                                name = cast.name,
+                                character = cast.character,
+                                profilePath = cast.profilePath
+                            )
+                        }
+                    }
+                } else if (isLoading) CircularProgressIndicator()
+                else PlaceholderText(R.string.no_cast)
             }
-        } else if (isLoading) CircularProgressIndicator()
-        else PlaceholderText(R.string.no_recommendations)
+
+            3 -> if (recommendations != null) {
+                if (recommendations.isNotEmpty() && !isLoading) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(100.dp),
+                        modifier = Modifier.height(600.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(recommendations) { movie ->
+                            AsyncImage(
+                                model = ImageRequest.Builder(context = LocalContext.current)
+                                    .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                                    .crossfade(true)
+                                    .build(),
+                                error = painterResource(R.drawable.ic_broken_image),
+                                placeholder = painterResource(R.drawable.loading_img),
+                                contentDescription = movie.title,
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable {
+                                        movie.id?.let { onNavigateToDetails(it) }
+                                    }
+                            )
+                        }
+                    }
+                } else if (isLoading) CircularProgressIndicator()
+                else PlaceholderText(R.string.no_recommendations)
+            }
+        }
     }
 }
 
@@ -413,7 +451,7 @@ fun IconTextRowPreview() {
 
 @Preview
 @Composable
-fun DetailTabsPreview() {
+fun DetailTabsPagerPreview() {
     var tabIndex by remember { mutableIntStateOf(0) }
 
     val overview =
@@ -457,7 +495,7 @@ fun DetailTabsPreview() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        DetailTabs(
+        DetailTabsPager(
             selectedTabIndex = tabIndex,
             tabsList = listOf(R.string.about_movie, R.string.reviews, R.string.cast),
             onTabSelected = { tabIndex = it },

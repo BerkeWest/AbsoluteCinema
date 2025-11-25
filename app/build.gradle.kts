@@ -94,6 +94,8 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.gson)
     implementation(libs.security.crypto)
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
 
 
 

@@ -1,8 +1,15 @@
 package com.example.absolutecinema.data.movie
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.map
 import com.example.absolutecinema.data.datasource.local.MovieLocalDataSource
 import com.example.absolutecinema.data.model.request.WatchListBody
+import com.example.absolutecinema.data.paging.MoviePagingSource
+import com.example.absolutecinema.data.paging.PagingEnum
+import com.example.absolutecinema.domain.mapper.MovieSearchResultDomainMapper.toDomain
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class MovieRepository(
     private val api: MovieApiService,
@@ -96,8 +103,8 @@ class MovieRepository(
     /*
     Alttaki 4 method da api'den filmleri çeker. HomeScreen'deki tablerde gösterilirler.
     */
-    override fun getNowPlaying() = flow {
-        emit(api.getNowPlayingMovies())
+    override fun getNowPlaying(page: Int?) = flow {
+        emit(api.getNowPlayingMovies(page ?: 1))
     }
 
     override fun getPopular() = flow {
@@ -111,5 +118,10 @@ class MovieRepository(
     override fun getTopRated() = flow {
         emit(api.getTopRatedMovies())
     }
+
+    override fun getMoviePager(call: PagingEnum) =
+        Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
+            MoviePagingSource(call = call, api = api)
+        }.flow.map { it.map { dto -> dto.toDomain() } }
 
 }

@@ -23,23 +23,31 @@ interface MovieApiService {
     // SEARCH
     @GET("search/movie")
     suspend fun searchMovies(
-        @Query("query") searchWord: String,
+        @Query("query") searchWord: String?,
         @Query("include_adult") includeAdult: Boolean = false,
     ): ResultPagesRemoteDataModel
 
 
     // HOME
     @GET("movie/now_playing")
-    suspend fun getNowPlayingMovies(): ResultPagesRemoteDataModel
+    suspend fun getNowPlayingMovies(
+        @Query("page") page: Int = 1
+    ): ResultPagesRemoteDataModel
 
     @GET("movie/popular")
-    suspend fun getPopularMovies(): ResultPagesRemoteDataModel
+    suspend fun getPopularMovies(
+        @Query("page") page: Int = 1
+    ): ResultPagesRemoteDataModel
 
     @GET("movie/top_rated")
-    suspend fun getTopRatedMovies(): ResultPagesRemoteDataModel
+    suspend fun getTopRatedMovies(
+        @Query("page") page: Int = 1
+    ): ResultPagesRemoteDataModel
 
     @GET("movie/upcoming")
-    suspend fun getUpcomingMovies(): ResultPagesRemoteDataModel
+    suspend fun getUpcomingMovies(
+        @Query("page") page: Int = 1
+    ): ResultPagesRemoteDataModel
 
 
     // DETAILS

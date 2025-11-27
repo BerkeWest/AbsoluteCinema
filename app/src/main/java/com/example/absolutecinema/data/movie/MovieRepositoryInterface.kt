@@ -1,11 +1,14 @@
 package com.example.absolutecinema.data.movie
 
+import androidx.paging.PagingData
 import com.example.absolutecinema.data.model.response.CastRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieSearchResultRemoteDataModel
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
 import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
 import com.example.absolutecinema.data.model.response.ReviewsRemoteDataModel
+import com.example.absolutecinema.data.paging.PagingEnum
+import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepositoryInterface {
@@ -27,7 +30,7 @@ interface MovieRepositoryInterface {
 
     fun addToWatchlist(movieId: Int, add: Boolean): Flow<Unit>
 
-    fun getNowPlaying(): Flow<ResultPagesRemoteDataModel>
+    fun getNowPlaying(page: Int?): Flow<ResultPagesRemoteDataModel>
 
     fun getUpcoming(): Flow<ResultPagesRemoteDataModel>
 
@@ -35,4 +38,5 @@ interface MovieRepositoryInterface {
 
     fun getPopular(): Flow<ResultPagesRemoteDataModel>
 
+    fun getMoviePager(call: PagingEnum): Flow<PagingData<MovieSearchResultDomainModel>>
 }

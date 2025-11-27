@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -33,9 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +52,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
@@ -70,6 +70,8 @@ fun HomeScreen(
     onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    val pagedMovies = homeViewModel.moviesPagingFlow.collectAsLazyPagingItems()
 
     Box(
         modifier = Modifier
@@ -93,12 +95,8 @@ fun HomeScreen(
                 tabs = homeViewModel.tabs,
                 selectedTabIndex = uiState.selectedTabIndex,
                 onTabSelected = { index -> homeViewModel.onTabSelected(index) },
-                tab1 = uiState.nowPlaying,
-                tab2 = uiState.upcoming,
-                tab3 = uiState.topRated,
-                tab4 = uiState.popular,
+                pagedMovies = pagedMovies,
                 onNavigateToDetails = onNavigateToDetails,
-                isLoading = uiState.isLoading
             )
         }
     }
@@ -211,12 +209,8 @@ private fun HomeTabsPager(
     tabs: List<Int> = emptyList(),
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit,
-    tab1: List<MovieSearchResultDomainModel> = emptyList(),
-    tab2: List<MovieSearchResultDomainModel> = emptyList(),
-    tab3: List<MovieSearchResultDomainModel> = emptyList(),
-    tab4: List<MovieSearchResultDomainModel> = emptyList(),
+    pagedMovies: LazyPagingItems<MovieSearchResultDomainModel>,
     onNavigateToDetails: (Int) -> Unit,
-    isLoading: Boolean
 ) {
     val pagerState = rememberPagerState(
         initialPage = selectedTabIndex,
@@ -267,39 +261,61 @@ private fun HomeTabsPager(
         state = pagerState,
         pageSize = PageSize.Fill
     ) { page ->
-        if (isLoading) CircularProgressIndicator(modifier = Modifier)
-        else {
+        val isLoadingPaging = pagedMovies.loadState.refresh is LoadState.Loading
+
+        if (isLoadingPaging && pagedMovies.itemCount == 0) {
+            Box(
+                modifier = Modifier
+                    .height(600.dp)
+                    .fillMaxSize(), contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color.White)
+            }
+        } else {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(100.dp),
                 modifier = Modifier.height(600.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                val currentMovieList = when (page) {
-                    0 -> tab1
-                    1 -> tab2
-                    2 -> tab3
-                    3 -> tab4
-                    else -> emptyList()
+                items(pagedMovies.itemCount) { index ->
+                    val movie = pagedMovies[index]
+
+                    if (movie != null) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                                .crossfade(true)
+                                .build(),
+                            error = painterResource(R.drawable.ic_broken_image),
+                            placeholder = painterResource(R.drawable.loading_img),
+                            contentDescription = movie.title,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp))
+                                .clickable {
+                                    movie.id?.let { onNavigateToDetails(it) }
+                                }
+                        )
+                    }
                 }
 
-                items(currentMovieList) { movie ->
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                            .crossfade(true)
-                            .build(),
-                        error = painterResource(R.drawable.ic_broken_image),
-                        placeholder = painterResource(R.drawable.loading_img),
-                        contentDescription = movie.title,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable {
-                                movie.id?.let { onNavigateToDetails(it) }
-                            }
-                    )
+                // Optional: Handle append loading state (spinner at the bottom)
+                if (pagedMovies.loadState.append is LoadState.Loading) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp), contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .width(30.dp), color = Color.White
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -436,29 +452,5 @@ fun TopMoviesPagerPreview() {
         itemList = previewItemList,
         onNavigateToDetails = {}
     )
-}
-
-@Preview
-@Composable
-fun HomeTabsPagerPreview() {
-    var tab by remember { mutableIntStateOf(0) }
-    Column {
-        HomeTabsPager(
-            tabs = listOf(
-                R.string.now_playing,
-                R.string.upcoming,
-                R.string.top_rated,
-                R.string.popular
-            ),
-            selectedTabIndex = tab,
-            onTabSelected = { tab = it },
-            tab1 = previewItemList,
-            tab2 = previewItemList,
-            tab3 = emptyList(),
-            tab4 = previewItemList,
-            onNavigateToDetails = {},
-            isLoading = false
-        )
-    }
 }
 //endregion

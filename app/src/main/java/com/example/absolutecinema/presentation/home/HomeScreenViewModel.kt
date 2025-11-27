@@ -2,6 +2,8 @@ package com.example.absolutecinema.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.base.onError
 import com.example.absolutecinema.domain.base.onSuccess
@@ -10,10 +12,15 @@ import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import com.example.absolutecinema.domain.usecase.home.LoadTopMoviesUseCase
 import com.example.absolutecinema.domain.usecase.home.OnTabSelectedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -27,9 +34,17 @@ class HomeScreenViewModel @Inject constructor(
 
     val tabs = listOf(R.string.now_playing, R.string.upcoming, R.string.top_rated, R.string.popular)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val moviesPagingFlow: Flow<PagingData<MovieSearchResultDomainModel>> = _uiState
+        .map { it.selectedTabIndex }
+        .distinctUntilChanged()
+        .flatMapLatest { index ->
+            onTabSelectedUseCase.invoke(OnTabSelectedUseCase.Params(index))
+        }
+        .cachedIn(viewModelScope)
+
     init {
         loadTopMovies()
-        getTabSelected(0)
     }
 
     private fun loadTopMovies() {
@@ -57,66 +72,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun onTabSelected(tabIndex: Int) {
-        when (tabIndex) {
-            0 -> if (_uiState.value.nowPlaying.isEmpty()) getTabSelected(tabIndex)
-            else _uiState.update { it.copy(selectedTabIndex = tabIndex) }
-
-            1 -> if (_uiState.value.upcoming.isEmpty()) getTabSelected(tabIndex)
-            else _uiState.update { it.copy(selectedTabIndex = tabIndex) }
-
-            2 -> if (_uiState.value.topRated.isEmpty()) getTabSelected(tabIndex)
-            else _uiState.update { it.copy(selectedTabIndex = tabIndex) }
-
-            3 -> if (_uiState.value.popular.isEmpty()) getTabSelected(tabIndex)
-            else _uiState.update { it.copy(selectedTabIndex = tabIndex) }
-        }
-    }
-
-    fun getTabSelected(tabIndex: Int) {
-        onTabSelectedUseCase.invoke(OnTabSelectedUseCase.Params(tabIndex))
-            .onSuccess { result ->
-                _uiState.update { it.copy(isLoading = true) }
-                when (tabIndex) {
-                    0 -> _uiState.update {
-                        it.copy(
-                            selectedTabIndex = tabIndex,
-                            nowPlaying = result,
-                            isLoading = false
-                        )
-                    }
-
-                    1 -> _uiState.update {
-                        it.copy(
-                            selectedTabIndex = tabIndex,
-                            upcoming = result,
-                            isLoading = false
-                        )
-                    }
-
-                    2 -> _uiState.update {
-                        it.copy(
-                            selectedTabIndex = tabIndex,
-                            topRated = result,
-                            isLoading = false
-                        )
-                    }
-
-                    3 -> _uiState.update {
-                        it.copy(
-                            selectedTabIndex = tabIndex,
-                            popular = result,
-                            isLoading = false
-                        )
-                    }
-                }
-            }.onError { error ->
-                _uiState.update {
-                    it.copy(
-                        snackBarMessage = error.localizedMessage,
-                        isLoading = false
-                    )
-                }
-            }.launchIn(viewModelScope)
+        _uiState.update { it.copy(selectedTabIndex = tabIndex) }
     }
 }
 
@@ -125,8 +81,4 @@ data class HomeUiState(
     val snackBarMessage: String? = null,
     val selectedTabIndex: Int = 0,
     val topMovies: List<MovieSearchResultDomainModel> = emptyList(),
-    val nowPlaying: List<MovieSearchResultDomainModel> = emptyList(),
-    val upcoming: List<MovieSearchResultDomainModel> = emptyList(),
-    val topRated: List<MovieSearchResultDomainModel> = emptyList(),
-    val popular: List<MovieSearchResultDomainModel> = emptyList(),
 )

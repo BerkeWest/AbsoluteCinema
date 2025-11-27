@@ -337,90 +337,94 @@ private fun DetailTabsPager(
         state = pagerState,
         pageSize = PageSize.Fill
     ) { page ->
-        when (page) {
+        Box(modifier = Modifier.height(600.dp)) {
+            when (page) {
 
-            0 -> if (overview != null) {
-                if (overview.isNotEmpty() && !isLoading) {
-                    Text(
-                        text = overview,
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        lineHeight = 22.sp,
-                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
-                        style = LocalTextStyle.current.copy(
-                            textIndent = TextIndent(firstLine = 24.sp)
+                0 -> if (overview != null) {
+                    if (overview.isNotEmpty() && !isLoading) {
+                        Text(
+                            text = overview,
+                            color = Color.White,
+                            fontSize = 15.sp,
+                            lineHeight = 22.sp,
+                            modifier = Modifier.padding(vertical = 16.dp, horizontal = 24.dp),
+                            style = LocalTextStyle.current.copy(
+                                textIndent = TextIndent(firstLine = 24.sp)
+                            )
                         )
-                    )
-                } else if (isLoading) CircularProgressIndicator()
-                else PlaceholderText(R.string.no_details)
-            }
+                    } else if (isLoading) CircularProgressIndicator()
+                    else PlaceholderText(R.string.no_details)
 
-            1 -> if (reviews != null) {
-                if (reviews.isNotEmpty() && !isLoading) {
-                    Column {
-                        reviews.forEachIndexed { index, review ->
-                            Review(
-                                author = review.author,
-                                rating = if (review.authorDetails.rating != null) review.authorDetails.rating.toString() else "0.0",
-                                content = review.content,
-                                avatarPath = review.authorDetails.avatarPath
-                            )
+                }
+
+                1 -> if (reviews != null) {
+                    if (reviews.isNotEmpty() && !isLoading) {
+                        Column {
+                            reviews.forEachIndexed { index, review ->
+                                Review(
+                                    author = review.author,
+                                    rating = if (review.authorDetails.rating != null) review.authorDetails.rating.toString() else "0.0",
+                                    content = review.content,
+                                    avatarPath = review.authorDetails.avatarPath
+                                )
+                            }
                         }
-                    }
 
-                } else if (isLoading) CircularProgressIndicator()
-                else PlaceholderText(R.string.no_reviews)
-            }
+                    } else if (isLoading) CircularProgressIndicator()
+                    else PlaceholderText(R.string.no_reviews)
+                }
 
-            2 -> if (cast != null) {
-                if (cast.isNotEmpty() && !isLoading) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(150.dp),
-                        modifier = Modifier.height(600.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        items(items = cast) { cast ->
-                            CastMember(
-                                name = cast.name,
-                                character = cast.character,
-                                profilePath = cast.profilePath
-                            )
+
+                2 -> if (cast != null) {
+                    if (cast.isNotEmpty() && !isLoading) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(150.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            items(items = cast) { cast ->
+                                CastMember(
+                                    name = cast.name,
+                                    character = cast.character,
+                                    profilePath = cast.profilePath
+                                )
+                            }
                         }
-                    }
-                } else if (isLoading) CircularProgressIndicator()
-                else PlaceholderText(R.string.no_cast)
-            }
+                    } else if (isLoading) CircularProgressIndicator()
+                    else PlaceholderText(R.string.no_cast)
 
-            3 -> if (recommendations != null) {
-                if (recommendations.isNotEmpty() && !isLoading) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(100.dp),
-                        modifier = Modifier.height(600.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        items(recommendations) { movie ->
-                            AsyncImage(
-                                model = ImageRequest.Builder(context = LocalContext.current)
-                                    .data(BuildConfig.IMAGE_URL + movie.posterPath)
-                                    .crossfade(true)
-                                    .build(),
-                                error = painterResource(R.drawable.ic_broken_image),
-                                placeholder = painterResource(R.drawable.loading_img),
-                                contentDescription = movie.title,
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .clickable {
-                                        movie.id?.let { onNavigateToDetails(it) }
-                                    }
-                            )
+                }
+
+                3 -> if (recommendations != null) {
+                    if (recommendations.isNotEmpty() && !isLoading) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(100.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            items(recommendations) { movie ->
+                                AsyncImage(
+                                    model = ImageRequest.Builder(context = LocalContext.current)
+                                        .data(BuildConfig.IMAGE_URL + movie.posterPath)
+                                        .crossfade(true)
+                                        .build(),
+                                    error = painterResource(R.drawable.ic_broken_image),
+                                    placeholder = painterResource(R.drawable.loading_img),
+                                    contentDescription = movie.title,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .clickable {
+                                            movie.id?.let { onNavigateToDetails(it) }
+                                        }
+                                )
+                            }
                         }
-                    }
-                } else if (isLoading) CircularProgressIndicator()
-                else PlaceholderText(R.string.no_recommendations)
+                    } else if (isLoading) CircularProgressIndicator()
+                    else PlaceholderText(R.string.no_recommendations)
+                }
+
             }
         }
     }

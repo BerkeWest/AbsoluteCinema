@@ -7,7 +7,6 @@ import com.example.absolutecinema.data.model.response.MovieSearchResultRemoteDat
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
 import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
 import com.example.absolutecinema.data.model.response.ReviewsRemoteDataModel
-import com.example.absolutecinema.data.paging.PagingEnum
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import kotlinx.coroutines.flow.Flow
 
@@ -38,5 +37,11 @@ interface MovieRepositoryInterface {
 
     fun getPopular(): Flow<ResultPagesRemoteDataModel>
 
-    fun getMoviePager(call: PagingEnum): Flow<PagingData<MovieSearchResultDomainModel>>
+    fun getNowPlayingPager(): Flow<PagingData<MovieSearchResultDomainModel>>
+
+    fun getUpcomingPager(): Flow<PagingData<MovieSearchResultDomainModel>>
+
+    fun getTopRatedPager(): Flow<PagingData<MovieSearchResultDomainModel>>
+
+    fun getPopularPager(): Flow<PagingData<MovieSearchResultDomainModel>>
 }

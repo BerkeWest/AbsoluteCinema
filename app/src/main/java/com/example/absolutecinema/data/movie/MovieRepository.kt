@@ -5,8 +5,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.map
 import com.example.absolutecinema.data.datasource.local.MovieLocalDataSource
 import com.example.absolutecinema.data.model.request.WatchListBody
-import com.example.absolutecinema.data.paging.MoviePagingSource
-import com.example.absolutecinema.data.paging.PagingEnum
+import com.example.absolutecinema.data.paging.NowPlayingPagingSource
+import com.example.absolutecinema.data.paging.PopularPagingSource
+import com.example.absolutecinema.data.paging.TopRatedPagingSource
+import com.example.absolutecinema.data.paging.UpcomingPagingSource
 import com.example.absolutecinema.domain.mapper.MovieSearchResultDomainMapper.toDomain
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -119,9 +121,24 @@ class MovieRepository(
         emit(api.getTopRatedMovies())
     }
 
-    override fun getMoviePager(call: PagingEnum) =
+    override fun getNowPlayingPager() =
         Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
-            MoviePagingSource(call = call, api = api)
+            NowPlayingPagingSource(api = api)
+        }.flow.map { it.map { dto -> dto.toDomain() } }
+
+    override fun getUpcomingPager() =
+        Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
+            UpcomingPagingSource(api = api)
+        }.flow.map { it.map { dto -> dto.toDomain() } }
+
+    override fun getTopRatedPager() =
+        Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
+            TopRatedPagingSource(api = api)
+        }.flow.map { it.map { dto -> dto.toDomain() } }
+
+    override fun getPopularPager() =
+        Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
+            PopularPagingSource(api = api)
         }.flow.map { it.map { dto -> dto.toDomain() } }
 
 }

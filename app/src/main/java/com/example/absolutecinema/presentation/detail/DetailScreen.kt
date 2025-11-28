@@ -463,13 +463,13 @@ fun DetailTabsPagerPreview() {
     ) {
         DetailTabsPager(
             selectedTabIndex = tabIndex,
-            tabsList = listOf(R.string.about_movie, R.string.reviews, R.string.cast),
+            tabsList = listOf(R.string.about_movie, R.string.reviews, R.string.cast, R.string.recommendations),
             onTabSelected = { tabIndex = it },
             isLoading = false,
             overview = PreviewItems.overview,
             reviews = PreviewItems.reviews,
             cast = PreviewItems.cast,
-            recommendations = null,
+            recommendations = PreviewItems.movieList,
             onNavigateToDetails = {}
         )
     }

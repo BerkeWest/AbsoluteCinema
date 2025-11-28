@@ -32,6 +32,7 @@ import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
+import com.example.absolutecinema.presentation.components.util.PreviewItems
 import java.util.Locale
 
 
@@ -147,20 +148,5 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
 @Preview
 @Composable
 fun MovieCardPreview() {
-    val movie = MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2),
-        id = 0,
-        originalTitle = "Demon Slayer Kimetsu No Yaiba Infinity Castle",
-        overview = "",
-        popularity = 0.0,
-        posterPath = "",
-        releaseDate = "2018",
-        title = "Demon Slayer Kimetsu No Yaiba Infinity Castle",
-        voteAverage = 7.8,
-        genre = "action"
-    )
-
-    MovieCard(movie, onNavigateToDetails = {
-
-    })
+    MovieCard(PreviewItems.movie, onNavigateToDetails = {})
 }

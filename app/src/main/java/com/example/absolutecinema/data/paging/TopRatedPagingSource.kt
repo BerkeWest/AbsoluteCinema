@@ -4,10 +4,10 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.absolutecinema.data.model.response.MovieSearchResultRemoteDataModel
 import com.example.absolutecinema.data.movie.MovieApiService
+import retrofit2.HttpException
 
 
-class MoviePagingSource(
-    private val call: PagingEnum,
+class TopRatedPagingSource(
     private val api: MovieApiService
 ) : PagingSource<Int, MovieSearchResultRemoteDataModel>() {
 
@@ -15,12 +15,7 @@ class MoviePagingSource(
         return try {
             val page = params.key ?: 1
 
-            val response = when (call) {
-                PagingEnum.NOW_PLAYING -> api.getNowPlayingMovies(page)
-                PagingEnum.UPCOMING -> api.getUpcomingMovies(page)
-                PagingEnum.TOP_RATED -> api.getTopRatedMovies(page)
-                PagingEnum.POPULAR -> api.getPopularMovies(page)
-            }
+            val response =  api.getTopRatedMovies(page)
 
             LoadResult.Page(
                 data = response.results,
@@ -28,6 +23,8 @@ class MoviePagingSource(
                 nextKey = if (page < response.totalPages) page + 1 else null
             )
         } catch (e: Exception) {
+            LoadResult.Error(e)
+        } catch (e: HttpException) {
             LoadResult.Error(e)
         }
     }

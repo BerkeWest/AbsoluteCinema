@@ -18,13 +18,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenViewModel @Inject constructor(
     private val onTabSelectedUseCase: OnTabSelectedUseCase,
     private val loadTopMoviesUseCase: LoadTopMoviesUseCase
@@ -34,11 +35,10 @@ class HomeScreenViewModel @Inject constructor(
 
     val tabs = listOf(R.string.now_playing, R.string.upcoming, R.string.top_rated, R.string.popular)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val moviesPagingFlow: Flow<PagingData<MovieSearchResultDomainModel>> = _uiState
         .map { it.selectedTabIndex }
         .distinctUntilChanged()
-        .flatMapConcat { index ->
+        .flatMapLatest { index ->
             onTabSelectedUseCase.invoke(OnTabSelectedUseCase.Params(index))
         }
         .cachedIn(viewModelScope)

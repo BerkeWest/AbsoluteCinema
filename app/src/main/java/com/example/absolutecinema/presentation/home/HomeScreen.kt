@@ -60,6 +60,7 @@ import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
+import com.example.absolutecinema.presentation.components.util.PreviewItems
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
@@ -265,9 +266,7 @@ private fun HomeTabsPager(
 
         if (isLoadingPaging && pagedMovies.itemCount == 0) {
             Box(
-                modifier = Modifier
-                    .height(600.dp)
-                    .fillMaxSize(), contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(color = Color.White)
             }
@@ -323,133 +322,11 @@ private fun HomeTabsPager(
 }
 
 //region Previews
-val previewItemList = listOf(
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 2,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 1,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 3,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 4,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 5,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 6,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 7,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 8,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ),
-    MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 9,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    ), MovieSearchResultDomainModel(
-        genreIds = listOf(1, 2, 3),
-        id = 0,
-        originalTitle = "Demon Slayer",
-        overview = "Overview",
-        popularity = 1.0,
-        posterPath = "posterPath",
-        releaseDate = "2",
-        title = "Demon Slayer",
-        voteAverage = 4.8,
-        genre = "Anime, Action, Animation, Drama, Fantasy"
-    )
-)
-
 @Preview
 @Composable
 fun TopMoviesPagerPreview() {
     TopMoviesPager(
-        itemList = previewItemList,
+        itemList = PreviewItems.movieList,
         onNavigateToDetails = {}
     )
 }

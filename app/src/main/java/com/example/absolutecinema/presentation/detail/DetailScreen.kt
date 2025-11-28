@@ -55,11 +55,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
-import com.example.absolutecinema.data.model.response.AuthorDomainModel
 import com.example.absolutecinema.data.model.response.CastDomainModel
 import com.example.absolutecinema.data.model.response.ReviewResultDomainModel
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.TopAppBar
+import com.example.absolutecinema.presentation.components.util.PreviewItems
 import com.example.absolutecinema.presentation.detail.components.CastMember
 import com.example.absolutecinema.presentation.detail.components.IconText
 import com.example.absolutecinema.presentation.detail.components.PlaceholderText
@@ -458,44 +458,6 @@ fun IconTextRowPreview() {
 fun DetailTabsPagerPreview() {
     var tabIndex by remember { mutableIntStateOf(0) }
 
-    val overview =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    val reviews = listOf(
-        ReviewResultDomainModel(
-            author = "John Doe",
-            authorDetails = AuthorDomainModel(
-                name = "John Doe",
-                username = "johndoe",
-                avatarPath = null,
-                rating = 8.5
-            ),
-            content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        ),
-        ReviewResultDomainModel(
-            author = "Jane Doe",
-            authorDetails = AuthorDomainModel(
-                name = "Jane Doe",
-                username = "janedoe",
-                avatarPath = null,
-                rating = null
-            ),
-            content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        )
-    )
-
-    val cast = listOf(
-        CastDomainModel(
-            name = "John Doe",
-            character = "Character",
-            profilePath = null
-        ),
-        CastDomainModel(
-            name = "Jane Doe",
-            character = "Character",
-            profilePath = null
-        )
-    )
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -504,9 +466,9 @@ fun DetailTabsPagerPreview() {
             tabsList = listOf(R.string.about_movie, R.string.reviews, R.string.cast),
             onTabSelected = { tabIndex = it },
             isLoading = false,
-            overview = overview,
-            reviews = reviews,
-            cast = cast,
+            overview = PreviewItems.overview,
+            reviews = PreviewItems.reviews,
+            cast = PreviewItems.cast,
             recommendations = null,
             onNavigateToDetails = {}
         )

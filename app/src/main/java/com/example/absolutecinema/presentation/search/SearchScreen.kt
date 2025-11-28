@@ -34,6 +34,7 @@ import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainM
 import com.example.absolutecinema.presentation.components.MovieCard
 import com.example.absolutecinema.presentation.components.NoResultScreen
 import com.example.absolutecinema.presentation.components.NoResultScreenEnum
+import com.example.absolutecinema.presentation.components.util.PreviewItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,32 +163,7 @@ fun PreviewLoadingSearchResults() {
 @Composable
 fun PreviewSearchResults() {
     SearchResults(
-        searchResult = listOf(
-            MovieSearchResultDomainModel(
-                genreIds = listOf(1, 2, 3),
-                id = 1,
-                originalTitle = "Demon Slayer",
-                overview = "Overview",
-                popularity = 1.0,
-                posterPath = "posterPath",
-                releaseDate = "2020",
-                title = "Demon Slayer",
-                voteAverage = 4.8,
-                genre = "Anime, Action, Animation, Drama, Fantasy"
-            ),
-            MovieSearchResultDomainModel(
-                genreIds = listOf(1, 2, 3),
-                id = 2,
-                originalTitle = "Star Wars",
-                overview = "Overview",
-                popularity = 1.0,
-                posterPath = "posterPath",
-                releaseDate = "1900",
-                title = "Star Wars",
-                voteAverage = 4.5,
-                genre = "Action, Sci-Fi"
-            )
-        ),
+        searchResult = PreviewItems.movieList,
         searchAttempted = true,
         isSearching = false,
         onNavigateToDetails = {}

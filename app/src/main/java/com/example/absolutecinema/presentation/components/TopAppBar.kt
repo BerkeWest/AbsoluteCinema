@@ -75,7 +75,7 @@ fun TopAppBar(
 fun DetailTopAppBarPreview(){
     var bookmarked by remember {mutableStateOf(false)}
     TopAppBar(
-        title = "Detail",
+        title = stringResource(R.string.details),
         canNavigateBack = true,
         navigateUp = {},
         canBookmark = true,
@@ -90,7 +90,7 @@ fun DetailTopAppBarPreview(){
 @Composable
 fun WatchListTopAppBarPreview(){
     TopAppBar(
-        title = "Watch List",
+        title = stringResource(R.string.watchlist),
         canNavigateBack = false,
         navigateUp = {},
         canBookmark = false,

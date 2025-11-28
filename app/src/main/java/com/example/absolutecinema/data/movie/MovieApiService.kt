@@ -24,6 +24,7 @@ interface MovieApiService {
     @GET("search/movie")
     suspend fun searchMovies(
         @Query("query") searchWord: String?,
+        @Query("page") page: Int = 1,
         @Query("include_adult") includeAdult: Boolean = false,
     ): ResultPagesRemoteDataModel
 

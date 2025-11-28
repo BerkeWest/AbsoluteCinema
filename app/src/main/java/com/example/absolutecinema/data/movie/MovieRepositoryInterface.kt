@@ -15,6 +15,8 @@ interface MovieRepositoryInterface {
 
     fun search(word: String): Flow<List<MovieSearchResultRemoteDataModel>>
 
+    fun getSearchPager(word: String): Flow<PagingData<MovieSearchResultDomainModel>>
+
     fun getDetails(id: Int): Flow<MovieDetailsRemoteDataModel>
 
     fun getMovieState(id: Int): Flow<MovieStateRemoteDataModel>

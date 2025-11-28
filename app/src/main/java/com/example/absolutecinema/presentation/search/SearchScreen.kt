@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.MovieCard
@@ -44,6 +45,9 @@ fun SearchScreen(
 ) {
     val uiState by searchViewModel.uiState.collectAsState()
 
+    val pagedMovies = searchViewModel.moviesPagingFlow.collectAsLazyPagingItems()
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +56,7 @@ fun SearchScreen(
         SearchBar(uiState.searchText, searchViewModel::onSearchTextChange)
         Spacer(modifier = Modifier.height(16.dp))
         SearchResults(
-            searchResult = uiState.searchResults,
+            searchResult = emptyList(),
             searchAttempted = uiState.searchAttempted,
             isSearching = uiState.isSearching,
             onNavigateToDetails = onNavigateToDetails

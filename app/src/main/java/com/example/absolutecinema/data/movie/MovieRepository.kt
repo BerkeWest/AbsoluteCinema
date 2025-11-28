@@ -7,6 +7,7 @@ import com.example.absolutecinema.data.datasource.local.MovieLocalDataSource
 import com.example.absolutecinema.data.model.request.WatchListBody
 import com.example.absolutecinema.data.paging.NowPlayingPagingSource
 import com.example.absolutecinema.data.paging.PopularPagingSource
+import com.example.absolutecinema.data.paging.SearchPagingSource
 import com.example.absolutecinema.data.paging.TopRatedPagingSource
 import com.example.absolutecinema.data.paging.UpcomingPagingSource
 import com.example.absolutecinema.domain.mapper.MovieSearchResultDomainMapper.toDomain
@@ -51,6 +52,11 @@ class MovieRepository(
         val response = api.searchMovies(word)
         emit(response.results)
     }
+
+    override fun getSearchPager(word: String) =
+        Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
+            SearchPagingSource(text = word, api = api)
+        }.flow.map { it.map { dto -> dto.toDomain() } }
 
     /*
     Verilen id'ye göre api'den filmin detaylarını alır.

@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -38,7 +38,7 @@ class HomeScreenViewModel @Inject constructor(
     val moviesPagingFlow: Flow<PagingData<MovieSearchResultDomainModel>> = _uiState
         .map { it.selectedTabIndex }
         .distinctUntilChanged()
-        .flatMapLatest { index ->
+        .flatMapConcat { index ->
             onTabSelectedUseCase.invoke(OnTabSelectedUseCase.Params(index))
         }
         .cachedIn(viewModelScope)

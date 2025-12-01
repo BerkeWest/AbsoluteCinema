@@ -14,7 +14,7 @@ class LoadTopMoviesUseCase @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : FlowUseCase<FlowUseCase.Params, List<MovieSearchResultDomainModel>>(dispatcher) {
 
-    override fun execute(params: Params) = repository.getPopular()
+    override fun execute(params: Params) = repository.getTrending()
         .map { resultPage ->
             resultPage.results.take(10)
                 .map { it.toDomain() }

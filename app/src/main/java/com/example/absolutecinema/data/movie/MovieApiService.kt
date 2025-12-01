@@ -50,6 +50,10 @@ interface MovieApiService {
         @Query("page") page: Int = 1
     ): ResultPagesRemoteDataModel
 
+    @GET("trending/movie/{time_window}")
+    suspend fun getTrendingMovies(
+        @Path("time_window") timeWindow: String? = "day",
+    ): ResultPagesRemoteDataModel
 
     // DETAILS
     @GET("movie/{movie_id}")

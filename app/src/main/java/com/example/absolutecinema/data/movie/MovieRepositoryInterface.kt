@@ -31,8 +31,6 @@ interface MovieRepositoryInterface {
 
     fun addToWatchlist(movieId: Int, add: Boolean): Flow<Unit>
 
-    fun getPopular(): Flow<ResultPagesRemoteDataModel>
-
     fun getNowPlayingPager(): Flow<PagingData<MovieSearchResultDomainModel>>
 
     fun getUpcomingPager(): Flow<PagingData<MovieSearchResultDomainModel>>
@@ -40,4 +38,6 @@ interface MovieRepositoryInterface {
     fun getTopRatedPager(): Flow<PagingData<MovieSearchResultDomainModel>>
 
     fun getPopularPager(): Flow<PagingData<MovieSearchResultDomainModel>>
+
+    fun getTrending(): Flow<ResultPagesRemoteDataModel>
 }

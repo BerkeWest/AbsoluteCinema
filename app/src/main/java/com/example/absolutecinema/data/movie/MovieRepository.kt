@@ -116,8 +116,8 @@ class MovieRepository(
     /*
     Alttaki 4 method da api'den filmleri çeker. HomeScreen'deki tablerde gösterilirler.
     */
-    override fun getPopular() = flow {
-        emit(api.getPopularMovies())
+    override fun getTrending() = flow {
+        emit(api.getTrendingMovies())
     }
 
     override fun getNowPlayingPager() =

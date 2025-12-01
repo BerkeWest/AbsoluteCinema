@@ -1,4 +1,4 @@
-package com.example.absolutecinema.data.paging
+package com.example.absolutecinema.data.paging.home
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -7,7 +7,7 @@ import com.example.absolutecinema.data.movie.MovieApiService
 import retrofit2.HttpException
 
 
-class PopularPagingSource(
+class NowPlayingPagingSource(
     private val api: MovieApiService
 ) : PagingSource<Int, MovieSearchResultRemoteDataModel>() {
 
@@ -15,7 +15,7 @@ class PopularPagingSource(
         return try {
             val page = params.key ?: 1
 
-            val response = api.getPopularMovies(page)
+            val response = api.getNowPlayingMovies(page)
 
             LoadResult.Page(
                 data = response.results,

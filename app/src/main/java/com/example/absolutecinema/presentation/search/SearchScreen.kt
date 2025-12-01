@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,24 +17,22 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.MovieCard
 import com.example.absolutecinema.presentation.components.NoResultScreen
 import com.example.absolutecinema.presentation.components.NoResultScreenEnum
-import com.example.absolutecinema.presentation.components.util.PreviewItems
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,9 +41,7 @@ fun SearchScreen(
     onNavigateToDetails: (movieId: Int) -> Unit
 ) {
     val uiState by searchViewModel.uiState.collectAsState()
-
-    val pagedMovies = searchViewModel.moviesPagingFlow.collectAsLazyPagingItems()
-
+    val searchResultFlow = searchViewModel.searchResultFlow
 
     Column(
         modifier = Modifier
@@ -56,9 +51,8 @@ fun SearchScreen(
         SearchBar(uiState.searchText, searchViewModel::onSearchTextChange)
         Spacer(modifier = Modifier.height(16.dp))
         SearchResults(
-            searchResult = emptyList(),
+            searchResult = searchResultFlow,
             searchAttempted = uiState.searchAttempted,
-            isSearching = uiState.isSearching,
             onNavigateToDetails = onNavigateToDetails
         )
     }
@@ -100,36 +94,50 @@ private fun SearchBar(
 
 @Composable
 private fun SearchResults(
-    searchResult: List<MovieSearchResultDomainModel>,
+    searchResult: Flow<PagingData<MovieSearchResultDomainModel>>,
     searchAttempted: Boolean,
-    isSearching: Boolean,
     onNavigateToDetails: (Int) -> Unit,
 ) {
-    Column {
-        if (searchResult.isEmpty() && searchAttempted) {
-            NoResultScreen(NoResultScreenEnum.SEARCH)
-        } else if (isSearching) {
+    val results = searchResult.collectAsLazyPagingItems()
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (results.loadState.refresh is LoadState.Loading && searchAttempted) {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 24.dp)
             )
+        } else if (results.itemCount == 0 && searchAttempted) {
+            NoResultScreen(NoResultScreenEnum.SEARCH)
         } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                items(searchResult) { movie ->
-                    MovieCard(
-                        movie = movie,
-                        onNavigateToDetails = onNavigateToDetails
-                    )
+            LazyColumn {
+                items(results.itemCount) { index ->
+                    val movie = results[index]
+                    if (movie != null) {
+                        MovieCard(
+                            movie = movie,
+                            onNavigateToDetails = onNavigateToDetails
+                        )
+                    }
+                }
+
+                // Show loading footer if appending more data
+                if (results.loadState.append is LoadState.Loading) {
+                    item {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(16.dp)
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+/*
 //region Previews
 
 @Preview
@@ -175,3 +183,5 @@ fun PreviewSearchResults() {
 }
 
 //endregion
+
+ */

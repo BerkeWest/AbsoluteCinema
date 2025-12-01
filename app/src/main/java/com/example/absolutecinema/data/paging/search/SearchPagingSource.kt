@@ -1,11 +1,10 @@
-package com.example.absolutecinema.data.paging
+package com.example.absolutecinema.data.paging.search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.absolutecinema.data.model.response.MovieSearchResultRemoteDataModel
 import com.example.absolutecinema.data.movie.MovieApiService
 import retrofit2.HttpException
-
 
 class SearchPagingSource(
     private val text: String,

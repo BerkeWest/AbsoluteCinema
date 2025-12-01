@@ -81,7 +81,8 @@ interface MovieApiService {
     @GET("account/{account_id}/watchlist/movies")
     suspend fun getWatchlist(
         @Path("account_id") accountId: Int?,
-    ): ResultPagesRemoteDataModel
+        @Query("page") page: Int = 1,
+        ): ResultPagesRemoteDataModel
 
     @POST("account/{account_id}/watchlist")
     suspend fun addToWatchlist(

@@ -5,12 +5,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.map
 import com.example.absolutecinema.data.datasource.local.MovieLocalDataSource
 import com.example.absolutecinema.data.model.request.WatchListBody
-import com.example.absolutecinema.data.paging.NowPlayingPagingSource
-import com.example.absolutecinema.data.paging.PopularPagingSource
-import com.example.absolutecinema.data.paging.SearchPagingSource
-import com.example.absolutecinema.data.paging.TopRatedPagingSource
-import com.example.absolutecinema.data.paging.UpcomingPagingSource
+import com.example.absolutecinema.data.paging.home.NowPlayingPagingSource
+import com.example.absolutecinema.data.paging.home.PopularPagingSource
+import com.example.absolutecinema.data.paging.home.TopRatedPagingSource
+import com.example.absolutecinema.data.paging.home.UpcomingPagingSource
+import com.example.absolutecinema.data.paging.search.SearchPagingSource
+import com.example.absolutecinema.data.paging.watchlist.WatchListPagingSource
 import com.example.absolutecinema.domain.mapper.MovieSearchResultDomainMapper.toDomain
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
@@ -94,7 +96,10 @@ class MovieRepository(
     */
     override fun getWatchList() = flow {
         val accountId = localDataSource.getLocalAccountId()
-        emit(api.getWatchlist(accountId))
+
+        emitAll(Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
+            WatchListPagingSource(api = api, accountId = accountId)
+        }.flow.map { pagingData -> pagingData.map { it.toDomain() } })
     }
 
     /*
@@ -111,20 +116,8 @@ class MovieRepository(
     /*
     Alttaki 4 method da api'den filmleri çeker. HomeScreen'deki tablerde gösterilirler.
     */
-    override fun getNowPlaying(page: Int?) = flow {
-        emit(api.getNowPlayingMovies(page ?: 1))
-    }
-
     override fun getPopular() = flow {
         emit(api.getPopularMovies())
-    }
-
-    override fun getUpcoming() = flow {
-        emit(api.getUpcomingMovies())
-    }
-
-    override fun getTopRated() = flow {
-        emit(api.getTopRatedMovies())
     }
 
     override fun getNowPlayingPager() =

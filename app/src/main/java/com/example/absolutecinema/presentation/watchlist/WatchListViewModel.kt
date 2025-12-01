@@ -2,56 +2,42 @@ package com.example.absolutecinema.presentation.watchlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.absolutecinema.domain.base.onError
-import com.example.absolutecinema.domain.base.onLoading
-import com.example.absolutecinema.domain.base.onSuccess
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
-import com.example.absolutecinema.domain.usecase.generic.FlowUseCase
 import com.example.absolutecinema.domain.usecase.watchlist.LoadWatchListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
+@OptIn(ExperimentalCoroutinesApi::class)
 class WatchListViewModel @Inject constructor(
     private val loadWatchListUseCase: LoadWatchListUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(WatchListUIState())
-    val uiState: StateFlow<WatchListUIState> = _uiState.asStateFlow()
+    val _uiState = MutableStateFlow(WatchListUiState())
 
     init {
-        loadWatchList()
+        _uiState.update { it.copy(refresh = true) }
     }
 
-    fun loadWatchList() {
-        loadWatchListUseCase.invoke(FlowUseCase.Params())
-            .onLoading {
-                _uiState.update { it.copy(isLoading = true) }
+    val moviesPagingFlow: Flow<PagingData<MovieSearchResultDomainModel>> =
+        _uiState.map { it.refresh }
+            .distinctUntilChanged()
+            .flatMapLatest {
+                loadWatchListUseCase.invoke()
             }
-            .onSuccess { data ->
-                _uiState.update { it.copy(isLoading = false, watchlist = data) }
-            }
-            .onError { error ->
-                _uiState.update {
-                    it.copy(
-                        snackBarMessage = error.localizedMessage,
-                        isLoading = false,
-                        watchlist = emptyList()
-                    )
-                }
-            }
-            .launchIn(viewModelScope)
-    }
+            .cachedIn(viewModelScope).also { _uiState.update { it.copy(refresh = false) } }
 
 }
 
-data class WatchListUIState(
-    val snackBarMessage: String? = null,
-    val isLoading: Boolean = true,
-    val watchlist: List<MovieSearchResultDomainModel> = emptyList()
+data class WatchListUiState(
+    val refresh: Boolean = false
 )

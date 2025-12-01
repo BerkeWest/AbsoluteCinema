@@ -27,15 +27,9 @@ interface MovieRepositoryInterface {
 
     fun getRecommendations(id: Int): Flow<ResultPagesRemoteDataModel>
 
-    fun getWatchList(): Flow<ResultPagesRemoteDataModel>
+    fun getWatchList(): Flow<PagingData<MovieSearchResultDomainModel>>
 
     fun addToWatchlist(movieId: Int, add: Boolean): Flow<Unit>
-
-    fun getNowPlaying(page: Int?): Flow<ResultPagesRemoteDataModel>
-
-    fun getUpcoming(): Flow<ResultPagesRemoteDataModel>
-
-    fun getTopRated(): Flow<ResultPagesRemoteDataModel>
 
     fun getPopular(): Flow<ResultPagesRemoteDataModel>
 

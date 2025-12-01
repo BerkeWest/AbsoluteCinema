@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -22,6 +23,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.MovieCard
 import com.example.absolutecinema.presentation.components.NoResultScreen
@@ -71,7 +73,7 @@ fun WatchListScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 Button(onClick = { watchlistItems.retry() }) {
-                    Text("Retry")
+                    Text(stringResource(R.string.retry))
                 }
             }
         }
@@ -123,7 +125,7 @@ fun WatchListContent(
                     modifier = Modifier.padding(8.dp)
                 )
                 Button(onClick = { watchlist.retry() }) {
-                    Text("Retry")
+                    Text(stringResource(R.string.retry))
                 }
             }
         }

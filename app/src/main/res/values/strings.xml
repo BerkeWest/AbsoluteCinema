@@ -60,6 +60,10 @@
     <string name="no_cast">No cast found</string>
     <string name="no_recommendations">No recommendations found</string>
 
+    //Error
+    <string name="error_message">Error</string>
+    <string name="retry">Retry</string>
+
     //Notification
     <string name="notification_icon">Notification Icon</string>
     <string name="default_message">"Notification 32x32 ikon ve görsel alabilir. etin kullanımı en fazla üç satır ile sınırlıdır. Üç satırdan sonrası üç nokta olacaktır"</string>

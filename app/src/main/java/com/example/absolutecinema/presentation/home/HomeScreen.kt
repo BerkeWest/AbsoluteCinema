@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.absolutecinema.presentation.home
 
 import androidx.compose.foundation.background
@@ -89,7 +87,10 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            TopMoviesPager(uiState.topMovies, onNavigateToDetails)
+            TopMoviesPager(
+                uiState.topMovies,
+                onNavigateToDetails,
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -107,7 +108,7 @@ fun HomeScreen(
 @Composable
 fun TopMoviesPager(
     itemList: List<MovieSearchResultDomainModel>,
-    onNavigateToDetails: (Int) -> Unit
+    onNavigateToDetails: (Int) -> Unit,
 ) {
     if (itemList.isEmpty()) return
 

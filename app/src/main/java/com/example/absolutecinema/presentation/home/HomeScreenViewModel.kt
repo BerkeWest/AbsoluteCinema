@@ -61,7 +61,7 @@ class HomeScreenViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        snackBarMessage = error.localizedMessage
+                        snackBarMessage = error.localizedMessage,
                     )
                 }
             }.launchIn(viewModelScope)

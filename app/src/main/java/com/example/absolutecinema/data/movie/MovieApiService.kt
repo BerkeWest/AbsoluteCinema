@@ -7,7 +7,9 @@ import com.example.absolutecinema.data.model.response.MovieDetailsRemoteDataMode
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
 import com.example.absolutecinema.data.model.response.ResultPagesRemoteDataModel
 import com.example.absolutecinema.data.model.response.ReviewsRemoteDataModel
+import com.example.absolutecinema.data.model.response.StatusResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -65,6 +67,17 @@ interface MovieApiService {
     suspend fun getMovieAccountStates(
         @Path("movie_id") movieId: Int,
     ): MovieStateRemoteDataModel
+
+    @POST("movie/{movie_id}/rating")
+    suspend fun rateMovie(
+        @Path("movie_id") movieId: Int,
+        @Body rating: Map<String, Float>
+    ): StatusResponse
+
+    @DELETE("movie/{movie_id}/rating")
+    suspend fun deleteRating(
+        @Path("movie_id") movieId: Int
+    ): StatusResponse
 
     @GET("movie/{movie_id}/credits")
     suspend fun getMovieCast(

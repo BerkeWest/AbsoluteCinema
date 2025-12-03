@@ -32,6 +32,8 @@ import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainM
 import com.example.absolutecinema.presentation.components.MovieCard
 import com.example.absolutecinema.presentation.components.NoResultScreen
 import com.example.absolutecinema.presentation.components.NoResultScreenEnum
+import com.example.absolutecinema.presentation.theme.FocusedSearchBarColor
+import com.example.absolutecinema.presentation.theme.UnfocusedSearchBarColor
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,8 +83,8 @@ private fun SearchBar(
             )
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFF3A3F47),
-            unfocusedContainerColor = Color(0xFF67686D),
+            focusedContainerColor = FocusedSearchBarColor,
+            unfocusedContainerColor = UnfocusedSearchBarColor,
             focusedTextColor = Color.White,
             unfocusedTextColor = Color.White,
             focusedPlaceholderColor = Color.White,

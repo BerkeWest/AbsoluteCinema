@@ -32,6 +32,8 @@ import com.example.absolutecinema.presentation.login.AuthViewModel
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
 import com.example.absolutecinema.presentation.search.SearchScreen
 import com.example.absolutecinema.presentation.components.TopAppBar
+import com.example.absolutecinema.presentation.theme.BackgroundColor
+import com.example.absolutecinema.presentation.theme.SelectedColor
 import com.example.absolutecinema.presentation.watchlist.WatchListScreen
 
 object NavigationBarRoute : NavigationDestination {
@@ -68,6 +70,8 @@ fun NavigationBarScreen(
                     authViewModel.logout()
                     onLogout()
                 },
+                timeWindowDay = true,
+                timeWindowAccess = false
             )
         },
         bottomBar = {
@@ -75,10 +79,10 @@ fun NavigationBarScreen(
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = 1.dp,
-                    color = Color(0xFF2A80FF)
+                    color = SelectedColor
                 )
                 NavigationBar(
-                    containerColor = Color(0xFF242A32),
+                    containerColor = BackgroundColor,
                     windowInsets = NavigationBarDefaults.windowInsets,
                 ) {
                     Destination.entries.forEachIndexed { index, destination ->
@@ -107,9 +111,9 @@ fun NavigationBarScreen(
                             label = { Text(stringResource(destination.label)) },
                             alwaysShowLabel = true,
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Color(0xFF0296E5),
+                                selectedIconColor = SelectedColor,
                                 unselectedIconColor = Color.Gray,
-                                selectedTextColor = Color(0xFF0296E5),
+                                selectedTextColor = SelectedColor,
                                 unselectedTextColor = Color.Gray,
                                 indicatorColor = Color.Transparent
                             )

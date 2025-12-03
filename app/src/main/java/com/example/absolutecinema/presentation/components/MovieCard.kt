@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,6 +32,7 @@ import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.util.PreviewItems
+import com.example.absolutecinema.presentation.theme.RatingColor
 import java.util.Locale
 
 
@@ -90,12 +90,12 @@ fun MovieCard(movie: MovieSearchResultDomainModel, onNavigateToDetails: (movieId
                         modifier = Modifier
                             .size(20.dp)
                             .padding(horizontal = 3.dp),
-                        tint = colorResource(id = R.color.Rating)
+                        tint = RatingColor
                     )
                     Text(
                         String.format(Locale.US, "%.1f", movie.voteAverage),
                         style = MaterialTheme.typography.bodySmall,
-                        color = colorResource(id = R.color.Rating),
+                        color = RatingColor,
                     )
                 }
 

@@ -60,6 +60,9 @@ import com.example.absolutecinema.BuildConfig
 import com.example.absolutecinema.R
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.util.PreviewItems
+import com.example.absolutecinema.presentation.theme.BackgroundColor
+import com.example.absolutecinema.presentation.theme.RankColor
+import com.example.absolutecinema.presentation.theme.SelectedColor
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
@@ -80,7 +83,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF242A32))
+                .background(BackgroundColor)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 12.dp)
         ) {
@@ -193,10 +196,10 @@ fun TopMoviesPager(
                 text = (actualIndex + 1).toString(),
                 fontSize = (60 * scale).sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFACDFFA),
+                color = RankColor,
                 style = TextStyle(
                     shadow = Shadow(
-                        color = Color(0xFF0296E5), // Outline color (cyan)
+                        color = SelectedColor, // Outline color (cyan)
                         offset = Offset(0f, 0f),
                         blurRadius = 20f // controls how thick the outline looks
                     )

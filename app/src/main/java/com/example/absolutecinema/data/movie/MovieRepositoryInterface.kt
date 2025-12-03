@@ -21,6 +21,10 @@ interface MovieRepositoryInterface {
 
     fun getMovieState(id: Int): Flow<MovieStateRemoteDataModel>
 
+    fun rateMovie(id: Int, rating: Float): Flow<Unit>
+
+    fun deleteRating(id: Int): Flow<Unit>
+
     fun getCast(id: Int): Flow<List<CastRemoteDataModel>>
 
     fun getReviews(id: Int): Flow<ReviewsRemoteDataModel>

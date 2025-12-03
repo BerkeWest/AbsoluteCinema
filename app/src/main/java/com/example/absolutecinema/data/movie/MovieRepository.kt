@@ -12,6 +12,7 @@ import com.example.absolutecinema.data.paging.home.UpcomingPagingSource
 import com.example.absolutecinema.data.paging.search.SearchPagingSource
 import com.example.absolutecinema.data.paging.watchlist.WatchListPagingSource
 import com.example.absolutecinema.domain.mapper.MovieSearchResultDomainMapper.toDomain
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -74,6 +75,15 @@ class MovieRepository(
     override fun getMovieState(id: Int) = flow {
         val response = api.getMovieAccountStates(id)
         emit(response)
+    }
+
+    override fun rateMovie(id: Int, rating: Float): Flow<Unit> = flow{
+        val ratingMap = mapOf("value" to rating)
+        api.rateMovie(id, ratingMap)
+    }
+
+    override fun deleteRating(id: Int): Flow<Unit> = flow{
+        api.deleteRating(id)
     }
 
     override fun getCast(id: Int) = flow {

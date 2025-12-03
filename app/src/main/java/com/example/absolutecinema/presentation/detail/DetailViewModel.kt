@@ -4,19 +4,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absolutecinema.R
-import com.example.absolutecinema.domain.base.onError
-import com.example.absolutecinema.domain.base.onLoading
-import com.example.absolutecinema.domain.base.onSuccess
 import com.example.absolutecinema.data.model.response.CastDomainModel
 import com.example.absolutecinema.data.model.response.MovieDetailsDomainModel
 import com.example.absolutecinema.data.model.response.MovieStateDomainModel
 import com.example.absolutecinema.data.model.response.ReviewResultDomainModel
+import com.example.absolutecinema.domain.base.onError
+import com.example.absolutecinema.domain.base.onLoading
+import com.example.absolutecinema.domain.base.onSuccess
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.domain.usecase.detail.BookmarkUseCase
 import com.example.absolutecinema.domain.usecase.detail.LoadCastUseCase
 import com.example.absolutecinema.domain.usecase.detail.LoadDetailsUseCase
 import com.example.absolutecinema.domain.usecase.detail.LoadRecommendationsUseCase
 import com.example.absolutecinema.domain.usecase.detail.LoadReviewsUseCase
+import com.example.absolutecinema.domain.usecase.detail.RatingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +34,7 @@ class DetailViewModel @Inject constructor(
     private val loadReviewsUseCase: LoadReviewsUseCase,
     private val loadRecommendationsUseCase: LoadRecommendationsUseCase,
     private val bookmarkUseCase: BookmarkUseCase,
+    private val ratingUseCase: RatingUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUIState())
@@ -42,7 +44,8 @@ class DetailViewModel @Inject constructor(
     //navigation graphden gelen idyi çekerek kaydeder.
     private val movieId: Int = checkNotNull(savedStateHandle["movieId"])
 
-    val tabs = listOf(R.string.about_movie, R.string.reviews, R.string.cast, R.string.recommendations)
+    val tabs =
+        listOf(R.string.about_movie, R.string.reviews, R.string.cast, R.string.recommendations)
 
 
     init {
@@ -57,7 +60,7 @@ class DetailViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         movieDetails = movieDetails,
-                        movieState = movieState
+                        movieState = movieState,
                     )
                 }
             }.onError { error ->
@@ -131,6 +134,13 @@ class DetailViewModel @Inject constructor(
         _uiState.update { it.copy(selectedTabIndex = tabIndex) }
     }
 
+    fun ratingSet(rating: Float?) {
+        _uiState.update {
+            it.copy(movieState = it.movieState?.copy(rated = rating))
+        }
+        ratingUseCase.invoke(RatingUseCase.Params(movieId, rating)).launchIn(viewModelScope)
+    }
+
     private fun loadMovieReviews() {
         _uiState.update { it.copy(isLoading = true) }
         loadReviewsUseCase.invoke(LoadReviewsUseCase.Params(movieId))
@@ -151,7 +161,7 @@ class DetailViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-    private fun loadRecommendations(){
+    private fun loadRecommendations() {
         _uiState.update { it.copy(isLoading = true) }
         loadRecommendationsUseCase.invoke(LoadRecommendationsUseCase.Params(movieId))
             .onSuccess { results ->

@@ -2,6 +2,7 @@ package com.example.absolutecinema.presentation.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,7 +47,7 @@ fun TopAppBar(
     bookmark: () -> Unit,
     accountAccess: () -> Boolean,
     logout: () -> Unit,
-    timeWindow: String? = null,
+    timeWindowDay: Boolean = true,
     timeWindowAccess: Boolean? = false
 ) {
     CenterAlignedTopAppBar(
@@ -77,15 +79,16 @@ fun TopAppBar(
                         contentDescription = stringResource(R.string.logout_button)
                     )
                 }
-            } else if (timeWindowAccess == true) {
-                var selected by remember { mutableStateOf(0) }
+            } /*
+            else if (timeWindowAccess == true) {
+                var selected by remember { mutableIntStateOf(if (timeWindowDay) 0 else 1) }
 
                 DoubleSwitch(
                     selectedIndex = selected,
                     onSelectedChange = { selected = it }
                 )
 
-            }
+            }*/
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0xFF242A32),
@@ -96,15 +99,16 @@ fun TopAppBar(
     )
 }
 
+/*
 @Composable
 fun DoubleSwitch(
     modifier: Modifier = Modifier,
     options: List<String> = listOf("Day", "Week"),
-    selectedIndex: Int,
+    selectedIndex: Int?,
     onSelectedChange: (Int) -> Unit
 ) {
     val animatedOffset by animateDpAsState(
-        targetValue = (selectedIndex * 50).dp, // width of each segment
+        targetValue = (selectedIndex?.times(50))?.dp ?: 0.dp,
         label = "switchOffset"
     )
 
@@ -115,6 +119,7 @@ fun DoubleSwitch(
             .padding(horizontal = 10.dp)
             .clip(RoundedCornerShape(50))
             .background(Color(0xFF2A2A2A))
+            .border(width = 1.dp, color = Color(0xFF2A80FF), shape = RoundedCornerShape(50)),
     ) {
         Box(
             modifier = Modifier
@@ -130,7 +135,7 @@ fun DoubleSwitch(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
-                        .clickable { onSelectedChange(index) },
+                        .clickable { onSelectedChange },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -144,7 +149,7 @@ fun DoubleSwitch(
         }
     }
 }
-
+*/
 
 //region Previews
 @Preview
@@ -175,17 +180,8 @@ fun WatchListTopAppBarPreview() {
         bookmark = { },
         accountAccess = { false },
         logout = {},
-        timeWindow = "Day",
+        timeWindowDay = true,
         timeWindowAccess = true
-    )
-}
-
-@Preview
-@Composable
-fun DoubleSwitchPreview() {
-    DoubleSwitch(
-        selectedIndex = 0,
-        onSelectedChange = {}
     )
 }
 //endregion

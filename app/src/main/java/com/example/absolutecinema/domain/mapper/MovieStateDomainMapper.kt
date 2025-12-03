@@ -3,13 +3,14 @@ package com.example.absolutecinema.domain.mapper
 import com.example.absolutecinema.domain.base.BaseDomainMapper
 import com.example.absolutecinema.data.model.response.MovieStateDomainModel
 import com.example.absolutecinema.data.model.response.MovieStateRemoteDataModel
+import kotlinx.serialization.json.JsonObject
 
 object MovieStateDomainMapper :
     BaseDomainMapper<MovieStateRemoteDataModel, MovieStateDomainModel> {
     override fun MovieStateRemoteDataModel.toDomain() = MovieStateDomainModel(
         id = id,
         favorite = favorite,
-        rated = rated,
+        rated = rated.value,
         watchlist = watchlist
     )
 

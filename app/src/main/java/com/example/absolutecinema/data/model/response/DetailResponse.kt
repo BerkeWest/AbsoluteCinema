@@ -1,5 +1,7 @@
 package com.example.absolutecinema.data.model.response
 
+
+import com.example.absolutecinema.data.model.serializer.RatedSerializer
 import com.example.absolutecinema.domain.base.BaseDataModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -28,10 +30,16 @@ data class MovieStateRemoteDataModel(
     @SerialName("favorite")
     val favorite: Boolean,
     @SerialName("rated")
-    val rated: Boolean,
+    @Serializable(with = RatedSerializer::class)
+    val rated: RateValue,
     @SerialName("watchlist")
     val watchlist: Boolean
 ) : BaseDataModel
+
+@Serializable
+data class RateValue(
+    val value: Float?
+)
 
 @Serializable
 data class MovieCastRemoteDataModel(

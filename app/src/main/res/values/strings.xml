@@ -50,6 +50,13 @@
     <string name="runtime">Runtime</string>
     <string name="genre">Genre</string>
 
+    //Rating Bottom Sheet
+    <string name="close_button">Close</string>
+    <string name="rate_this_movie">Rate this movie</string>
+    <string name="save_rating">Save Rating</string>
+    <string name="edit_rating">Edit Rating</string>
+    <string name="delete_rating">Delete Rating</string>
+
     //Detail Tabs
     <string name="about_movie">About Movie</string>
     <string name="reviews">Reviews</string>

@@ -23,16 +23,19 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,12 +63,15 @@ import com.example.absolutecinema.data.model.response.ReviewResultDomainModel
 import com.example.absolutecinema.domain.model.response.MovieSearchResultDomainModel
 import com.example.absolutecinema.presentation.components.TopAppBar
 import com.example.absolutecinema.presentation.components.util.PreviewItems
+import com.example.absolutecinema.presentation.detail.components.BottomSheet
 import com.example.absolutecinema.presentation.detail.components.CastMember
 import com.example.absolutecinema.presentation.detail.components.IconText
 import com.example.absolutecinema.presentation.detail.components.PlaceholderText
 import com.example.absolutecinema.presentation.detail.components.Review
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
+import com.example.absolutecinema.presentation.theme.RatingColor
 import java.util.Locale
+
 import kotlin.math.absoluteValue
 
 object DetailPage : NavigationDestination {
@@ -109,7 +115,9 @@ fun DetailScreen(
                     backdropPath = uiState.movieDetails?.backdropPath,
                     voteAverage = uiState.movieDetails?.voteAverage,
                     posterPath = uiState.movieDetails?.posterPath,
-                    title = uiState.movieDetails?.title ?: ""
+                    title = uiState.movieDetails?.title ?: "",
+                    rated = uiState.movieState?.rated,
+                    onRatingSet = { detailViewModel.ratingSet(it) },
                 )
             }
             item {
@@ -149,14 +157,20 @@ fun DetailScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BannerAndTitle(
     backdropPath: String?,
     voteAverage: Double?,
     posterPath: String?,
     title: String,
+    rated: Float?,
+    onRatingSet: (Float?) -> Unit = {},
     padding: Int = 10
 ) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     Box(Modifier.padding(bottom = padding.dp)) {
         AsyncImage(
             model = ImageRequest.Builder(context = LocalContext.current)
@@ -179,18 +193,18 @@ private fun BannerAndTitle(
                 .offset(x = (-16).dp, y = (-16).dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.Black.copy(alpha = 0.3f))
-                .clickable { }
+                .clickable { showBottomSheet = true  }
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.rating),
+                painter = painterResource(id = if (rated != null) R.drawable.rating_filled else R.drawable.rating),
                 contentDescription = stringResource(R.string.rating),
-                tint = Color(0xFFFFA500)
+                tint = RatingColor,
             )
             Spacer(Modifier.width(5.dp))
             Text(
                 text = String.format(Locale.US, "%.1f", voteAverage),
-                color = Color(0xFFFFA500),
+                color = RatingColor,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -229,6 +243,18 @@ private fun BannerAndTitle(
                     .weight(5f)
             )
         }
+    }
+    if (showBottomSheet) {
+        BottomSheet(
+            onDismiss = { showBottomSheet = false },
+            onRatingSelected = {
+                onRatingSet(it)
+                showBottomSheet = false
+            },
+            sheetState = bottomSheetState,
+            initialValue = rated ?: 5f,
+            rated = if (rated != null) true else false
+        )
     }
 }
 
@@ -439,7 +465,9 @@ fun BannerAndTitlePreview() {
         voteAverage = 7.6,
         posterPath = "",
         title = "JUJUTSU KAISEN: Execution - Shibuya Incident",
-        padding = 70
+        padding = 70,
+        rated = 6f,
+        onRatingSet = {},
     )
 }
 

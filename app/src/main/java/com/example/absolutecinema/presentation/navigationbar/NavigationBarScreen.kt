@@ -130,7 +130,7 @@ fun NavigationBarScreen(
                 .background(Color(0xFF242A32)),
             navController = navController,
             startDestination = startDestination,
-            onNavigateToDetails = onNavigateToDetails
+            onNavigateToDetails = onNavigateToDetails,
         )
     }
 }

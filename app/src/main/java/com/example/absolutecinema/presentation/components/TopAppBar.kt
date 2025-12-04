@@ -62,8 +62,7 @@ fun TopAppBar(
                     )
                 }
             } else if (timeWindowAccess == true) {
-                var selected by remember { mutableIntStateOf(if (timeWindowDay) 0 else 1) }
-
+                var selected by remember { mutableIntStateOf(0) }
                 DoubleSwitch(
                     selectedIndex = selected,
                     onSelectedChange = { selected = it }

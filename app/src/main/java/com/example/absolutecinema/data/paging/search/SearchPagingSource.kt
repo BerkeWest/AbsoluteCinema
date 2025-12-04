@@ -17,8 +17,10 @@ class SearchPagingSource(
 
             val response = api.searchMovies(searchWord = text, page)
 
+            val sortedResults = response.results.sortedByDescending { it.popularity ?: 0.0 }
+
             LoadResult.Page(
-                data = response.results,
+                data = sortedResults,
                 prevKey = if (page == 1) null else page - 1,
                 nextKey = if (page < response.totalPages) page + 1 else null
             )

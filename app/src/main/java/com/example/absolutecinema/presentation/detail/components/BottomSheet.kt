@@ -1,7 +1,9 @@
 package com.example.absolutecinema.presentation.detail.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -98,8 +101,15 @@ fun BottomSheet(
 
             Slider(
                 value = rating,
-                onValueChange = { rating = (it/0.5f).roundToInt() * 0.5f },
-                valueRange = 0f..10f,
+                thumb = {
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .background(RatingColor, CircleShape)
+                    )
+                },
+                onValueChange = { rating = (it / 0.5f).roundToInt() * 0.5f },
+                valueRange = 0.5f..10f,
                 steps = 0,
                 colors = SliderDefaults.colors(
                     thumbColor = RatingColor,

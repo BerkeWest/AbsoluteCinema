@@ -7,7 +7,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.json.JsonEncoder
 import kotlinx.serialization.json.JsonObject
 
 object RatedSerializer : KSerializer<RateValue> {
@@ -17,12 +16,6 @@ object RatedSerializer : KSerializer<RateValue> {
         encoder: Encoder,
         value: RateValue
     ) {
-        val jsonEncoder = encoder as? JsonEncoder ?: throw SerializationException("This class can be saved only by Json")
-        if (value.value != null) {
-            jsonEncoder.encodeSerializableValue(RateValue.serializer(), value)
-        } else {
-            jsonEncoder.encodeBoolean(false)
-        }
     }
 
     override fun deserialize(decoder: Decoder): RateValue {

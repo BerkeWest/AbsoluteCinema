@@ -1,5 +1,7 @@
 package com.example.absolutecinema.presentation.detail
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -179,6 +181,16 @@ class DetailViewModel @Inject constructor(
                     )
                 }
             }.launchIn(viewModelScope)
+    }
+
+    fun shareMovie(context: Context, title: String, link: String) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TITLE, "Share this movie: $title")
+            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_title) + "$title -> $link")
+        }
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_title)))
     }
 }
 

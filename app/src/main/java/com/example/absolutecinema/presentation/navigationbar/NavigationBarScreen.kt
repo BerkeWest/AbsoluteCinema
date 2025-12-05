@@ -65,7 +65,7 @@ fun NavigationBarScreen(
                 canBookmark = false,
                 isBookmarked = false,
                 bookmark = { },
-                accountAccess = { currentDestination == Destination.WATCH_LIST },
+                accountAccess = currentDestination == Destination.WATCH_LIST,
                 logout = {
                     authViewModel.logout()
                     onLogout()

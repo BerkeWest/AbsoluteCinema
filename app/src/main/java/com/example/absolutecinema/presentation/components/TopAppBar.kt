@@ -1,5 +1,6 @@
 package com.example.absolutecinema.presentation.components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,8 +28,9 @@ fun TopAppBar(
     canBookmark: Boolean = false,
     isBookmarked: Boolean,
     bookmark: () -> Unit,
-    accountAccess: () -> Boolean,
+    accountAccess: Boolean,
     logout: () -> Unit,
+    share: () -> Unit = {},
     timeWindowDay: Boolean = true,
     timeWindowAccess: Boolean? = false
 ) {
@@ -46,15 +48,23 @@ fun TopAppBar(
         },
         actions = {
             if (canBookmark) {
-                IconButton(onClick = bookmark) {
-                    Icon(
-                        painter = if (isBookmarked) painterResource(R.drawable.bookmark_filled)
-                        else painterResource(R.drawable.bookmark),
-                        contentDescription = if (isBookmarked) stringResource(R.string.remove_watchlist_button)
-                        else stringResource(R.string.add_watchlist_button)
-                    )
+                Row {
+                    IconButton(onClick = bookmark) {
+                        Icon(
+                            painter = if (isBookmarked) painterResource(R.drawable.bookmark_filled)
+                            else painterResource(R.drawable.bookmark),
+                            contentDescription = if (isBookmarked) stringResource(R.string.remove_watchlist_button)
+                            else stringResource(R.string.add_watchlist_button)
+                        )
+                    }
+                    IconButton(onClick = share) {
+                        Icon(
+                            painter = painterResource(R.drawable.share),
+                            contentDescription = stringResource(R.string.share_button)
+                        )
+                    }
                 }
-            } else if (accountAccess()) {
+            } else if (accountAccess) {
                 IconButton(onClick = logout) {
                     Icon(
                         painter = painterResource(R.drawable.logout),
@@ -91,7 +101,7 @@ fun DetailTopAppBarPreview() {
         canBookmark = true,
         isBookmarked = bookmarked,
         bookmark = { bookmarked = !bookmarked },
-        accountAccess = { false },
+        accountAccess = false,
         logout = {}
     )
 }
@@ -106,7 +116,7 @@ fun WatchListTopAppBarPreview() {
         canBookmark = false,
         isBookmarked = false,
         bookmark = { },
-        accountAccess = { false },
+        accountAccess = false,
         logout = {},
         timeWindowDay = true,
         timeWindowAccess = true

@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 data class MovieDetailsRemoteDataModel(
     @SerialName("backdrop_path") val backdropPath: String?,
     @SerialName("genres") val genres: List<GenreRemoteDataModel>,
+    @SerialName("homepage") val homepage: String?,
     @SerialName("id") val id: Int = 0,
     @SerialName("original_title") val originalTitle: String,
     @SerialName("overview") val overview: String,

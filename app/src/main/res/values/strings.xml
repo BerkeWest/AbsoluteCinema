@@ -49,6 +49,8 @@
     <string name="release_date">Release Date</string>
     <string name="runtime">Runtime</string>
     <string name="genre">Genre</string>
+    <string name="share_button">Share</string>
+    <string name="share_title">Check out this movie:</string>
 
     //Rating Bottom Sheet
     <string name="close_button">Close</string>

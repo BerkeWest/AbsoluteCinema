@@ -71,7 +71,6 @@ import com.example.absolutecinema.presentation.detail.components.Review
 import com.example.absolutecinema.presentation.navigation.NavigationDestination
 import com.example.absolutecinema.presentation.theme.RatingColor
 import java.util.Locale
-
 import kotlin.math.absoluteValue
 
 object DetailPage : NavigationDestination {
@@ -86,7 +85,7 @@ fun DetailScreen(
 ) {
 
     val uiState by detailViewModel.uiState.collectAsStateWithLifecycle()
-
+    val context = LocalContext.current
     Scaffold(
         containerColor = Color(0xFF242A32),
         topBar = {
@@ -97,8 +96,15 @@ fun DetailScreen(
                 canBookmark = true,
                 isBookmarked = uiState.movieState?.watchlist ?: false,
                 bookmark = { detailViewModel.bookmark() },
-                accountAccess = { false },
-                logout = { }
+                accountAccess = false,
+                logout = { },
+                share = {
+                    detailViewModel.shareMovie(
+                        context = context,
+                        title = uiState.movieDetails?.title ?: "NaN",
+                        link = uiState.movieDetails?.homepage ?: "NaN",
+                    )
+                }
             )
         }
     )
@@ -193,7 +199,7 @@ private fun BannerAndTitle(
                 .offset(x = (-16).dp, y = (-16).dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.Black.copy(alpha = 0.3f))
-                .clickable { showBottomSheet = true  }
+                .clickable { showBottomSheet = true }
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Icon(
@@ -203,7 +209,7 @@ private fun BannerAndTitle(
             )
             Spacer(Modifier.width(5.dp))
             Text(
-                text = String.format(Locale.US, "%.1f", voteAverage),
+                text = String.format(Locale.US, "%.1f", (rated ?: voteAverage)),
                 color = RatingColor,
                 fontWeight = FontWeight.SemiBold
             )
@@ -253,7 +259,7 @@ private fun BannerAndTitle(
             },
             sheetState = bottomSheetState,
             initialValue = rated ?: 5f,
-            rated = if (rated != null) true else false
+            rated = rated != null
         )
     }
 }
@@ -491,7 +497,12 @@ fun DetailTabsPagerPreview() {
     ) {
         DetailTabsPager(
             selectedTabIndex = tabIndex,
-            tabsList = listOf(R.string.about_movie, R.string.reviews, R.string.cast, R.string.recommendations),
+            tabsList = listOf(
+                R.string.about_movie,
+                R.string.reviews,
+                R.string.cast,
+                R.string.recommendations
+            ),
             onTabSelected = { tabIndex = it },
             isLoading = false,
             overview = PreviewItems.overview,

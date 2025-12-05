@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class MovieDetailsDomainModel(
     val backdropPath: String?,
     val genres: List<GenreDomainModel>,
+    val homepage: String?,
     val id: Int = 0,
     val originalTitle: String,
     val overview: String,

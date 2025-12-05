@@ -10,6 +10,7 @@ object MovieDetailsDomainMapper :
     override fun MovieDetailsRemoteDataModel.toDomain() = MovieDetailsDomainModel(
         backdropPath = backdropPath,
         genres = genres.map { it.toDomain() },
+        homepage = homepage,
         id = id,
         originalTitle = originalTitle,
         overview = overview,

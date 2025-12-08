@@ -137,6 +137,9 @@ class DetailViewModel @Inject constructor(
     }
 
     fun ratingSet(rating: Float?) {
+        if (_uiState.value.movieState?.watchlist == true)
+            _uiState.update { it.copy(movieState = it.movieState?.copy(watchlist = rating == null)) }
+
         _uiState.update {
             it.copy(movieState = it.movieState?.copy(rated = rating))
         }
